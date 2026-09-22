@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "privacy-assistant"
+version = "0.1.0"
+description = "Find and remove your personal info from data broker and people-search sites."
+requires-python = ">=3.9"
+
+[project.scripts]
+privacy-assistant = "privacy_assistant.cli:main"
+
+[tool.setuptools]
+packages = ["privacy_assistant"]
+
+[tool.setuptools.package-data]
+privacy_assistant = ["brokers.json"]

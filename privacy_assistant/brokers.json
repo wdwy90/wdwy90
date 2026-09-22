@@ -1,0 +1,242 @@
+{
+  "_note": "Opt-out URLs and procedures change often. If a link 404s, search '<broker> opt out' and update this file. 'search_url' placeholders: {first} {last} {city} {state} {state_full} (URL-encoded).",
+  "brokers": [
+    {
+      "id": "spokeo",
+      "name": "Spokeo",
+      "method": "web",
+      "search_url": "https://www.spokeo.com/{first}-{last}/{state_full}",
+      "optout_url": "https://www.spokeo.com/optout",
+      "steps": "Find your listing, copy its URL, paste it into the opt-out form with an email address, then click the confirmation link emailed to you.",
+      "needs_email_verification": true,
+      "processing_days": 3,
+      "recheck_days": 90
+    },
+    {
+      "id": "whitepages",
+      "name": "Whitepages",
+      "method": "web",
+      "search_url": "https://www.whitepages.com/name/{first}-{last}/{city}-{state}",
+      "optout_url": "https://www.whitepages.com/suppression-requests",
+      "steps": "Paste your listing URL, confirm it's you, and complete the phone verification call (they read you a code).",
+      "needs_phone_verification": true,
+      "processing_days": 2,
+      "recheck_days": 90
+    },
+    {
+      "id": "peopleconnect",
+      "name": "PeopleConnect (Intelius, TruthFinder, Instant Checkmate, US Search, ZabaSearch)",
+      "method": "web",
+      "search_url": "https://www.intelius.com/people-search/{first}-{last}/{state}/",
+      "optout_url": "https://suppression.peopleconnect.us/login",
+      "steps": "Log in with your email, verify it, search for your record, and suppress it. One suppression covers all PeopleConnect brands.",
+      "needs_email_verification": true,
+      "processing_days": 3,
+      "recheck_days": 90
+    },
+    {
+      "id": "beenverified",
+      "name": "BeenVerified",
+      "method": "web",
+      "search_url": "https://www.beenverified.com/app/optout/search",
+      "optout_url": "https://www.beenverified.com/app/optout/search",
+      "steps": "Search your name and state, select your record, enter an email, then click the verification link.",
+      "needs_email_verification": true,
+      "processing_days": 1,
+      "recheck_days": 90
+    },
+    {
+      "id": "peoplelooker",
+      "name": "PeopleLooker (BeenVerified network)",
+      "method": "web",
+      "search_url": "https://www.peoplelooker.com/f/optout/search",
+      "optout_url": "https://www.peoplelooker.com/f/optout/search",
+      "steps": "Same flow as BeenVerified: search, select your record, verify by email.",
+      "needs_email_verification": true,
+      "processing_days": 1,
+      "recheck_days": 90
+    },
+    {
+      "id": "peoplefinders",
+      "name": "PeopleFinders",
+      "method": "web",
+      "search_url": "https://www.peoplefinders.com/name/{first}-{last}/{state}",
+      "optout_url": "https://www.peoplefinders.com/opt-out",
+      "steps": "Search for your record, select it, and submit the opt-out; confirm by email.",
+      "needs_email_verification": true,
+      "processing_days": 3,
+      "recheck_days": 90
+    },
+    {
+      "id": "fastpeoplesearch",
+      "name": "FastPeopleSearch",
+      "method": "web",
+      "search_url": "https://www.fastpeoplesearch.com/name/{first}-{last}_{city}-{state}",
+      "optout_url": "https://www.fastpeoplesearch.com/removal",
+      "steps": "Enter your email, confirm the link, find your record, and click 'Remove my record'.",
+      "needs_email_verification": true,
+      "processing_days": 2,
+      "recheck_days": 60
+    },
+    {
+      "id": "truepeoplesearch",
+      "name": "TruePeopleSearch",
+      "method": "web",
+      "search_url": "https://www.truepeoplesearch.com/results?name={first}%20{last}&citystatezip={city}%2C%20{state}",
+      "optout_url": "https://www.truepeoplesearch.com/removal",
+      "steps": "Enter your email, confirm the link, locate your record, and click 'Remove this record'.",
+      "needs_email_verification": true,
+      "processing_days": 3,
+      "recheck_days": 60
+    },
+    {
+      "id": "radaris",
+      "name": "Radaris",
+      "method": "web",
+      "search_url": "https://radaris.com/p/{first}/{last}/",
+      "optout_url": "https://radaris.com/control/privacy",
+      "steps": "Find your profile URL, submit it on the privacy control page, and verify by email/phone.",
+      "needs_email_verification": true,
+      "processing_days": 7,
+      "recheck_days": 60
+    },
+    {
+      "id": "mylife",
+      "name": "MyLife",
+      "method": "email",
+      "search_url": "https://www.mylife.com/pub/search?searchFirstName={first}&searchLastName={last}",
+      "optout_url": "https://www.mylife.com/ccpa/index.pubview",
+      "email": "privacy@mylife.com",
+      "steps": "Send a deletion request by email, or use the CCPA form if you're a California resident.",
+      "processing_days": 10,
+      "recheck_days": 90
+    },
+    {
+      "id": "peekyou",
+      "name": "PeekYou",
+      "method": "web",
+      "search_url": "https://www.peekyou.com/{first}_{last}",
+      "optout_url": "https://www.peekyou.com/about/contact/optout",
+      "steps": "Paste your profile URL and submit the form; confirm by email.",
+      "needs_email_verification": true,
+      "processing_days": 7,
+      "recheck_days": 90
+    },
+    {
+      "id": "usphonebook",
+      "name": "USPhoneBook",
+      "method": "web",
+      "search_url": "https://www.usphonebook.com/{first}-{last}",
+      "optout_url": "https://www.usphonebook.com/opt-out",
+      "steps": "Search your name, select your record, and submit with an email for confirmation.",
+      "needs_email_verification": true,
+      "processing_days": 2,
+      "recheck_days": 90
+    },
+    {
+      "id": "thatsthem",
+      "name": "That's Them",
+      "method": "web",
+      "search_url": "https://thatsthem.com/name/{first}-{last}",
+      "optout_url": "https://thatsthem.com/optout",
+      "steps": "Fill out the opt-out form with the exact details shown on your listing.",
+      "processing_days": 7,
+      "recheck_days": 90
+    },
+    {
+      "id": "nuwber",
+      "name": "Nuwber",
+      "method": "web",
+      "search_url": "https://nuwber.com/search?name={first}%20{last}",
+      "optout_url": "https://nuwber.com/removal/link",
+      "steps": "Paste your profile URL, enter an email, and click the confirmation link.",
+      "needs_email_verification": true,
+      "processing_days": 2,
+      "recheck_days": 90
+    },
+    {
+      "id": "clustrmaps",
+      "name": "ClustrMaps",
+      "method": "web",
+      "search_url": "https://clustrmaps.com/persons/{first}-{last}",
+      "optout_url": "https://clustrmaps.com/bl/opt-out",
+      "steps": "Find your record and submit it on the opt-out page.",
+      "processing_days": 3,
+      "recheck_days": 90
+    },
+    {
+      "id": "searchpeoplefree",
+      "name": "SearchPeopleFree",
+      "method": "web",
+      "search_url": "https://www.searchpeoplefree.com/find/{first}-{last}/{state}",
+      "optout_url": "https://www.searchpeoplefree.com/opt-out",
+      "steps": "Enter your email, confirm, then select and remove your record.",
+      "needs_email_verification": true,
+      "processing_days": 2,
+      "recheck_days": 60
+    },
+    {
+      "id": "advancedbackgroundchecks",
+      "name": "Advanced Background Checks",
+      "method": "web",
+      "search_url": "https://www.advancedbackgroundchecks.com/names/{first}-{last}",
+      "optout_url": "https://www.advancedbackgroundchecks.com/removal",
+      "steps": "Enter your email, confirm, then locate and remove your record.",
+      "needs_email_verification": true,
+      "processing_days": 3,
+      "recheck_days": 60
+    },
+    {
+      "id": "cyberbackgroundchecks",
+      "name": "CyberBackgroundChecks",
+      "method": "web",
+      "search_url": "https://www.cyberbackgroundchecks.com/people/{first}-{last}/{state}",
+      "optout_url": "https://www.cyberbackgroundchecks.com/removal",
+      "steps": "Enter your email, confirm, then locate and remove your record.",
+      "needs_email_verification": true,
+      "processing_days": 3,
+      "recheck_days": 60
+    },
+    {
+      "id": "peoplesearchnow",
+      "name": "PeopleSearchNow",
+      "method": "web",
+      "search_url": "https://www.peoplesearchnow.com/person/{first}-{last}",
+      "optout_url": "https://www.peoplesearchnow.com/opt-out",
+      "steps": "Locate your record and submit the opt-out form.",
+      "processing_days": 3,
+      "recheck_days": 60
+    },
+    {
+      "id": "checkpeople",
+      "name": "CheckPeople",
+      "method": "web",
+      "search_url": "https://www.checkpeople.com/opt-out",
+      "optout_url": "https://www.checkpeople.com/opt-out",
+      "steps": "Search for your record, select it, and verify by email.",
+      "needs_email_verification": true,
+      "processing_days": 3,
+      "recheck_days": 90
+    },
+    {
+      "id": "acxiom",
+      "name": "Acxiom (marketing data)",
+      "method": "web",
+      "search_url": null,
+      "optout_url": "https://isapps.acxiom.com/optout/optout.aspx",
+      "steps": "Marketing broker with no public search. Submit the opt-out form for each name/address/email you use.",
+      "processing_days": 30,
+      "recheck_days": 365
+    },
+    {
+      "id": "lexisnexis",
+      "name": "LexisNexis",
+      "method": "web",
+      "search_url": null,
+      "optout_url": "https://optout.lexisnexis.com/",
+      "steps": "No public search. Submit the opt-out form; you may need to provide ID or proof of a qualifying reason.",
+      "processing_days": 30,
+      "recheck_days": 365
+    }
+  ]
+}
