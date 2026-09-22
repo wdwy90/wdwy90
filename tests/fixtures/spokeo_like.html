@@ -1,0 +1,9 @@
+<html><head><title>Opt Out</title></head><body>
+<form action="/search"><input type="text" role="searchbox" aria-label="Search" name="q"
+  placeholder="Search by Name, Phone, Email, Username, or Address"><button type="submit">Go</button></form>
+<form name="optout-form" onsubmit="document.body.dataset.sent=JSON.stringify({url:this.url.value,email:this.email.value});
+  document.title='Sent'; return false;">
+  <input name="url" type="url" placeholder="Enter URL here">
+  <input name="email" type="email" placeholder="Enter email address here">
+  <button type="submit">Opt Out</button>
+</form></body></html>

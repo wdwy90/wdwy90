@@ -152,6 +152,12 @@ class Tracker:
                 note TEXT,
                 at TEXT NOT NULL
             );
+            CREATE TABLE IF NOT EXISTS processed_messages (
+                message_id TEXT PRIMARY KEY,
+                broker_id TEXT NOT NULL,
+                detail TEXT,
+                at TEXT NOT NULL
+            );
             """
         )
 
@@ -176,6 +182,19 @@ class Tracker:
             self.db.execute(
                 "INSERT INTO history (broker_id, status, note, at) VALUES (?, ?, ?, ?)",
                 (broker_id, status, note, ts),
+            )
+
+    def is_processed(self, message_id: str) -> bool:
+        return self.db.execute(
+            "SELECT 1 FROM processed_messages WHERE message_id = ?", (message_id,)
+        ).fetchone() is not None
+
+    def mark_processed(self, message_id: str, broker_id: str, detail: str = "") -> None:
+        with self.db:
+            self.db.execute(
+                "INSERT OR IGNORE INTO processed_messages (message_id, broker_id, detail, at) "
+                "VALUES (?, ?, ?, ?)",
+                (message_id, broker_id, detail, now().isoformat()),
             )
 
     def history(self, broker_id: str) -> list[sqlite3.Row]:

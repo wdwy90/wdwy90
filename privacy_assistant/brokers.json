@@ -1,5 +1,5 @@
 {
-  "_note": "Opt-out URLs and procedures change often. If a link 404s, search '<broker> opt out' and update this file. 'search_url' placeholders: {first} {last} {city} {state} {state_full} (URL-encoded).",
+  "_note": "Optional per-broker keys: 'domains' (extra sender/link domains for verification emails), 'autofill.form' (CSS selector of the opt-out form). Opt-out URLs and procedures change often. If a link 404s, search '<broker> opt out' and update this file. 'search_url' placeholders: {first} {last} {city} {state} {state_full} (URL-encoded).",
   "brokers": [
     {
       "id": "spokeo",
@@ -7,6 +7,7 @@
       "method": "web",
       "search_url": "https://www.spokeo.com/{first}-{last}/{state_full}",
       "optout_url": "https://www.spokeo.com/optout",
+      "autofill": {"form": "form[name=optout-form]"},
       "steps": "Find your listing, copy its URL, paste it into the opt-out form with an email address, then click the confirmation link emailed to you.",
       "needs_email_verification": true,
       "processing_days": 3,

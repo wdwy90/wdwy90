@@ -123,6 +123,118 @@ def cmd_optout(args) -> None:
                 webbrowser.open_new_tab(b["optout_url"])
 
 
+def _pause(message: str) -> str:
+    return input(f"\n>> {message}: ").strip()
+
+
+def _print_result(r: dict) -> None:
+    mark = "confirmed" if r["ok"] else "FAILED"
+    print(f"  [{r['broker']}] {mark}: {r['subject']!r} -> {r['detail']}")
+
+
+def _smtp_configured() -> bool:
+    import os
+    return all(os.environ.get(k) for k in ("PA_SMTP_HOST", "PA_SMTP_USER", "PA_SMTP_PASSWORD"))
+
+
+def _mailbox_or_none():
+    from . import inbox
+    try:
+        return inbox.ImapMailbox.from_env()
+    except SystemExit as e:
+        print(f"Note: {e}\nContinuing without automatic email confirmation.")
+        return None
+
+
+def cmd_auto(args) -> None:
+    from . import autofill, inbox
+    profile = core.load_profile()
+    tracker = core.Tracker()
+    brokers = core.load_brokers()
+    if args.target == "found":
+        targets = [b for b in brokers if (r := tracker.get(b["id"])) and r["status"] == "found"]
+    elif args.target == "all":
+        targets = [b for b in brokers
+                   if not (r := tracker.get(b["id"])) or r["status"] not in ("submitted", "removed", "not_found")]
+    else:
+        targets = [core.get_broker(args.target, brokers)]
+    if not targets:
+        print("Nothing to do. Mark brokers 'found' after a scan, or use `auto all`.")
+        return
+
+    mailbox = None if args.no_inbox else _mailbox_or_none()
+    pw, context = autofill.launch(headless=args.headless)
+    visit = autofill.browser_visitor(context)
+    try:
+        for b in targets:
+            row = tracker.get(b["id"])
+            listing = row["listing_url"] if row else None
+            print(f"\n== {b['name']} ==")
+            if b["method"] == "email":
+                msg = core.deletion_email(b, profile, listing)
+                if _smtp_configured():
+                    core.send_email(msg)
+                    tracker.set(b["id"], "submitted", note=f"auto: emailed {b['email']}")
+                    print(f"Emailed deletion request to {b['email']}.")
+                else:
+                    print(f"SMTP not configured; draft saved to {core.save_draft(msg, b['id'])}")
+                continue
+
+            res = autofill.submit_optout(context, b, profile, listing, _pause, auto_submit=not args.no_submit)
+            print(f"Filled: {', '.join(res['filled']) or 'nothing recognized'}; "
+                  f"submitted: {'yes' if res['submitted'] else 'no'}")
+            if not res["submitted"]:
+                _pause("Finish and submit the form in the browser window (select your record, solve any "
+                       "captcha), then press Enter")
+            if b.get("needs_phone_verification"):
+                _pause("This site verifies by phone. Complete the call in the browser, then press Enter")
+            if b.get("needs_email_verification") and mailbox:
+                print(f"Watching your inbox for {b['name']}'s verification email (up to {args.wait} min)...")
+                results = inbox.watch(mailbox, brokers, tracker, visit, {b["id"]}, minutes=args.wait,
+                                      on_result=_print_result)
+                if not any(r["ok"] for r in results):
+                    print("  No verification email yet. Run `privacy-assistant confirm --watch 30` later.")
+            answer = _pause("Anything left on this site? Finish it in the browser, then press Enter to "
+                            "mark submitted (or type s to skip)")
+            if answer.lower() != "s" and (tracker.get(b["id"]) or {"status": ""})["status"] != "submitted":
+                tracker.set(b["id"], "submitted", note="auto: form submitted")
+    finally:
+        context.close()
+        pw.stop()
+    print("\nDone. Run `privacy-assistant due` in a week to verify removals.")
+
+
+def cmd_confirm(args) -> None:
+    from . import inbox
+    mailbox = inbox.ImapMailbox.from_env()
+    tracker = core.Tracker()
+    brokers = core.load_brokers()
+    only = {args.broker} if args.broker else None
+    pw = context = None
+    if args.no_browser:
+        visit = inbox.urllib_visitor
+    else:
+        from . import autofill
+        pw, context = autofill.launch(headless=args.headless)
+        visit = autofill.browser_visitor(context)
+    try:
+        if args.watch:
+            print(f"Watching inbox for {args.watch} min...")
+            results = inbox.watch(mailbox, brokers, tracker, visit, only, minutes=args.watch,
+                                  on_result=_print_result)
+        else:
+            domains = inbox.sender_domains(b for b in brokers if not only or b["id"] in only)
+            results = inbox.process_inbox(brokers, tracker, mailbox.messages_since(args.days, domains),
+                                          visit, only)
+            for r in results:
+                _print_result(r)
+    finally:
+        if context:
+            context.close()
+            pw.stop()
+    print(f"{sum(r['ok'] for r in results)} confirmation link(s) opened.")
+
+
 def cmd_status(args) -> None:
     tracker = core.Tracker()
     print(f"{'BROKER':<26} {'STATUS':<11} {'UPDATED':<11} NEXT ACTION")
@@ -182,6 +294,23 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--send", action="store_true", help="Actually send email requests via SMTP")
     s.add_argument("--open", action="store_true", help="Open web opt-out pages in your browser")
     s.set_defaults(func=cmd_optout)
+
+    s = sub.add_parser("auto", help="Fill and submit opt-out forms and click email confirmations for you")
+    s.add_argument("target", nargs="?", default="found",
+                   help="'found' (default), 'all' not-yet-submitted brokers, or a broker id")
+    s.add_argument("--wait", type=float, default=5, help="Minutes to wait for each verification email")
+    s.add_argument("--no-submit", action="store_true", help="Fill forms but let you click submit")
+    s.add_argument("--no-inbox", action="store_true", help="Don't read your inbox")
+    s.add_argument("--headless", action="store_true", help="Hide the browser (captchas will fail)")
+    s.set_defaults(func=cmd_auto)
+
+    s = sub.add_parser("confirm", help="Open verification links from broker emails in your inbox")
+    s.add_argument("broker", nargs="?", help="Only this broker id")
+    s.add_argument("--days", type=int, default=7, help="How far back to look")
+    s.add_argument("--watch", type=float, metavar="MINUTES", help="Keep polling for new emails")
+    s.add_argument("--no-browser", action="store_true", help="Open links with plain HTTP instead of a browser")
+    s.add_argument("--headless", action="store_true")
+    s.set_defaults(func=cmd_confirm)
 
     sub.add_parser("status", help="Show status for every broker").set_defaults(func=cmd_status)
     sub.add_parser("due", help="Show what needs attention now").set_defaults(func=cmd_due)

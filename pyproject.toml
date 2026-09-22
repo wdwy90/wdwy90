@@ -8,6 +8,9 @@ version = "0.1.0"
 description = "Find and remove your personal info from data broker and people-search sites."
 requires-python = ">=3.9"
 
+[project.optional-dependencies]
+auto = ["playwright>=1.40"]
+
 [project.scripts]
 privacy-assistant = "privacy_assistant.cli:main"
 
