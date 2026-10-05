@@ -4,7 +4,6 @@ import AppIntents
 /// LiveActivityIntent allows starting the Live Activity without opening the app.
 struct StartWatchingIntent: LiveActivityIntent {
     static let title: LocalizedStringResource = "Start watching for drive-thrus"
-    static let description = IntentDescription("Watches your location and shows the menu when you're in a fast-food drive-thru line.")
 
     @MainActor
     func perform() async throws -> some IntentResult {
