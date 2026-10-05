@@ -6,3 +6,5 @@ local.properties
 captures/
 *.keystore
 *.apk
+keystore.properties
+release-upload/

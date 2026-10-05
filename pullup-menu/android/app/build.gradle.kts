@@ -12,6 +12,12 @@ val localProps = Properties().apply {
     if (f.exists()) f.inputStream().use { load(it) }
 }
 
+// Release signing (upload key). keystore.properties and the keystore are never committed.
+val keystoreProps = Properties().apply {
+    val f = rootProject.file("keystore.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
+}
+
 android {
     namespace = "com.wdwy90.pullupmenu"
     compileSdk = 36
@@ -20,8 +26,8 @@ android {
         applicationId = "com.wdwy90.pullupmenu"
         minSdk = 29
         targetSdk = 36
-        versionCode = 2
-        versionName = "1.1"
+        versionCode = 3
+        versionName = "1.2"
         buildConfigField(
             "String", "PLACES_API_KEY",
             "\"${localProps.getProperty("PLACES_API_KEY", System.getenv("PLACES_API_KEY") ?: "")}\""
@@ -33,10 +39,21 @@ android {
     // chain_menus.json is shared with the iOS app.
     sourceSets["main"].assets.srcDir("../../shared")
 
+    signingConfigs {
+        if (keystoreProps.getProperty("storeFile") != null) {
+            create("upload") {
+                storeFile = rootProject.file(keystoreProps.getProperty("storeFile"))
+                storePassword = keystoreProps.getProperty("storePassword")
+                keyAlias = keystoreProps.getProperty("keyAlias")
+                keyPassword = keystoreProps.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.findByName("upload") ?: signingConfigs.getByName("debug")
         }
     }
 
