@@ -1,0 +1,63 @@
+# Generate the Xcode project with:  brew install xcodegen && xcodegen generate
+name: PullUpMenu
+options:
+  deploymentTarget:
+    iOS: "18.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    # Set to your Apple Developer Team ID (Xcode → Settings → Accounts) before running on a phone.
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+packages:
+  PullUpCore:
+    path: PullUpCore
+targets:
+  PullUpMenu:
+    type: application
+    platform: iOS
+    sources:
+      - App
+      - Shared
+      - path: ../shared/chain_menus.json
+        buildPhase: resources
+    dependencies:
+      - package: PullUpCore
+      - target: PullUpWidget
+    settings:
+      base:
+        # Bundle IDs must be unique to your Apple account; change "wdwy90" if signing fails.
+        PRODUCT_BUNDLE_IDENTIFIER: com.wdwy90.pullupmenu
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        TARGETED_DEVICE_FAMILY: "1"
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: Pull Up Menu
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        UIBackgroundModes: [location]
+        NSSupportsLiveActivities: true
+        NSLocationWhenInUseUsageDescription: Pull Up Menu uses your location to notice when you're in a fast-food drive-thru line.
+        NSLocationAlwaysAndWhenInUseUsageDescription: “Always” lets Pull Up Menu start watching automatically when CarPlay connects.
+  PullUpWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - Widget
+      - Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.wdwy90.pullupmenu.widget
+        TARGETED_DEVICE_FAMILY: "1"
+    info:
+      path: Widget/Info.plist
+      properties:
+        CFBundleDisplayName: Pull Up Menu
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
