@@ -1,6 +1,0 @@
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
-        <shape android:shape="oval"><solid android:color="#D84315" /></shape>
-    </item>
-    <item android:drawable="@drawable/ic_menu" android:inset="22%" />
-</layer-list>
