@@ -12,7 +12,7 @@ jobs:
       run:
         working-directory: pullup-menu/ios
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Core logic tests
         run: swift test --package-path PullUpCore
       - name: Generate Xcode project
