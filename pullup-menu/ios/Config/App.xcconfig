@@ -1,0 +1,4 @@
+// Settings for the PullUpMenu app target.
+// Leave PLACES_API_KEY empty here; set it in Secrets.xcconfig (ignored by git) to build the key in.
+PLACES_API_KEY =
+#include? "Secrets.xcconfig"

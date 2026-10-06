@@ -14,20 +14,26 @@ struct ContentView: View {
         NavigationStack {
             Form {
                 Section {
-                    Text("Get in line at a fast-food drive-thru. After about 15 seconds the menu pops up here, and the restaurant shows on your Lock Screen and CarPlay Dashboard.")
+                    Text("Get in line at a fast-food drive-thru. After about 20 seconds the menu pops up here, and the restaurant shows on your Lock Screen and CarPlay Dashboard.")
                         .font(.callout)
+                    Button("Try a demo") {
+                        store.showDemo()
+                        if case let .found(r, _) = store.state { presented = r }
+                    }
                 }
 
-                Section("1. Google Places API key") {
-                    TextField("AIza…", text: $keyDraft)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                        .font(.system(.body, design: .monospaced))
-                    Button("Save key") { store.apiKey = keyDraft }
-                        .disabled(keyDraft == store.apiKey)
+                if !store.hasBuiltInKey {
+                    Section("Google Places API key") {
+                        TextField("AIza…", text: $keyDraft)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled()
+                            .font(.system(.body, design: .monospaced))
+                        Button("Save key") { store.apiKey = keyDraft }
+                            .disabled(keyDraft == store.apiKey)
+                    }
                 }
 
-                Section("2. Permissions") {
+                Section("Permissions") {
                     LabeledContent("Location", value: permissions.locationLabel)
                     if permissions.location == .notDetermined {
                         Button("Allow location") { permissions.requestWhenInUse() }
@@ -38,7 +44,7 @@ struct ContentView: View {
                 }
 
                 Section {
-                    Toggle("Watch for drive-thrus", isOn: Binding(
+                    Toggle("Auto-detect drive-thrus", isOn: Binding(
                         get: { store.isWatching },
                         set: { $0 ? store.startWatching() : store.stopWatching() }
                     ))
@@ -48,13 +54,13 @@ struct ContentView: View {
                         Button("Show \(r.name) menu") { presented = r }
                     }
                 } header: {
-                    Text("3. Use it")
+                    Text("Use it")
                 } footer: {
                     Text("To start automatically in the car: Shortcuts app → Automation → New → CarPlay → Connects → Run Immediately → “Start watching”. Add a second automation for Disconnects → “Stop watching”.")
                 }
             }
             .navigationTitle("Pull Up Menu")
-            .onAppear { keyDraft = store.apiKey }
+            .onAppear { if !store.hasBuiltInKey { keyDraft = store.apiKey } }
             .onReceive(store.$state) { s in
                 if case let .found(r, _) = s, r.id != lastPresentedId {
                     lastPresentedId = r.id
@@ -72,7 +78,7 @@ struct ContentView: View {
         case .idle: return store.isWatching ? "Watching…" : "Ready."
         case .searching: return "Looking up where you are…"
         case let .found(r, _): return "You're at \(r.name)."
-        case .nothingNearby: return "No fast food within \(Int(store.radiusMeters)) m."
+        case .nothingNearby: return "No fast food within \(Int(store.radiusMeters * 3.281)) ft."
         case let .error(msg): return msg
         }
     }

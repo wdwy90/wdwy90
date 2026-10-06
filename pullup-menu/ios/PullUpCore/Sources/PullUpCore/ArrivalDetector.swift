@@ -23,7 +23,7 @@ public struct ArrivalDetector {
     private var stoppedSince: TimeInterval?
     private var lastLookup: (lat: Double, lng: Double)?
 
-    public init(stopSpeedMps: Double = 3.0, dwellSeconds: TimeInterval = 15, minMoveBetweenLookupsM: Double = 100) {
+    public init(stopSpeedMps: Double = 3.0, dwellSeconds: TimeInterval = 20, minMoveBetweenLookupsM: Double = 100) {
         self.stopSpeedMps = stopSpeedMps
         self.dwellSeconds = dwellSeconds
         self.minMoveBetweenLookupsM = minMoveBetweenLookupsM
@@ -45,11 +45,20 @@ public struct ArrivalDetector {
         stoppedSince = since
         if s.time - since < dwellSeconds { return false }
 
-        if let l = lastLookup, Geo.distanceMeters(l.lat, l.lng, s.lat, s.lng) < minMoveBetweenLookupsM {
-            return false
-        }
-        lastLookup = (s.lat, s.lng)
+        if wasLookedUpNear(lat: s.lat, lng: s.lng) { return false }
+        markLookedUp(lat: s.lat, lng: s.lng)
         return true
+    }
+
+    /// Record a lookup made elsewhere (manual check) so this spot isn't looked up again.
+    public mutating func markLookedUp(lat: Double, lng: Double) {
+        lastLookup = (lat, lng)
+    }
+
+    /// True if the last lookup was within `minMoveBetweenLookupsM` of this spot.
+    public func wasLookedUpNear(lat: Double, lng: Double) -> Bool {
+        guard let l = lastLookup else { return false }
+        return Geo.distanceMeters(l.lat, l.lng, lat, lng) < minMoveBetweenLookupsM
     }
 
     /// Forget the last lookup spot so the next stop triggers a fresh lookup.

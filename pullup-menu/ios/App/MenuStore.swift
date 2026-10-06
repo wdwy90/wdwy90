@@ -19,21 +19,37 @@ final class MenuStore: ObservableObject {
     @Published private(set) var state: State = .idle
     @Published private(set) var isWatching = false
 
-    /// How close (meters) the restaurant must be; covers a drive-thru lane wrapping the building.
-    let radiusMeters = 60.0
+    /// How close (meters) the restaurant must be; matches the Android app.
+    let radiusMeters = 45.0
 
-    private lazy var watcher = LocationWatcher { [weak self] lat, lng in
-        Task { await self?.lookup(lat: lat, lng: lng) }
-    }
+    private lazy var watcher = LocationWatcher(
+        onArrival: { [weak self] lat, lng in
+            Task { await self?.lookup(lat: lat, lng: lng) }
+        },
+        onFalseAlarm: { [weak self] in self?.falseAlarm() }
+    )
 
     private let chainMenus: ChainMenus? = Bundle.main.url(forResource: "chain_menus", withExtension: "json")
         .flatMap { try? Data(contentsOf: $0) }
         .flatMap { try? ChainMenus(json: $0) }
 
+    private let itemLists: ChainItemLists? = Bundle.main.url(forResource: "chain_prices", withExtension: "json")
+        .flatMap { try? Data(contentsOf: $0) }
+        .flatMap { try? ChainItemLists(json: $0) }
+
+    /// Key built into the app (PLACES_API_KEY build setting), or empty.
+    let builtInKey = (Bundle.main.object(forInfoDictionaryKey: "PlacesApiKey") as? String)?
+        .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+
+    var hasBuiltInKey: Bool { !builtInKey.isEmpty }
+
+    /// A key pasted in the app wins over the built-in one.
     var apiKey: String {
-        get { UserDefaults.standard.string(forKey: "placesApiKey") ?? "" }
+        get { UserDefaults.standard.string(forKey: "placesApiKey").flatMap { $0.isEmpty ? nil : $0 } ?? builtInKey }
         set { UserDefaults.standard.set(newValue.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "placesApiKey") }
     }
+
+    private var client: PlacesClient { PlacesClient(apiKey: apiKey, bundleId: Bundle.main.bundleIdentifier) }
 
     private let locationManager = CLLocationManager()
 
@@ -68,7 +84,7 @@ final class MenuStore: ObservableObject {
                 state = .error("Couldn't get your location.")
                 return
             }
-            watcher.resetDetector()
+            watcher.markLookedUp(loc)
             await lookup(lat: loc.coordinate.latitude, lng: loc.coordinate.longitude)
         }
     }
@@ -80,13 +96,9 @@ final class MenuStore: ObservableObject {
         }
         state = .searching
         do {
-            let results = try await PlacesClient(apiKey: apiKey)
+            let results = try await client
                 .nearbyFastFood(lat: lat, lng: lng, radiusM: radiusMeters)
-                .map { r -> Restaurant in
-                    var r = r
-                    r.menuUrl = chainMenus?.menuUrl(for: r.name)
-                    return r
-                }
+                .map(withChainInfo)
             if let first = results.first {
                 show(first, others: Array(results.dropFirst()), alert: true)
             } else {
@@ -107,14 +119,39 @@ final class MenuStore: ObservableObject {
     }
 
     func photoURL(_ photoName: String, maxWidthPx: Int = 1200) -> URL? {
-        PlacesClient(apiKey: apiKey).photoURL(photoName, maxWidthPx: maxWidthPx)
+        client.photoURL(photoName, maxWidthPx: maxWidthPx)
+    }
+
+    /// Shows a sample restaurant without driving or a location fix.
+    func showDemo() {
+        let chain = itemLists?.demoChainName ?? "McDonald's"
+        let r = withChainInfo(Restaurant(
+            id: "demo", name: "\(chain) (demo)", address: "Sample restaurant",
+            lat: 0, lng: 0, rating: nil, category: "Fast Food Restaurant", photos: [],
+            websiteUri: nil, mapsUri: nil))
+        show(r, others: [], alert: false)
+    }
+
+    private func withChainInfo(_ r: Restaurant) -> Restaurant {
+        var r = r
+        r.menuUrl = chainMenus?.menuUrl(for: r.name)
+        r.items = itemLists?.list(for: r.name)
+        return r
+    }
+
+    /// The car drove off quickly after an automatic match: it was a red light, not a drive-thru.
+    private func falseAlarm() {
+        guard case .found = state else { return }
+        state = .idle
+        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ["arrival"])
+        Task { await LiveActivityManager.update(DriveThruAttributes.watching, alert: false) }
     }
 
     private func show(_ r: Restaurant, others: [Restaurant], alert: Bool) {
         state = .found(r, others: others)
         let detail = [
             r.rating.map { String(format: "★ %.1f", $0) },
-            r.menuUrl != nil ? "Full menu on iPhone" : "Photos on iPhone",
+            r.items != nil ? "Menu items on iPhone" : r.menuUrl != nil ? "Menu on iPhone" : "Photos on iPhone",
         ].compactMap { $0 }.joined(separator: " · ")
         Task {
             await LiveActivityManager.update(.init(phase: .found, title: r.name, detail: detail), alert: alert)
@@ -125,7 +162,7 @@ final class MenuStore: ObservableObject {
     private func notify(_ r: Restaurant) {
         let content = UNMutableNotificationContent()
         content.title = "You're at \(r.name)"
-        content.body = r.menuUrl != nil ? "Tap for the full menu" : "Tap to see menu photos"
+        content.body = r.items != nil || r.menuUrl != nil ? "Tap for the menu" : "Tap to see photos"
         content.sound = .default
         UNUserNotificationCenter.current().add(
             UNNotificationRequest(identifier: "arrival", content: content, trigger: nil))

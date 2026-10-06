@@ -19,7 +19,9 @@ public struct PlacesClient: Sendable {
         "places.websiteUri,places.googleMapsUri"
 
     let apiKey: String
-    public init(apiKey: String) { self.apiKey = apiKey }
+    /// Sent as X-Ios-Bundle-Identifier so the key can be restricted to this app in Google Cloud.
+    let bundleId: String?
+    public init(apiKey: String, bundleId: String? = nil) { self.apiKey = apiKey; self.bundleId = bundleId }
 
     public func nearbyFastFood(lat: Double, lng: Double, radiusM: Double) async throws -> [Restaurant] {
         var req = URLRequest(url: URL(string: "\(Self.base)/places:searchNearby")!)
@@ -28,6 +30,7 @@ public struct PlacesClient: Sendable {
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.setValue(apiKey, forHTTPHeaderField: "X-Goog-Api-Key")
         req.setValue(Self.fieldMask, forHTTPHeaderField: "X-Goog-FieldMask")
+        if let bundleId { req.setValue(bundleId, forHTTPHeaderField: "X-Ios-Bundle-Identifier") }
         let body: [String: Any] = [
             "includedTypes": Self.foodTypes,
             "maxResultCount": 10,
