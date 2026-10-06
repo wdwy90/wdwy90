@@ -16,8 +16,9 @@ class ChainMenusTest {
         assertEquals("https://www.in-n-out.com/menu", menus.menuUrlFor("In-N-Out Burger"))
         assertEquals("https://www.carlsjr.com/full-menu", menus.menuUrlFor("Carl's Jr."))
         assertEquals("https://www.sonicdrivein.com/menu/", menus.menuUrlFor("Sonic Drive-In"))
-        assertEquals("https://www.tacobell.com/food", menus.menuUrlFor("Taco Bell Cantina"))
-        assertEquals("https://checkersandrallys.com/menu", menus.menuUrlFor("Rally's"))
+        assertEquals("https://www.tacobell.com/food/best-sellers", menus.menuUrlFor("Taco Bell Cantina"))
+        assertEquals("https://web.checkersandrallys.com/menu/", menus.menuUrlFor("Rally's"))
+        assertEquals("https://order.wendys.com/us/en/national/menu", menus.menuUrlFor("Wendy's"))
     }
 
     @Test fun wholeWordsOnly() {

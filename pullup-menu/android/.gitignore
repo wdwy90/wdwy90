@@ -8,3 +8,5 @@ captures/
 *.apk
 keystore.properties
 release-upload/
+*.jks
+*.aab

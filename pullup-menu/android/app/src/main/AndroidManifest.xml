@@ -29,6 +29,27 @@
             android:exported="false"
             android:launchMode="singleTop" />
 
+        <!-- Widget trampoline with no UI: starts or stops phone watching while it is the visible activity. -->
+        <activity
+            android:name=".phone.StartWatchingActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <receiver
+            android:name=".phone.DriveWidget"
+            android:exported="true"
+            android:label="@string/widget_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/drive_widget_info" />
+        </receiver>
+
         <service
             android:name=".phone.ArrivalService"
             android:exported="false"

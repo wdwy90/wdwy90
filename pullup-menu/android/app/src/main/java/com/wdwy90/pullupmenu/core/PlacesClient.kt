@@ -11,8 +11,14 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
 
-/** Thin client for Google Places API (New). */
-class PlacesClient(private val apiKey: String) {
+/**
+ * Thin client for Google Places API (New). [identityHeaders] (X-Android-Package, X-Android-Cert,
+ * see [AppIdentity]) let the API key be restricted to this app.
+ */
+class PlacesClient(
+    private val apiKey: String,
+    private val identityHeaders: Map<String, String> = emptyMap(),
+) {
 
     suspend fun nearbyRestaurants(lat: Double, lng: Double, radiusM: Double): List<Restaurant> =
         withContext(Dispatchers.IO) {
@@ -35,6 +41,7 @@ class PlacesClient(private val apiKey: String) {
                 setRequestProperty("Content-Type", "application/json")
                 setRequestProperty("X-Goog-Api-Key", apiKey)
                 setRequestProperty("X-Goog-FieldMask", FIELD_MASK)
+                identityHeaders.forEach { (k, v) -> setRequestProperty(k, v) }
             }
             try {
                 conn.outputStream.use { it.write(body.toString().toByteArray()) }
@@ -56,6 +63,7 @@ class PlacesClient(private val apiKey: String) {
             connectTimeout = 10_000
             readTimeout = 15_000
             instanceFollowRedirects = true
+            identityHeaders.forEach { (k, v) -> setRequestProperty(k, v) }
         }
         try {
             if (conn.responseCode !in 200..299) null

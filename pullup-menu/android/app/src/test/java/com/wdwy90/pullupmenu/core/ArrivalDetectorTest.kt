@@ -41,13 +41,36 @@ class ArrivalDetectorTest {
     }
 
     @Test fun driveThruCreepCountsAsStopped() {
-        val d = ArrivalDetector() // defaults: <3 m/s for 15 s
+        val d = ArrivalDetector() // defaults: <3 m/s for 20 s
         assertFalse(d.onSample(ArrivalDetector.Sample(lat, lng, 0, 0.0)))
         assertFalse(d.onSample(ArrivalDetector.Sample(lat, lng, 8_000, 2.5))) // pull forward one car
-        assertTrue(d.onSample(ArrivalDetector.Sample(lat, lng, 15_000, 0.0)))
+        assertFalse(d.onSample(ArrivalDetector.Sample(lat, lng, 15_000, 0.0))) // 15 s is not enough now
+        assertTrue(d.onSample(ArrivalDetector.Sample(lat, lng, 20_000, 0.0)))
+    }
+
+    @Test fun markLookedUpSkipsThatSpot() {
+        val d = ArrivalDetector(dwellMs = 0)
+        d.markLookedUp(lat, lng)
+        assertTrue(d.wasLookedUpNear(lat + 0.0005, lng)) // ~55 m away
+        assertFalse(d.onSample(ArrivalDetector.Sample(lat, lng, 0, 0.0)))
+        assertTrue(d.onSample(ArrivalDetector.Sample(lat + 0.01, lng, 5_000, 0.0)))
     }
 
     @Test fun haversine() {
         assertEquals(111_195.0, Geo.distanceMeters(0.0, 0.0, 1.0, 0.0), 50.0)
+    }
+
+    @Test fun resetForgetsLastLookup() {
+        val d = ArrivalDetector(dwellMs = 0)
+        d.markLookedUp(lat, lng)
+        d.reset()
+        assertFalse(d.wasLookedUpNear(lat, lng))
+        assertTrue(d.onSample(ArrivalDetector.Sample(lat, lng, 0, 0.0)))
+    }
+
+    @Test fun lookedUpNearEndsAt100m() {
+        val d = ArrivalDetector(dwellMs = 0)
+        d.markLookedUp(lat, lng)
+        assertFalse(d.wasLookedUpNear(lat + 0.001, lng)) // ~111 m away
     }
 }

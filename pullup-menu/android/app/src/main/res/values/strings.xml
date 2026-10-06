@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Pull Up Menu</string>
+
+    <!-- Google Maps Platform attribution. Never translate, abbreviate or wrap it. -->
+    <string name="google_maps" translatable="false">Google Maps</string>
+
+    <!-- Home-screen widget -->
+    <string name="widget_name">Drive-thru watch</string>
+    <string name="widget_description">Tap to start or stop watching for drive-thrus on this phone. It stops by itself after 15 minutes parked.</string>
+    <string name="widget_idle">Watch for drive-thrus</string>
+    <string name="widget_watching">Watching · tap to stop</string>
 </resources>

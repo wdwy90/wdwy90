@@ -1,0 +1,557 @@
+{
+  "_comment": "Typical prices for fast-food chains, taken only from each chain's own advertised or official prices (company sites and press releases). Real prices vary by location, are often higher in AK, CA, HI and on delivery apps, and deals can end. The apps always show them with that disclaimer. Each item keeps its source (url, date, quote) for checking. 'match' works like chain_menus.json.",
+  "checked": "Oct 6, 2026",
+  "chains": [
+    {
+      "chain": "McDonald's",
+      "match": [
+        "mcdonalds"
+      ],
+      "sourceName": "corporate.mcdonalds.com",
+      "sourceUrl": "https://corporate.mcdonalds.com/corpmcd/our-stories/article/mcdolands-usa-introduces-mcvalue.html",
+      "items": [
+        {
+          "name": "McChicken® Meal Deal",
+          "price": "$5",
+          "note": "With 4-pc McNuggets, small fries and small drink",
+          "source": {
+            "url": "https://corporate.mcdonalds.com/corpmcd/our-stories/article/mcdolands-usa-introduces-mcvalue.html",
+            "date": "2026-04-02",
+            "quote": "Fans can continue to see Meal Deals beyond breakfast with the option to choose a McChicken® Meal Deal for $5 or a McDouble® Meal Deal for $6 – each comes with 4-Piece McNuggets®, small Fries and a small Soft Drink."
+          }
+        },
+        {
+          "name": "McDouble® Meal Deal",
+          "price": "$6",
+          "note": "With 4-pc McNuggets, small fries and small drink",
+          "source": {
+            "url": "https://corporate.mcdonalds.com/corpmcd/our-stories/article/mcdolands-usa-introduces-mcvalue.html",
+            "date": "2026-04-02",
+            "quote": "Fans can continue to see Meal Deals beyond breakfast with the option to choose a McChicken® Meal Deal for $5 or a McDouble® Meal Deal for $6 – each comes with 4-Piece McNuggets®, small Fries and a small Soft Drink."
+          }
+        },
+        {
+          "name": "$4 Breakfast Meal Deal",
+          "price": "$4",
+          "note": "Sausage McMuffin or Sausage Biscuit, hash browns, small coffee",
+          "source": {
+            "url": "https://corporate.mcdonalds.com/corpmcd/our-stories/article/mcdolands-usa-introduces-mcvalue.html",
+            "date": "2026-04-02",
+            "quote": "Fans can choose a Sausage McMuffin® or Sausage Biscuit, served with Hash Browns and a small McCafé Premium Roast Coffee – all for just $4."
+          }
+        },
+        {
+          "name": "McChicken, McDouble, 4-pc McNuggets, small fries",
+          "price": "$2.99 or less",
+          "note": "Each, on the under $3 menu",
+          "source": {
+            "url": "https://corporate.mcdonalds.com/corpmcd/our-stories/article/mcdolands-usa-introduces-mcvalue.html",
+            "date": "2026-04-02",
+            "quote": "Come lunch or dinner, that same under-$3 value extends to the McChicken®, McDouble®, 4-Piece Chicken McNuggets®, small Fries, and a medium Soft Drink."
+          }
+        },
+        {
+          "name": "Sausage McMuffin, Sausage Biscuit, Hash Browns",
+          "price": "$2.99 or less",
+          "note": "Each, on the under $3 breakfast menu",
+          "source": {
+            "url": "https://corporate.mcdonalds.com/corpmcd/our-stories/article/mcdolands-usa-introduces-mcvalue.html",
+            "date": "2026-04-02",
+            "quote": "For breakfast, start the day with under $3 classics like the Sausage McMuffin®, Sausage Biscuit, Sausage Burrito, Hash Browns, or a medium McCafé Premium Roast Coffee."
+          }
+        }
+      ]
+    },
+    {
+      "chain": "Burger King",
+      "match": [
+        "burger king"
+      ],
+      "sourceName": "news.bk.com",
+      "sourceUrl": "https://news.bk.com/blog-posts/burger-king-r-brings-back-fan-favorite-crown-nuggets-just-in-time-for-summer",
+      "items": [
+        {
+          "name": "King Jr. Meal",
+          "price": "$3.99",
+          "note": "Kids meal with a side and drink",
+          "source": {
+            "url": "https://news.bk.com/blog-posts/burger-king-r-brings-back-fan-favorite-crown-nuggets-just-in-time-for-summer",
+            "date": "2026-05-26",
+            "quote": "Crown Nuggets are available for the $3.99 King Jr. Meal, which also comes with a side and drink."
+          }
+        }
+      ]
+    },
+    {
+      "chain": "Wendy's",
+      "match": [
+        "wendys"
+      ],
+      "sourceName": "irwendys.com",
+      "sourceUrl": "https://www.irwendys.com/news/news-details/2026/Wendys-Introduces-New-Biggie-Deals-Menu-starting-at-4/",
+      "items": [
+        {
+          "name": "$4 Biggie® Bites",
+          "price": "$4",
+          "note": "Pick one, like a Jr. Cheeseburger, plus nuggets, Jr. Fry or a small drink",
+          "source": {
+            "url": "https://www.irwendys.com/news/news-details/2026/Wendys-Introduces-New-Biggie-Deals-Menu-starting-at-4/",
+            "date": "2026-01-14",
+            "quote": "$4 Biggie® Bites: Choose One: Crispy Chicken Sandwich, Jr. Cheeseburger, Jr. Bacon Cheeseburger, 4pc. Nuggets, or Jr. Fry ... Choose A Second: 4pc. Nuggets, Jr. Fry, or Small Soft Drink"
+          }
+        },
+        {
+          "name": "$6 Biggie Bag®",
+          "price": "$6",
+          "note": "Sandwich, 4-pc nuggets, Jr. Fry and small drink",
+          "source": {
+            "url": "https://www.irwendys.com/news/news-details/2026/Wendys-Introduces-New-Biggie-Deals-Menu-starting-at-4/",
+            "date": "2026-01-14",
+            "quote": "$6 Biggie Bag®: Choose One: Crispy Chicken Sandwich, Jr. Cheeseburger, Jr. Bacon Cheeseburger, or Double Stack™ ... Includes: 4pc. Nuggets, Jr. Fry, Small Soft Drink"
+          }
+        },
+        {
+          "name": "$8 Biggie® Bundle",
+          "price": "$8",
+          "note": "2 sandwiches, Jr. Fry and small drink",
+          "source": {
+            "url": "https://www.irwendys.com/news/news-details/2026/Wendys-Introduces-New-Biggie-Deals-Menu-starting-at-4/",
+            "date": "2026-01-14",
+            "quote": "$8 Biggie® Bundle: Choose Two: Crispy Chicken Sandwich, Jr. Cheeseburger, Jr. Bacon Cheeseburger, or Double Stack™ ... Includes: Jr. Fry, Small Soft Drink"
+          }
+        }
+      ]
+    },
+    {
+      "chain": "Taco Bell",
+      "match": [
+        "taco bell"
+      ],
+      "sourceName": "tacobell.com",
+      "sourceUrl": "https://www.tacobell.com/newsroom/taco-bell-launches-the-new-luxe-value-menu",
+      "items": [
+        {
+          "name": "Cheesy Double Beef Burrito",
+          "price": "$2.79",
+          "note": "Luxe Value Menu",
+          "source": {
+            "url": "https://www.tacobell.com/newsroom/taco-bell-launches-the-new-luxe-value-menu",
+            "date": "2026-01-13",
+            "quote": "Cheesy Double Beef Burrito – $2.79*"
+          }
+        },
+        {
+          "name": "Avocado Ranch Chicken Stacker",
+          "price": "$2.99",
+          "note": "Luxe Value Menu",
+          "source": {
+            "url": "https://www.tacobell.com/newsroom/taco-bell-launches-the-new-luxe-value-menu",
+            "date": "2026-01-13",
+            "quote": "Avocado Ranch Chicken Stacker – $2.99*"
+          }
+        },
+        {
+          "name": "Cheesy Bean and Rice Burrito",
+          "price": "$1.49",
+          "note": "Luxe Value Menu",
+          "source": {
+            "url": "https://www.tacobell.com/newsroom/taco-bell-launches-the-new-luxe-value-menu",
+            "date": "2026-01-13",
+            "quote": "Cheesy Bean and Rice Burrito – $1.49*"
+          }
+        },
+        {
+          "name": "Spicy Potato Soft Taco",
+          "price": "$1.29",
+          "note": "Luxe Value Menu",
+          "source": {
+            "url": "https://www.tacobell.com/newsroom/taco-bell-launches-the-new-luxe-value-menu",
+            "date": "2026-01-13",
+            "quote": "Spicy Potato Soft Taco – $1.29*"
+          }
+        },
+        {
+          "name": "$5 Classic Luxe Box",
+          "price": "$5",
+          "note": "Beefy 5-Layer Burrito, Crunchy Taco, Cinnamon Twists, drink",
+          "source": {
+            "url": "https://www.tacobell.com/promotions/luxe-cravings-boxes",
+            "date": "live page checked 2026-10-06",
+            "quote": "$5 Classic Luxe Box - Get the $5 Classic Box with a Beefy 5-Layer Burrito, Crunchy Taco, Cinnamon Twists, and a Medium Fountain Drink."
+          }
+        },
+        {
+          "name": "$7 Supreme Luxe Box",
+          "price": "$7",
+          "note": "Adds a Chicken Chalupa Supreme to the Classic Box",
+          "source": {
+            "url": "https://www.tacobell.com/promotions/luxe-cravings-boxes",
+            "date": "live page checked 2026-10-06",
+            "quote": "$7 supreme Luxe Box - Get a Chicken Chalupa Supreme, Beefy 5-Layer Burrito, Crunchy Taco, Cinnamon Twists, and a Medium Fountain Drink."
+          }
+        }
+      ]
+    },
+    {
+      "chain": "Popeyes",
+      "match": [
+        "popeyes"
+      ],
+      "sourceName": "prnewswire.com",
+      "sourceUrl": "https://www.prnewswire.com/news-releases/back-for-good-popeyes-makes-fan-favorite-chicken-wraps-a-permanent-menu-offering-and-debuts-new-blackened-ranch-flavor-302760814.html",
+      "items": [
+        {
+          "name": "Chicken Wrap",
+          "price": "$3.99",
+          "note": "Classic, Spicy or Blackened Ranch",
+          "source": {
+            "url": "https://www.prnewswire.com/news-releases/back-for-good-popeyes-makes-fan-favorite-chicken-wraps-a-permanent-menu-offering-and-debuts-new-blackened-ranch-flavor-302760814.html",
+            "date": "2026-05-04",
+            "quote": "At just $3.99, Popeyes Chicken Wraps bring big flavor with even more value"
+          }
+        },
+        {
+          "name": "Chicken Wraps Bundle",
+          "price": "$9.99",
+          "note": "2 wraps and a premium lemonade",
+          "source": {
+            "url": "https://www.prnewswire.com/news-releases/back-for-good-popeyes-makes-fan-favorite-chicken-wraps-a-permanent-menu-offering-and-debuts-new-blackened-ranch-flavor-302760814.html",
+            "date": "2026-05-04",
+            "quote": "guests can turn their wrap into a meal with Popeyes Chicken Wraps Bundle featuring two Wraps and a premium lemonade, offering the perfect combo of flavor and value for just $9.99.*"
+          }
+        },
+        {
+          "name": "Honey Chicken Biscuit",
+          "price": "$5",
+          "source": {
+            "url": "https://www.prnewswire.com/news-releases/born-from-bold-flavor-popeyes-announces-their-latest-sandwich-innovation-with-the-new-honey-chicken-biscuit-302890581.html",
+            "date": "2026-09-28",
+            "quote": "The new Honey Chicken Biscuit will be available at participating Popeyes restaurants, the Popeyes app, and Popeyes.com nationwide beginning September 28 for $5.*"
+          }
+        }
+      ]
+    },
+    {
+      "chain": "KFC",
+      "match": [
+        "kfc",
+        "kentucky fried chicken"
+      ],
+      "sourceName": "prnewswire.com",
+      "sourceUrl": "https://www.prnewswire.com/news-releases/kfc-has-an-answer-to-the-value-wars-a-value-feast-fit-for-the-moment-302728926.html",
+      "items": [
+        {
+          "name": "Go Bucket",
+          "price": "$3.49",
+          "note": "Starting price. Nuggets, wings or a tender with fries",
+          "source": {
+            "url": "https://www.prnewswire.com/news-releases/kfc-puts-a-snackable-spin-on-its-iconic-bucket-with-3-49-go-buckets-302898773.html",
+            "date": "2026-10-05",
+            "quote": "Designed for on-the-go occasions, Go Buckets pair a choice of KFC chicken with fries or wedges, starting at just $3.49."
+          }
+        },
+        {
+          "name": "$5 Bowls",
+          "price": "$5",
+          "note": "Mac & Cheese Bowl, Mashed Potato Bowl and more",
+          "source": {
+            "url": "https://www.nasdaq.com/press-release/kfcr-giving-your-january-food-choices-glow-comfort-first-value-lineup-2026-01-06",
+            "date": "2026-01-06",
+            "quote": "five $5 Bowls that perfectly balance comfort and value, including the return of the fan favorite Mac & Cheese Bowl"
+          }
+        },
+        {
+          "name": "$7 Box Feast",
+          "price": "$7",
+          "note": "Snacker, 5-pc nuggets, fries, medium drink",
+          "source": {
+            "url": "https://www.prnewswire.com/news-releases/kfc-has-an-answer-to-the-value-wars-a-value-feast-fit-for-the-moment-302728926.html",
+            "date": "2026-03-30",
+            "quote": "$7 Box Feast: 1 KFC Snacker, 5pc Nuggets, 3oz Fries, Medium Drink"
+          }
+        },
+        {
+          "name": "$11 Box Feast",
+          "price": "$11",
+          "note": "Chicken sandwich, 2 tenders, fries, medium drink",
+          "source": {
+            "url": "https://www.prnewswire.com/news-releases/kfc-has-an-answer-to-the-value-wars-a-value-feast-fit-for-the-moment-302728926.html",
+            "date": "2026-03-30",
+            "quote": "$11 Box Feast: 1 Chicken Sandwich, 2 Tenders, 3oz Fries, Medium Drink"
+          }
+        },
+        {
+          "name": "Bucket of the Day",
+          "price": "$10",
+          "note": "A different bucket each weekday",
+          "source": {
+            "url": "https://www.prnewswire.com/news-releases/kfc-expands-10-tuesday-into-a-weekday-bucket-lineup-introduces-two-new-sauces-302761613.html",
+            "date": "2026-05-04",
+            "quote": "With four different bucket meals all priced at just $10, including the nuggets bucket returning Friday to round out the week, the lineup delivers unbeatable value worth jumping on while it lasts."
+          }
+        }
+      ]
+    },
+    {
+      "chain": "Checkers",
+      "match": [
+        "checkers",
+        "rallys"
+      ],
+      "sourceName": "checkersandrallys.com",
+      "sourceUrl": "https://checkersandrallys.com/",
+      "items": [
+        {
+          "name": "Unbeatable Meal Deal",
+          "price": "$4.00",
+          "note": "Starting price",
+          "source": {
+            "url": "https://checkersandrallys.com/",
+            "date": "live page checked 2026-10-06",
+            "quote": "Unbeatable Meal Deal - Classic Burger ... $4.00+"
+          }
+        },
+        {
+          "name": "Flava Max Double Burger",
+          "price": "$3.49",
+          "note": "Starting price",
+          "source": {
+            "url": "https://checkersandrallys.com/",
+            "date": "live page checked 2026-10-06",
+            "quote": "Flava Max Double Burger ... $3.49+"
+          }
+        },
+        {
+          "name": "Famous Seasoned Fries",
+          "price": "$3.49",
+          "note": "Starting price",
+          "source": {
+            "url": "https://checkersandrallys.com/",
+            "date": "live page checked 2026-10-06",
+            "quote": "Famous Seasoned Fries ... $3.49+"
+          }
+        },
+        {
+          "name": "5 Piece Classic Wings",
+          "price": "$5.00",
+          "source": {
+            "url": "https://checkersandrallys.com/",
+            "date": "live page checked 2026-10-06",
+            "quote": "5 Piece Classic Wings ... $5.00"
+          }
+        },
+        {
+          "name": "Big Buford®",
+          "price": "$6.79",
+          "note": "Starting price",
+          "source": {
+            "url": "https://checkersandrallys.com/",
+            "date": "live page checked 2026-10-06",
+            "quote": "Big Buford® ... $6.79+"
+          }
+        },
+        {
+          "name": "Big Buford® Combo",
+          "price": "$10.19",
+          "note": "Starting price. With fries and a drink",
+          "source": {
+            "url": "https://checkersandrallys.com/",
+            "date": "live page checked 2026-10-06",
+            "quote": "Big Buford® Combo ... $10.19+"
+          }
+        }
+      ]
+    },
+    {
+      "chain": "Arby's",
+      "match": [
+        "arbys"
+      ],
+      "sourceName": "stories.inspirebrands.com",
+      "sourceUrl": "https://stories.inspirebrands.com/arbys-new-buffalo-ranch-chicken-sandwich/",
+      "items": [
+        {
+          "name": "Meat & 3 Value Box",
+          "price": "$7.99",
+          "note": "Value meal",
+          "source": {
+            "url": "https://stories.inspirebrands.com/arbys-new-buffalo-ranch-chicken-sandwich/",
+            "date": "2026-08-03",
+            "quote": "Beginning today, Arby's is adding the new Buffalo Ranch Chicken Sandwich to the lineup, giving guests a satisfying new entrée option in the $7.99 value meal."
+          }
+        },
+        {
+          "name": "Sliders",
+          "price": "$1.99",
+          "note": "Limited time. Roast Beef, Buffalo Chicken, Crispy Chicken or Ham",
+          "source": {
+            "url": "https://stories.inspirebrands.com/arbys-1-99-slider-menu/",
+            "date": "2026-06-24",
+            "quote": "Arby's $1.99 Sliders are available for a limited time at participating locations nationwide."
+          }
+        }
+      ]
+    },
+    {
+      "chain": "Dunkin'",
+      "match": [
+        "dunkin"
+      ],
+      "sourceName": "news.dunkindonuts.com",
+      "sourceUrl": "https://news.dunkindonuts.com/news/dunkin-new-menu-september-2026",
+      "items": [
+        {
+          "name": "$6 Meal Deal",
+          "price": "$6",
+          "note": "Bacon, Egg and Cheese, hash browns, medium coffee",
+          "source": {
+            "url": "https://news.dunkindonuts.com/news/dunkin-new-menu-september-2026",
+            "date": "2026-09-30",
+            "quote": "The popular $6 Meal Deal continues to deliver value with a Bacon, Egg and Cheese Sandwich, crispy Hash Browns and a medium hot or iced coffee, all for $6.* ... No substitutions. Participation may vary. Limited time offer. Cannot be combined with other offers. Exclusions and terms apply."
+          }
+        }
+      ]
+    },
+    {
+      "chain": "Sonic",
+      "match": [
+        "sonic drivein",
+        "sonic drive in",
+        "sonic"
+      ],
+      "sourceName": "stories.inspirebrands.com",
+      "sourceUrl": "https://stories.inspirebrands.com/sonic-7-big-deal-meal/",
+      "items": [
+        {
+          "name": "$7 Big Deal Meal",
+          "price": "$7",
+          "note": "Cheeseburger, medium tots or fries, drink, vanilla sundae",
+          "source": {
+            "url": "https://stories.inspirebrands.com/sonic-7-big-deal-meal/",
+            "date": "2026-09-02",
+            "quote": "The $7 Big Deal Meal is a value meal from SONIC that includes a SONIC Cheeseburger, choice of Medium Tots or Fries, a Medium Drink and a Vanilla Sundae for just $7. ... The $7 Big Deal Meal is available now for a limited time at participating SONIC locations nationwide."
+          }
+        },
+        {
+          "name": "Jr Bacon Cheeseburger",
+          "price": "$1.99",
+          "note": "$1.99 Menu",
+          "source": {
+            "url": "https://stories.inspirebrands.com/sonic-debuts-the-7-big-deal-meal-bringing-more-of-what-guests-want-for-less/",
+            "date": "2026-06-01",
+            "quote": "The updated $1.99 Menu includes: Jr Bacon Cheeseburger, Vanilla Soft Serve Cup, Cheesy Baja Crispy Tender Wrap, Small Root Beer Float"
+          }
+        },
+        {
+          "name": "Cheesy Baja Crispy Tender Wrap",
+          "price": "$1.99",
+          "note": "$1.99 Menu",
+          "source": {
+            "url": "https://stories.inspirebrands.com/sonic-debuts-the-7-big-deal-meal-bringing-more-of-what-guests-want-for-less/",
+            "date": "2026-06-01",
+            "quote": "The updated $1.99 Menu includes: Jr Bacon Cheeseburger, Vanilla Soft Serve Cup, Cheesy Baja Crispy Tender Wrap, Small Root Beer Float"
+          }
+        },
+        {
+          "name": "Small Root Beer Float",
+          "price": "$1.99",
+          "note": "$1.99 Menu",
+          "source": {
+            "url": "https://stories.inspirebrands.com/sonic-debuts-the-7-big-deal-meal-bringing-more-of-what-guests-want-for-less/",
+            "date": "2026-06-01",
+            "quote": "The updated $1.99 Menu includes: Jr Bacon Cheeseburger, Vanilla Soft Serve Cup, Cheesy Baja Crispy Tender Wrap, Small Root Beer Float"
+          }
+        },
+        {
+          "name": "Vanilla Soft Serve Cup",
+          "price": "$1.99",
+          "note": "$1.99 Menu",
+          "source": {
+            "url": "https://stories.inspirebrands.com/sonic-debuts-the-7-big-deal-meal-bringing-more-of-what-guests-want-for-less/",
+            "date": "2026-06-01",
+            "quote": "The updated $1.99 Menu includes: Jr Bacon Cheeseburger, Vanilla Soft Serve Cup, Cheesy Baja Crispy Tender Wrap, Small Root Beer Float"
+          }
+        }
+      ]
+    },
+    {
+      "chain": "Dairy Queen",
+      "match": [
+        "dairy queen"
+      ],
+      "sourceName": "businesswire.com",
+      "sourceUrl": "https://www.businesswire.com/news/home/20260831819447/en/Dairy-Queen-Kicks-Off-Football-Season-with-%246.99-DQ-Chicken-Strip-Basket-Deal-and-NEW-MVP-Dip-Lineup",
+      "items": [
+        {
+          "name": "DQ Chicken Strip Basket",
+          "price": "$6.99",
+          "note": "4 strips, fries, drink and a dip. Limited time",
+          "source": {
+            "url": "https://www.businesswire.com/news/home/20260831819447/en/Dairy-Queen-Kicks-Off-Football-Season-with-%246.99-DQ-Chicken-Strip-Basket-Deal-and-NEW-MVP-Dip-Lineup",
+            "date": "2026-08-31",
+            "quote": "The DQ Chicken Strip Basket, now just $6.99 for a limited time at participating DQ restaurants, delivers it all. ... a deal that includes the DQ four-piece Chicken Strip Basket featuring a choice of Original or FlameThrower Chicken Strips made with 100% white meat chicken strips. Each basket is served with golden hot fries, a refreshing drink and your choice from the NEW! MVP Dip Lineup."
+          }
+        }
+      ]
+    },
+    {
+      "chain": "Subway",
+      "match": [
+        "subway"
+      ],
+      "sourceName": "newsroom.subway.com",
+      "sourceUrl": "https://newsroom.subway.com/2026-04-28-Subway-R-Introduces-Its-First-Ever-Value-Menu-with-15-Entrees-Under-5",
+      "items": [
+        {
+          "name": "Deli Faves (6-inch)",
+          "price": "$3.99",
+          "note": "Spicy Pepperoni, Ham & Salami, B.L.T. or Cold Cut Combo",
+          "source": {
+            "url": "https://newsroom.subway.com/2026-04-28-Subway-R-Introduces-Its-First-Ever-Value-Menu-with-15-Entrees-Under-5",
+            "date": "2026-04-28",
+            "quote": "Headlining Subway's inaugural value menu are the all-new Deli Faves, four classic and fully customizable six-inch sandwiches for $3.99*"
+          }
+        },
+        {
+          "name": "Protein Pocket",
+          "price": "$3.99",
+          "source": {
+            "url": "https://newsroom.subway.com/2026-04-28-Subway-R-Introduces-Its-First-Ever-Value-Menu-with-15-Entrees-Under-5",
+            "date": "2026-04-28",
+            "quote": "Deli Faves join Protein Pockets for $3.99**"
+          }
+        },
+        {
+          "name": "Sub of the Day (6-inch)",
+          "price": "$4.99",
+          "note": "A different sub each day",
+          "source": {
+            "url": "https://newsroom.subway.com/2026-04-28-Subway-R-Introduces-Its-First-Ever-Value-Menu-with-15-Entrees-Under-5",
+            "date": "2026-04-28",
+            "quote": "Subway's Sub of the Day featuring a different six-inch every day of the week for $4.99*"
+          }
+        },
+        {
+          "name": "Make it a meal (Sub of the Day)",
+          "price": "$2 more",
+          "note": "Adds chips and a drink",
+          "source": {
+            "url": "https://newsroom.subway.com/2026-04-28-Subway-R-Introduces-Its-First-Ever-Value-Menu-with-15-Entrees-Under-5",
+            "date": "2026-04-28",
+            "quote": "Add chips and a drink for just $2 more*** to keep you fueled throughout the day"
+          }
+        },
+        {
+          "name": "Footlong Sub of the Day",
+          "price": "$3 more",
+          "note": "Than the 6-inch",
+          "source": {
+            "url": "https://newsroom.subway.com/2026-04-28-Subway-R-Introduces-Its-First-Ever-Value-Menu-with-15-Entrees-Under-5",
+            "date": "2026-04-28",
+            "quote": "Upgrade to a Footlong Sub of the Day for $3 more"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="ic_launcher_background">#D84315</color>
+    <!-- Google Maps attribution text: only #5E5E5E, #1F1F1F or white are allowed. -->
+    <color name="gmp_attribution">#5E5E5E</color>
+    <color name="widget_background">#E6202124</color>
 </resources>

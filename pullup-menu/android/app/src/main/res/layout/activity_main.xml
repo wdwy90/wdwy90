@@ -13,43 +13,86 @@
         <TextView
             android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Get in line at a fast-food drive-thru. After ~15 seconds its menu photos show on your Android Auto screen, and the full menu opens on your phone." />
+            android:text="Get in line at a fast-food drive-thru. A restaurant card shows on your Android Auto screen. The full menu, typical prices and photos are here on your phone." />
 
-        <TextView
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_marginTop="24dp" android:text="1. Google Places API key" android:textStyle="bold" />
-        <EditText
-            android:id="@+id/api_key"
+        <!-- Hidden when the build has a Places key baked in. -->
+        <LinearLayout
+            android:id="@+id/api_key_section"
             android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:hint="AIza…" android:inputType="textVisiblePassword" android:singleLine="true" />
-        <Button
-            android:id="@+id/save_key"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Save key" />
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="24dp" android:text="Google Places API key" android:textStyle="bold" />
+            <EditText
+                android:id="@+id/api_key"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:hint="AIza…" android:inputType="textVisiblePassword" android:singleLine="true" />
+            <Button
+                android:id="@+id/save_key"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Save key" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_marginTop="24dp" android:text="2. Permissions" android:textStyle="bold" />
+            android:layout_marginTop="24dp" android:text="Permissions" android:textStyle="bold" />
         <Button
             android:id="@+id/grant_permissions"
             android:layout_width="wrap_content" android:layout_height="wrap_content" />
 
         <TextView
             android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_marginTop="24dp" android:text="3. Use it" android:textStyle="bold" />
+            android:layout_marginTop="24dp" android:text="Auto-detect" android:textStyle="bold" />
+        <Switch
+            android:id="@+id/auto_detect"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Auto-detect drive-thrus" />
         <TextView
             android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="In the car: open Pull Up Menu from the Android Auto app launcher. It watches automatically while open." />
-        <Switch
-            android:id="@+id/drive_mode"
+            android:text="On: the car app watches while it is open and the card pops up by itself. Off: tap Check now when you are in the line." />
+
+        <!-- Shown only while auto-detect is on. -->
+        <LinearLayout
+            android:id="@+id/auto_detect_options"
             android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Phone-only drive mode (no Android Auto)" />
-        <Button
-            android:id="@+id/check_now"
+            android:orientation="vertical">
+            <Button
+                android:id="@+id/phone_watch"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Start watching on this phone" />
+            <TextView
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="For drives without Android Auto. It stops by itself after 15 minutes parked. Tip: add the Pull Up Menu widget to your home screen to start it with one tap." />
+            <Switch
+                android:id="@+id/car_banner"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Car banner (experimental)" />
+            <TextView
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="Shows a banner on the car screen when a drive-thru is found. Tap it to open the card." />
+        </LinearLayout>
+
+        <TextView
             android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="What drive-thru am I at?" />
+            android:layout_marginTop="24dp" android:text="Use it" android:textStyle="bold" />
+        <TextView
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="In the car: open Pull Up Menu from the Android Auto app launcher." />
+        <LinearLayout
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="12dp" android:orientation="horizontal">
+            <Button
+                android:id="@+id/check_now"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Check now" />
+            <Button
+                android:id="@+id/demo"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Try a demo" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/status"

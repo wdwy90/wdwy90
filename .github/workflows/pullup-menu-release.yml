@@ -1,0 +1,104 @@
+name: Build Pull Up Menu release bundle
+
+# Signed .aab for Google Play. Needs the repository secrets described in
+# pullup-menu/android/README.md. Without UPLOAD_KEY_ZIP_BASE64 it skips cleanly.
+on:
+  push:
+    branches: ["ccr-065d9da0-6h58t0"]
+    paths: ["pullup-menu/android/**", "pullup-menu/shared/**", ".github/workflows/pullup-menu-release.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    env:
+      # Only a true/false flag here; the secrets themselves are passed to the single step that needs each one.
+      HAS_KEYSTORE: ${{ secrets.UPLOAD_KEY_ZIP_BASE64 != '' }}
+    defaults:
+      run:
+        working-directory: pullup-menu/android
+    steps:
+      - name: Skip (no upload key)
+        if: env.HAS_KEYSTORE != 'true'
+        working-directory: .
+        run: echo "::notice::UPLOAD_KEY_ZIP_BASE64 is not set, so no release bundle was built. Add the repository secrets to enable this workflow."
+
+      - uses: actions/checkout@v5
+        if: env.HAS_KEYSTORE == 'true'
+      - uses: actions/setup-java@v5
+        if: env.HAS_KEYSTORE == 'true'
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up upload key
+        if: env.HAS_KEYSTORE == 'true'
+        env:
+          UPLOAD_KEY_ZIP_BASE64: ${{ secrets.UPLOAD_KEY_ZIP_BASE64 }}
+        run: |
+          set -euo pipefail
+          # The secret is the base64 of PullUpMenu-upload-key-BACKUP.zip, which holds the keystore
+          # and a keystore.properties that names it. Tolerate line breaks or spaces from copy-paste.
+          umask 077
+          printf '%s' "$UPLOAD_KEY_ZIP_BASE64" | tr -d '[:space:]' | base64 --decode > upload-key.zip
+          unzip -o -j -q upload-key.zip -d .
+          rm -f upload-key.zip
+          if [ ! -f keystore.properties ]; then
+            echo "::error::UPLOAD_KEY_ZIP_BASE64 does not contain keystore.properties."
+            exit 1
+          fi
+          store=$(grep -m1 '^storeFile=' keystore.properties | cut -d= -f2-)
+          if [ ! -f "$store" ]; then
+            echo "::error::The keystore named in keystore.properties is missing from the zip."
+            exit 1
+          fi
+          echo "VERSION_CODE=$((GITHUB_RUN_NUMBER + 3))" >> "$GITHUB_ENV"
+
+      - name: Build release bundle
+        if: env.HAS_KEYSTORE == 'true'
+        env:
+          PLACES_API_KEY: ${{ secrets.PLACES_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "$PLACES_API_KEY" ]; then
+            echo "::warning::PLACES_API_KEY is not set. This bundle will ask users for their own Places key."
+          fi
+          echo "versionCode $VERSION_CODE"
+          ./gradlew --no-daemon bundleRelease
+
+      - name: Check signature and rename
+        if: env.HAS_KEYSTORE == 'true'
+        run: |
+          set -euo pipefail
+          aab=app/build/outputs/bundle/release/app-release.aab
+          cert=$(keytool -printcert -jarfile "$aab" 2>&1 || true)
+          if ! grep -q "Owner:" <<<"$cert"; then
+            echo "::error::The bundle is not signed. Check the UPLOAD_KEY_ZIP_BASE64 secret."
+            exit 1
+          fi
+          if grep -q "CN=Android Debug" <<<"$cert"; then
+            echo "::error::The bundle is signed with the Android debug key. Google Play will reject it. Check the UPLOAD_KEY_ZIP_BASE64 secret."
+            exit 1
+          fi
+          grep -m1 "Owner:" <<<"$cert"
+          grep -m1 "SHA1:" <<<"$cert" || true
+          name=$(grep -oP 'versionName = "\K[^"]+' app/build.gradle.kts || echo "1.3")
+          mkdir -p release-upload
+          cp "$aab" "release-upload/PullUpMenu-$name-$VERSION_CODE.aab"
+          ls -l release-upload
+
+      - uses: actions/upload-artifact@v5
+        if: env.HAS_KEYSTORE == 'true'
+        with:
+          name: pullup-menu-play-bundle
+          path: pullup-menu/android/release-upload/*.aab
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Remove upload key
+        if: always() && env.HAS_KEYSTORE == 'true'
+        working-directory: .
+        run: rm -f pullup-menu/android/*.keystore pullup-menu/android/*.jks pullup-menu/android/keystore.properties
