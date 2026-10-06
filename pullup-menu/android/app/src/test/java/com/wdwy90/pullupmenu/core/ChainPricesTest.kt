@@ -77,6 +77,23 @@ class ChainPricesTest {
         assertEquals("Menu items from names.com. Prices vary by store. Checked Oct 6, 2026.", names.disclaimer)
     }
 
+    @Test fun everyMenuChainHasAnItemList() {
+        val chains = JSONObject(File("../../shared/chain_menus.json").readText()).getJSONArray("chains")
+        for (i in 0 until chains.length()) {
+            val name = chains.getJSONObject(i).getString("name")
+            val list = prices.forPlace(name)
+            assertNotNull("$name has no item list", list)
+            val keys = list!!.items.map { ChainMenus.normalize(it.name) }
+            assertEquals("$name has duplicate items", keys.size, keys.toSet().size)
+        }
+    }
+
+    @Test fun flaggedItemsKeepTheirNote() {
+        val list = prices.forPlace("Starbucks")!!
+        assertEquals("Seasonal, may not be available now", list.items.first { it.name == "Pumpkin Spice Latte" }.note)
+        assertNull(list.items.first { it.name == "Caffe Latte" }.note)
+    }
+
     @Test fun disclaimer() {
         val list = prices.forPlace("Subway")!!
         assertEquals("Typical prices. They vary by location. Checked Oct 6, 2026.", list.disclaimer)
