@@ -24,8 +24,10 @@ class PriceListScreen(ctx: CarContext, private val prices: PriceList) : Screen(c
     @Suppress("DEPRECATION")
     override fun onGetTemplate(): Template {
         val list = ItemList.Builder()
-        prices.items.take(minOf(5, listLimit - 1).coerceAtLeast(0)).forEach { item ->
-            val text = listOfNotNull(item.price.ifBlank { null }, item.note?.ifBlank { null })
+        // The car shows only a few rows: priced items first, then other menu items.
+        val shown = prices.items.sortedBy { it.price == null }
+        shown.take(minOf(5, listLimit - 1).coerceAtLeast(0)).forEach { item ->
+            val text = listOfNotNull(item.price?.ifBlank { null }, item.note?.ifBlank { null })
                 .joinToString(" · ")
             list.addItem(
                 Row.Builder().setTitle(item.name.ifBlank { "Item" })
@@ -35,10 +37,10 @@ class PriceListScreen(ctx: CarContext, private val prices: PriceList) : Screen(c
         }
         val source = listOfNotNull("Checked ${prices.checked}", prices.sourceName.ifBlank { null })
             .joinToString(" · ")
-        list.addItem(Row.Builder().setTitle("Prices vary by location").addText(source).build())
+        list.addItem(Row.Builder().setTitle("Full menu on your phone").addText("Prices vary by location · $source").build())
 
         return ListTemplate.Builder()
-            .setTitle("${prices.chain} prices")
+            .setTitle(if (prices.hasPrices) "${prices.chain} prices" else "${prices.chain} menu")
             .setHeaderAction(Action.BACK)
             .setSingleList(list.build())
             .build()

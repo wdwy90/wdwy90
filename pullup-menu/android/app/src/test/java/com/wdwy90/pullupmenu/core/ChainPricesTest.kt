@@ -35,19 +35,46 @@ class ChainPricesTest {
             val c = chains.getJSONObject(i)
             val list = prices.forPlace(c.getString("chain"))
             assertNotNull("${c.getString("chain")} should match its own name", list)
-            assertTrue(list!!.items.size in 1..6)
+            assertTrue(list!!.items.size in 1..150)
             assertTrue(list.checked.isNotBlank())
             assertTrue(list.sourceUrl.startsWith("https://"))
             for (item in list.items) {
-                assertTrue("${item.name}: ${item.price}", item.price.startsWith("$"))
+                item.price?.let { assertTrue("${item.name}: $it", it.startsWith("$")) }
                 assertTrue(item.name.isNotBlank())
             }
-            val items = c.getJSONArray("items")
+            val items = c.optJSONArray("items") ?: continue
             for (j in 0 until items.length()) {
                 val src = items.getJSONObject(j).getJSONObject("source")
                 assertTrue(src.getString("url").startsWith("https://"))
             }
         }
+    }
+
+    @Test fun menuItemsFollowPricedItems() {
+        val p = ChainPrices(
+            """
+            {"checked":"Oct 6, 2026","chains":[
+              {"chain":"Both","match":["both"],"sourceName":"news.com","sourceUrl":"https://news.com",
+               "menuSourceName":"both.com","menuSourceUrl":"https://both.com/menu",
+               "items":[{"name":"Big Burger","price":"$5"}],
+               "menuItems":[{"name":"Big Burger","category":"Burgers"},{"name":"Fries","category":"Sides"}]},
+              {"chain":"Names","match":["names"],"menuSourceName":"names.com","menuSourceUrl":"https://names.com",
+               "menuItems":[{"name":"Taco","category":"Tacos"}]}
+            ]}
+            """.trimIndent()
+        )
+        val both = p.forPlace("Both")!!
+        assertEquals(listOf("Big Burger", "Fries"), both.items.map { it.name })
+        assertEquals("$5", both.items[0].price)
+        assertNull(both.items[1].price)
+        assertEquals("Sides", both.items[1].category)
+        assertTrue(both.hasPrices)
+        assertEquals("both.com", both.menuSourceName)
+        val names = p.forPlace("Names")!!
+        assertEquals("names.com", names.sourceName)
+        assertNull(names.menuSourceName)
+        assertTrue(!names.hasPrices)
+        assertEquals("Menu items from names.com. Prices vary by store. Checked Oct 6, 2026.", names.disclaimer)
     }
 
     @Test fun disclaimer() {
@@ -84,7 +111,7 @@ class ChainPricesTest {
         assertEquals("Big", p.demoChainName())
         assertNull(p.forPlace("Empty"))
         val big = p.forPlace("Big")!!
-        assertEquals(6, big.items.size)
+        assertEquals(8, big.items.size)
         assertEquals("Jan 1, 2026", big.checked)
         assertNull(big.items[0].note)
     }

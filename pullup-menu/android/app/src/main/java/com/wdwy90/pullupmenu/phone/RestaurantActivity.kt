@@ -142,11 +142,21 @@ class RestaurantActivity : ComponentActivity() {
             list.addView(text("No typical prices for this restaurant yet."))
             return
         }
-        list.addView(text("${p.chain} prices").apply {
+        list.addView(text(if (p.hasPrices) "${p.chain} prices" else "${p.chain} menu").apply {
             textSize = 18f
             setTypeface(typeface, Typeface.BOLD)
         })
+        var section: String? = null
         for (item in p.items) {
+            if (item.category != null && item.category != section) {
+                section = item.category
+                list.addView(text(item.category).apply {
+                    textSize = 15f
+                    alpha = 0.7f
+                    setTypeface(typeface, Typeface.BOLD)
+                    setPadding(0, dp(20), 0, 0)
+                })
+            }
             val row = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
                 layoutParams = LinearLayout.LayoutParams(
@@ -157,11 +167,13 @@ class RestaurantActivity : ComponentActivity() {
                 textSize = 16f
                 layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
             })
-            row.addView(text(item.price).apply {
-                textSize = 16f
-                setTypeface(typeface, Typeface.BOLD)
-                setPaddingRelative(dp(12), 0, 0, 0)
-            })
+            item.price?.let { price ->
+                row.addView(text(price).apply {
+                    textSize = 16f
+                    setTypeface(typeface, Typeface.BOLD)
+                    setPaddingRelative(dp(12), 0, 0, 0)
+                })
+            }
             list.addView(row)
             item.note?.let { list.addView(text(it).apply { alpha = 0.7f }) }
         }
@@ -170,6 +182,11 @@ class RestaurantActivity : ComponentActivity() {
             setPadding(0, dp(20), 0, 0)
         })
         list.addView(link("Source: ${p.sourceName}") { open(p.sourceUrl) })
+        val menuName = p.menuSourceName
+        val menuUrl = p.menuSourceUrl
+        if (menuName != null && menuUrl != null) {
+            list.addView(link("Menu items: $menuName") { open(menuUrl) })
+        }
     }
 
     // ---- Menu ----
