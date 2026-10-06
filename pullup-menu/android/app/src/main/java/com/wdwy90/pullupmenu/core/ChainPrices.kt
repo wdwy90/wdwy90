@@ -15,21 +15,15 @@ data class PriceItem(
 
 data class PriceList(
     val chain: String,
-    /** Items with published prices first, then the rest of the official menu. */
+    /** The chain's menu items, grouped by category. */
     val items: List<PriceItem>,
     /** Display date, e.g. "Oct 6, 2026". */
     val checked: String,
     val sourceName: String,
     val sourceUrl: String,
-    /** Where the unpriced menu items came from, when that differs from the price source. */
-    val menuSourceName: String? = null,
-    val menuSourceUrl: String? = null,
 ) {
-    val hasPrices: Boolean get() = items.any { it.price != null }
-
     val disclaimer: String
-        get() = if (hasPrices) "Typical prices. They vary by location. Checked $checked."
-        else "Menu items from $sourceName. Prices vary by store. Checked $checked."
+        get() = "Menu items from $sourceName. Availability varies by location. Checked $checked."
 }
 
 /** Typical advertised prices for fast-food chains (shared/chain_prices.json). */
@@ -42,10 +36,11 @@ class ChainPrices(json: String) {
         (0 until arr.length()).mapNotNull { i ->
             val c = arr.getJSONObject(i)
             val m = c.getJSONArray("match")
-            val priced = items(c.optJSONArray("items"))
-            val seen = priced.map { ChainMenus.normalize(it.name) }.toHashSet()
-            val menu = items(c.optJSONArray("menuItems")).filter { seen.add(ChainMenus.normalize(it.name)) }
-            val all = priced + menu
+            // The Items tab lists names only, so every chain looks the same. Prices stay in the
+            // data file but aren't shown. Advertised deals are used only when a chain has no menu list.
+            val menu = items(c.optJSONArray("menuItems")).ifEmpty { items(c.optJSONArray("items")) }
+            val seen = HashSet<String>()
+            val all = menu.filter { seen.add(ChainMenus.normalize(it.name)) }.map { it.copy(price = null) }
             if (all.isEmpty()) return@mapNotNull null
             Chain(
                 (0 until m.length()).map { m.getString(it) },
@@ -53,10 +48,8 @@ class ChainPrices(json: String) {
                     chain = c.getString("chain"),
                     items = all.take(MAX_ITEMS),
                     checked = c.optString("checked").ifBlank { checked },
-                    sourceName = c.optString("sourceName").ifBlank { c.getString("menuSourceName") },
-                    sourceUrl = c.optString("sourceUrl").ifBlank { c.getString("menuSourceUrl") },
-                    menuSourceName = c.optString("menuSourceName").takeIf { it.isNotBlank() && priced.isNotEmpty() },
-                    menuSourceUrl = c.optString("menuSourceUrl").takeIf { it.isNotBlank() && priced.isNotEmpty() },
+                    sourceName = c.optString("menuSourceName").ifBlank { c.getString("sourceName") },
+                    sourceUrl = c.optString("menuSourceUrl").ifBlank { c.getString("sourceUrl") },
                 ),
             )
         }

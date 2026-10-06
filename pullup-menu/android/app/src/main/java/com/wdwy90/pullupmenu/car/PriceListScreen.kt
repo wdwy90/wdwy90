@@ -11,7 +11,7 @@ import androidx.car.app.model.Template
 import androidx.car.app.versioning.CarAppApiLevels
 import com.wdwy90.pullupmenu.core.PriceList
 
-/** Short text list of typical prices for the chain, plus a "prices vary" footer row. */
+/** Short list of the chain's menu items, plus a footer row pointing to the full list on the phone. */
 class PriceListScreen(ctx: CarContext, private val prices: PriceList) : Screen(ctx) {
 
     private val listLimit: Int by lazy {
@@ -24,11 +24,9 @@ class PriceListScreen(ctx: CarContext, private val prices: PriceList) : Screen(c
     @Suppress("DEPRECATION")
     override fun onGetTemplate(): Template {
         val list = ItemList.Builder()
-        // The car shows only a few rows: priced items first, then other menu items.
-        val shown = prices.items.sortedBy { it.price == null }
-        shown.take(minOf(5, listLimit - 1).coerceAtLeast(0)).forEach { item ->
-            val text = listOfNotNull(item.price?.ifBlank { null }, item.note?.ifBlank { null })
-                .joinToString(" · ")
+        // The car shows only a few rows; the full list is on the phone.
+        prices.items.take(minOf(5, listLimit - 1).coerceAtLeast(0)).forEach { item ->
+            val text = item.note?.ifBlank { null }.orEmpty()
             list.addItem(
                 Row.Builder().setTitle(item.name.ifBlank { "Item" })
                     .apply { if (text.isNotEmpty()) addText(text) }
@@ -37,10 +35,10 @@ class PriceListScreen(ctx: CarContext, private val prices: PriceList) : Screen(c
         }
         val source = listOfNotNull("Checked ${prices.checked}", prices.sourceName.ifBlank { null })
             .joinToString(" · ")
-        list.addItem(Row.Builder().setTitle("Full menu on your phone").addText("Prices vary by location · $source").build())
+        list.addItem(Row.Builder().setTitle("Full list on your phone").addText(source).build())
 
         return ListTemplate.Builder()
-            .setTitle(if (prices.hasPrices) "${prices.chain} prices" else "${prices.chain} menu")
+            .setTitle("${prices.chain} menu items")
             .setHeaderAction(Action.BACK)
             .setSingleList(list.build())
             .build()

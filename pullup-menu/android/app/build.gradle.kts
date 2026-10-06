@@ -26,8 +26,8 @@ android {
         applicationId = "com.wdwy90.pullupmenu"
         minSdk = 29
         targetSdk = 36
-        versionCode = (System.getenv("VERSION_CODE") ?: "7").toInt()
-        versionName = "1.5"
+        versionCode = (System.getenv("VERSION_CODE") ?: "8").toInt()
+        versionName = "1.6"
         buildConfigField(
             "String", "PLACES_API_KEY",
             "\"${localProps.getProperty("PLACES_API_KEY", System.getenv("PLACES_API_KEY") ?: "")}\""

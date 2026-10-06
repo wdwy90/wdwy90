@@ -29,7 +29,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 
 /**
  * Car screen: the restaurant card. Name, rating/category, address, at most one photo and the
- * Google attribution. "Prices" opens the short price list; the full menu is on the phone.
+ * Google attribution. "Items" opens a short item list; the full menu is on the phone.
  */
 class RestaurantScreen(ctx: CarContext, private val restaurant: Restaurant) : Screen(ctx) {
     val restaurantId: String get() = restaurant.id
@@ -75,7 +75,7 @@ class RestaurantScreen(ctx: CarContext, private val restaurant: Restaurant) : Sc
         }
         restaurant.prices?.let { prices ->
             pane.addAction(
-                Action.Builder().setTitle(if (prices.hasPrices) "Prices" else "Menu")
+                Action.Builder().setTitle("Items")
                     .apply { if (apiLevel >= CarAppApiLevels.LEVEL_4) setFlags(Action.FLAG_PRIMARY) }
                     .setOnClickListener { screenManager.push(PriceListScreen(carContext, prices)) }
                     .build()

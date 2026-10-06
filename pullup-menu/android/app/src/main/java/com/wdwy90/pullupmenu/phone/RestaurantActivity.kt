@@ -28,7 +28,7 @@ import com.wdwy90.pullupmenu.core.Restaurant
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
 
-/** Phone screen: typical prices, the chain's menu page in-app, and Google photos with credits. */
+/** Phone screen: the chain's item list, the chain's menu page in-app, and Google photos with credits. */
 class RestaurantActivity : ComponentActivity() {
 
     private enum class Tab { PRICES, MENU, PHOTOS }
@@ -139,10 +139,10 @@ class RestaurantActivity : ComponentActivity() {
         list.removeAllViews()
         val p = r.prices
         if (p == null) {
-            list.addView(text("No typical prices for this restaurant yet."))
+            list.addView(text("No item list for this restaurant yet. Try the Menu tab."))
             return
         }
-        list.addView(text(if (p.hasPrices) "${p.chain} prices" else "${p.chain} menu").apply {
+        list.addView(text("${p.chain} menu items").apply {
             textSize = 18f
             setTypeface(typeface, Typeface.BOLD)
         })
@@ -167,13 +167,6 @@ class RestaurantActivity : ComponentActivity() {
                 textSize = 16f
                 layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
             })
-            item.price?.let { price ->
-                row.addView(text(price).apply {
-                    textSize = 16f
-                    setTypeface(typeface, Typeface.BOLD)
-                    setPaddingRelative(dp(12), 0, 0, 0)
-                })
-            }
             list.addView(row)
             item.note?.let { list.addView(text(it).apply { alpha = 0.7f }) }
         }
@@ -182,11 +175,6 @@ class RestaurantActivity : ComponentActivity() {
             setPadding(0, dp(20), 0, 0)
         })
         list.addView(link("Source: ${p.sourceName}") { open(p.sourceUrl) })
-        val menuName = p.menuSourceName
-        val menuUrl = p.menuSourceUrl
-        if (menuName != null && menuUrl != null) {
-            list.addView(link("Menu items: $menuName") { open(menuUrl) })
-        }
     }
 
     // ---- Menu ----

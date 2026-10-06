@@ -29,7 +29,7 @@ class ChainPricesTest {
         assertTrue(list!!.items.isNotEmpty())
     }
 
-    @Test fun everyItemHasADollarPrice() {
+    @Test fun everyChainHasAValidList() {
         val chains = JSONObject(json).getJSONArray("chains")
         for (i in 0 until chains.length()) {
             val c = chains.getJSONObject(i)
@@ -50,31 +50,29 @@ class ChainPricesTest {
         }
     }
 
-    @Test fun menuItemsFollowPricedItems() {
+    @Test fun itemListShowsNamesOnly() {
         val p = ChainPrices(
             """
             {"checked":"Oct 6, 2026","chains":[
               {"chain":"Both","match":["both"],"sourceName":"news.com","sourceUrl":"https://news.com",
                "menuSourceName":"both.com","menuSourceUrl":"https://both.com/menu",
-               "items":[{"name":"Big Burger","price":"$5"}],
-               "menuItems":[{"name":"Big Burger","category":"Burgers"},{"name":"Fries","category":"Sides"}]},
-              {"chain":"Names","match":["names"],"menuSourceName":"names.com","menuSourceUrl":"https://names.com",
-               "menuItems":[{"name":"Taco","category":"Tacos"}]}
+               "items":[{"name":"Big Burger Deal","price":"$5"}],
+               "menuItems":[{"name":"Big Burger","category":"Burgers","price":"$4"},{"name":"Fries","category":"Sides"}]},
+              {"chain":"Deals","match":["deals"],"sourceName":"deals.com","sourceUrl":"https://deals.com",
+               "items":[{"name":"Meal Deal","price":"$6"}]}
             ]}
             """.trimIndent()
         )
         val both = p.forPlace("Both")!!
         assertEquals(listOf("Big Burger", "Fries"), both.items.map { it.name })
-        assertEquals("$5", both.items[0].price)
-        assertNull(both.items[1].price)
-        assertEquals("Sides", both.items[1].category)
-        assertTrue(both.hasPrices)
-        assertEquals("both.com", both.menuSourceName)
-        val names = p.forPlace("Names")!!
-        assertEquals("names.com", names.sourceName)
-        assertNull(names.menuSourceName)
-        assertTrue(!names.hasPrices)
-        assertEquals("Menu items from names.com. Prices vary by store. Checked Oct 6, 2026.", names.disclaimer)
+        assertTrue(both.items.all { it.price == null })
+        assertEquals("both.com", both.sourceName)
+        assertEquals("https://both.com/menu", both.sourceUrl)
+        assertEquals("Menu items from both.com. Availability varies by location. Checked Oct 6, 2026.", both.disclaimer)
+        val deals = p.forPlace("Deals")!!
+        assertEquals(listOf("Meal Deal"), deals.items.map { it.name })
+        assertNull(deals.items[0].price)
+        assertEquals("deals.com", deals.sourceName)
     }
 
     @Test fun everyMenuChainHasAnItemList() {
@@ -94,9 +92,12 @@ class ChainPricesTest {
         assertNull(list.items.first { it.name == "Caffe Latte" }.note)
     }
 
-    @Test fun disclaimer() {
-        val list = prices.forPlace("Subway")!!
-        assertEquals("Typical prices. They vary by location. Checked Oct 6, 2026.", list.disclaimer)
+    @Test fun noPricesShownForAnyChain() {
+        val chains = JSONObject(json).getJSONArray("chains")
+        for (i in 0 until chains.length()) {
+            val list = prices.forPlace(chains.getJSONObject(i).getString("chain"))!!
+            assertTrue(list.items.all { it.price == null && it.category != null })
+        }
     }
 
     @Test fun everyPriceChainHasAMenuLink() {
