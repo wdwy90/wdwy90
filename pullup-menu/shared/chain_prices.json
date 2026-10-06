@@ -60,6 +60,334 @@
             "quote": "For breakfast, start the day with under $3 classics like the Sausage McMuffin®, Sausage Biscuit, Sausage Burrito, Hash Browns, or a medium McCafé Premium Roast Coffee."
           }
         }
+      ],
+      "menuSourceName": "mcdonalds.com",
+      "menuSourceUrl": "https://www.mcdonalds.com/us/en-us/full-menu.html",
+      "menuItems": [
+        {
+          "name": "Big Mac",
+          "category": "Burgers"
+        },
+        {
+          "name": "Quarter Pounder with Cheese",
+          "category": "Burgers"
+        },
+        {
+          "name": "Double Quarter Pounder with Cheese",
+          "category": "Burgers"
+        },
+        {
+          "name": "Quarter Pounder with Cheese Deluxe",
+          "category": "Burgers"
+        },
+        {
+          "name": "Bacon Quarter Pounder with Cheese",
+          "category": "Burgers"
+        },
+        {
+          "name": "McDouble",
+          "category": "Burgers"
+        },
+        {
+          "name": "Daily Double",
+          "category": "Burgers"
+        },
+        {
+          "name": "Cheeseburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Double Cheeseburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Hamburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "McCrispy",
+          "category": "Chicken & Fish Sandwiches"
+        },
+        {
+          "name": "Deluxe McCrispy",
+          "category": "Chicken & Fish Sandwiches"
+        },
+        {
+          "name": "Spicy McCrispy",
+          "category": "Chicken & Fish Sandwiches"
+        },
+        {
+          "name": "Spicy Deluxe McCrispy",
+          "category": "Chicken & Fish Sandwiches"
+        },
+        {
+          "name": "McChicken",
+          "category": "Chicken & Fish Sandwiches"
+        },
+        {
+          "name": "Filet-O-Fish",
+          "category": "Chicken & Fish Sandwiches"
+        },
+        {
+          "name": "Chicken McNuggets",
+          "category": "McNuggets & McCrispy Strips"
+        },
+        {
+          "name": "Spicy Chicken McNuggets",
+          "category": "McNuggets & McCrispy Strips"
+        },
+        {
+          "name": "McCrispy Strips",
+          "category": "McNuggets & McCrispy Strips"
+        },
+        {
+          "name": "Ranch Snack Wrap",
+          "category": "Snack Wrap"
+        },
+        {
+          "name": "Spicy Snack Wrap",
+          "category": "Snack Wrap"
+        },
+        {
+          "name": "World Famous Fries",
+          "category": "Fries & Sides"
+        },
+        {
+          "name": "Apple Slices",
+          "category": "Fries & Sides"
+        },
+        {
+          "name": "Egg McMuffin",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Sausage McMuffin",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Sausage McMuffin with Egg",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Sausage Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Sausage Biscuit with Egg",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Bacon, Egg & Cheese Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Egg Cheese Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Sausage McGriddles",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Bacon, Egg & Cheese McGriddles",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Sausage, Egg & Cheese McGriddles",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Bacon, Egg & Cheese Bagel",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Sausage, Egg & Cheese Bagel",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Steak, Egg & Cheese Bagel",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Big Breakfast",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Big Breakfast with Hotcakes",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Hotcakes",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Hotcakes and Sausage",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Sausage Burrito",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Hash Browns",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Fruit & Maple Oatmeal",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Hamburger Happy Meal",
+          "category": "Happy Meal"
+        },
+        {
+          "name": "Chicken McNuggets Happy Meal",
+          "category": "Happy Meal"
+        },
+        {
+          "name": "OREO McFlurry",
+          "category": "Sweets & Treats"
+        },
+        {
+          "name": "M&M'S McFlurry",
+          "category": "Sweets & Treats"
+        },
+        {
+          "name": "Vanilla Cone",
+          "category": "Sweets & Treats"
+        },
+        {
+          "name": "Chocolate Shake",
+          "category": "Sweets & Treats"
+        },
+        {
+          "name": "Vanilla Shake",
+          "category": "Sweets & Treats"
+        },
+        {
+          "name": "Strawberry Shake",
+          "category": "Sweets & Treats"
+        },
+        {
+          "name": "Hot Fudge Sundae",
+          "category": "Sweets & Treats"
+        },
+        {
+          "name": "Hot Caramel Sundae",
+          "category": "Sweets & Treats"
+        },
+        {
+          "name": "Baked Apple Pie",
+          "category": "Sweets & Treats"
+        },
+        {
+          "name": "Chocolate Chip Cookie",
+          "category": "Sweets & Treats"
+        },
+        {
+          "name": "McCafé Premium Roast Coffee",
+          "category": "McCafe"
+        },
+        {
+          "name": "McCafé Iced Coffee",
+          "category": "McCafe"
+        },
+        {
+          "name": "McCafé Iced Caramel Coffee",
+          "category": "McCafe"
+        },
+        {
+          "name": "McCafé Iced French Vanilla Coffee",
+          "category": "McCafe"
+        },
+        {
+          "name": "McCafé Latte",
+          "category": "McCafe"
+        },
+        {
+          "name": "McCafé Iced Latte",
+          "category": "McCafe"
+        },
+        {
+          "name": "McCafé Caramel Macchiato",
+          "category": "McCafe"
+        },
+        {
+          "name": "McCafé Iced Caramel Macchiato",
+          "category": "McCafe"
+        },
+        {
+          "name": "McCafé Cappuccino",
+          "category": "McCafe"
+        },
+        {
+          "name": "McCafé Mocha Latte",
+          "category": "McCafe"
+        },
+        {
+          "name": "McCafé Hot Chocolate",
+          "category": "McCafe"
+        },
+        {
+          "name": "McCafé Caramel Frappé",
+          "category": "McCafe"
+        },
+        {
+          "name": "McCafé Mocha Frappé",
+          "category": "McCafe"
+        },
+        {
+          "name": "Coca-Cola",
+          "category": "Drinks"
+        },
+        {
+          "name": "Diet Coke",
+          "category": "Drinks"
+        },
+        {
+          "name": "Sprite",
+          "category": "Drinks"
+        },
+        {
+          "name": "Dr Pepper",
+          "category": "Drinks"
+        },
+        {
+          "name": "Hi-C Orange Lavaburst",
+          "category": "Drinks"
+        },
+        {
+          "name": "Sweet Tea",
+          "category": "Drinks"
+        },
+        {
+          "name": "Unsweetened Iced Tea",
+          "category": "Drinks"
+        },
+        {
+          "name": "Lemonade",
+          "category": "Drinks"
+        },
+        {
+          "name": "Minute Maid Premium Orange Juice",
+          "category": "Drinks"
+        },
+        {
+          "name": "Strawberry Banana Smoothie",
+          "category": "Drinks"
+        },
+        {
+          "name": "Mango Pineapple Smoothie",
+          "category": "Drinks"
+        },
+        {
+          "name": "Strawberry Watermelon Refresher",
+          "category": "Drinks"
+        },
+        {
+          "name": "Mango Pineapple Refresher",
+          "category": "Drinks"
+        }
       ]
     },
     {
@@ -79,6 +407,110 @@
             "date": "2026-05-26",
             "quote": "Crown Nuggets are available for the $3.99 King Jr. Meal, which also comes with a side and drink."
           }
+        }
+      ],
+      "menuSourceName": "news.bk.com menu list",
+      "menuSourceUrl": "https://news.bk.com/media-assets/menu-item-and-campaign-images",
+      "menuItems": [
+        {
+          "name": "Whopper",
+          "category": "Burgers"
+        },
+        {
+          "name": "Whopper with Cheese",
+          "category": "Burgers"
+        },
+        {
+          "name": "Double Whopper",
+          "category": "Burgers"
+        },
+        {
+          "name": "Texas Double Whopper",
+          "category": "Burgers"
+        },
+        {
+          "name": "Whopper Jr",
+          "category": "Burgers"
+        },
+        {
+          "name": "Impossible Whopper",
+          "category": "Burgers"
+        },
+        {
+          "name": "Bacon King",
+          "category": "Burgers"
+        },
+        {
+          "name": "Rodeo Burger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Hamburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Original Chicken Sandwich",
+          "category": "Chicken & Fish"
+        },
+        {
+          "name": "Classic Royal Crispy Chicken",
+          "category": "Chicken & Fish"
+        },
+        {
+          "name": "Spicy Royal Crispy Chicken",
+          "category": "Chicken & Fish"
+        },
+        {
+          "name": "Bacon Swiss Royal Crispy Chicken",
+          "category": "Chicken & Fish"
+        },
+        {
+          "name": "Chicken Fries",
+          "category": "Chicken & Fish"
+        },
+        {
+          "name": "4 PC Nuggets",
+          "category": "Chicken & Fish"
+        },
+        {
+          "name": "Chicken Jr",
+          "category": "Chicken & Fish"
+        },
+        {
+          "name": "Big Fish",
+          "category": "Chicken & Fish"
+        },
+        {
+          "name": "Fries",
+          "category": "Sides"
+        },
+        {
+          "name": "Onion Rings",
+          "category": "Sides"
+        },
+        {
+          "name": "Mozzarella Fries",
+          "category": "Sides"
+        },
+        {
+          "name": "Fully Loaded Croissan'wich",
+          "category": "Breakfast"
+        },
+        {
+          "name": "SEC Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "French Toast Sticks",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Hash Browns",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Hershey Pie",
+          "category": "Desserts"
         }
       ]
     },
@@ -119,6 +551,282 @@
             "date": "2026-01-14",
             "quote": "$8 Biggie® Bundle: Choose Two: Crispy Chicken Sandwich, Jr. Cheeseburger, Jr. Bacon Cheeseburger, or Double Stack™ ... Includes: Jr. Fry, Small Soft Drink"
           }
+        }
+      ],
+      "menuSourceName": "order.wendys.com",
+      "menuSourceUrl": "https://order.wendys.com/us/en/national/menu",
+      "menuItems": [
+        {
+          "name": "Dave's Single",
+          "category": "Hamburgers"
+        },
+        {
+          "name": "Dave's Double",
+          "category": "Hamburgers"
+        },
+        {
+          "name": "Dave's Triple",
+          "category": "Hamburgers"
+        },
+        {
+          "name": "Baconator",
+          "category": "Hamburgers"
+        },
+        {
+          "name": "Son of Baconator",
+          "category": "Hamburgers"
+        },
+        {
+          "name": "Big Bacon Classic",
+          "category": "Hamburgers"
+        },
+        {
+          "name": "Big Bacon Classic Double",
+          "category": "Hamburgers"
+        },
+        {
+          "name": "Bacon Double Stack",
+          "category": "Hamburgers"
+        },
+        {
+          "name": "Double Stack",
+          "category": "Hamburgers"
+        },
+        {
+          "name": "Jr. Bacon Cheeseburger",
+          "category": "Hamburgers"
+        },
+        {
+          "name": "Jr. Cheeseburger Deluxe",
+          "category": "Hamburgers"
+        },
+        {
+          "name": "Jr. Cheeseburger",
+          "category": "Hamburgers"
+        },
+        {
+          "name": "Jr. Hamburger",
+          "category": "Hamburgers"
+        },
+        {
+          "name": "Classic Chicken Sandwich",
+          "category": "Chicken, Nuggets & More"
+        },
+        {
+          "name": "Spicy Chicken Sandwich",
+          "category": "Chicken, Nuggets & More"
+        },
+        {
+          "name": "Asiago Ranch Club Sandwich",
+          "category": "Chicken, Nuggets & More"
+        },
+        {
+          "name": "Crispy Chicken BLT",
+          "category": "Chicken, Nuggets & More"
+        },
+        {
+          "name": "Crispy Chicken Sandwich",
+          "category": "Chicken, Nuggets & More"
+        },
+        {
+          "name": "Grilled Chicken Wrap",
+          "category": "Chicken, Nuggets & More"
+        },
+        {
+          "name": "Chicken Nuggets",
+          "category": "Chicken, Nuggets & More"
+        },
+        {
+          "name": "Spicy Chicken Nuggets",
+          "category": "Chicken, Nuggets & More"
+        },
+        {
+          "name": "Nuggs Party Pack",
+          "category": "Chicken, Nuggets & More"
+        },
+        {
+          "name": "Tenders",
+          "category": "Tenders"
+        },
+        {
+          "name": "Parmesan Caesar Salad",
+          "category": "Fresh-Made Salads"
+        },
+        {
+          "name": "Cobb Salad",
+          "category": "Fresh-Made Salads"
+        },
+        {
+          "name": "Apple Pecan Salad",
+          "category": "Fresh-Made Salads"
+        },
+        {
+          "name": "Taco Salad",
+          "category": "Fresh-Made Salads"
+        },
+        {
+          "name": "French Fries",
+          "category": "Fries & Sides"
+        },
+        {
+          "name": "Baconator Fries",
+          "category": "Fries & Sides"
+        },
+        {
+          "name": "Chili Cheese Fries",
+          "category": "Fries & Sides"
+        },
+        {
+          "name": "Cheese Fries",
+          "category": "Fries & Sides"
+        },
+        {
+          "name": "Chili",
+          "category": "Fries & Sides"
+        },
+        {
+          "name": "Plain Baked Potato",
+          "category": "Fries & Sides"
+        },
+        {
+          "name": "Sour Cream and Chive Baked Potato",
+          "category": "Fries & Sides"
+        },
+        {
+          "name": "Bacon Cheese Baked Potato",
+          "category": "Fries & Sides"
+        },
+        {
+          "name": "Chili & Cheese Baked Potato",
+          "category": "Fries & Sides"
+        },
+        {
+          "name": "Cheese Baked Potato",
+          "category": "Fries & Sides"
+        },
+        {
+          "name": "Apple Bites",
+          "category": "Fries & Sides"
+        },
+        {
+          "name": "Classic Chocolate Frosty",
+          "category": "Frosty"
+        },
+        {
+          "name": "Vanilla Frosty",
+          "category": "Frosty"
+        },
+        {
+          "name": "Cookie Dough Frosty Fusion",
+          "category": "Frosty"
+        },
+        {
+          "name": "OREO Brownie Frosty Fusion",
+          "category": "Frosty"
+        },
+        {
+          "name": "Caramel Crunch Frosty Fusion",
+          "category": "Frosty"
+        },
+        {
+          "name": "Brownie Batter Frosty Swirl",
+          "category": "Frosty"
+        },
+        {
+          "name": "Strawberry Frosty Swirl",
+          "category": "Frosty"
+        },
+        {
+          "name": "Caramel Frosty Swirl",
+          "category": "Frosty"
+        },
+        {
+          "name": "Breakfast Baconator",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Maple Bacon Chicken Croissant",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Sausage, Egg & Swiss Croissant",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Bacon, Egg & Swiss Croissant",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Sausage, Egg & Cheese Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Bacon, Egg & Cheese Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Egg & Cheese Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Honey Buddy Chicken Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Honey Butter Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Sausage Gravy & Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Sausage Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Breakfast Burrito",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Homestyle French Toast Sticks",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Seasoned Potatoes",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Cinnabon Pull-Apart",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Simply Orange Juice",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Regular Hot Coffee",
+          "category": "Coffee"
+        },
+        {
+          "name": "Cold Brew",
+          "category": "Coffee"
+        },
+        {
+          "name": "Vanilla Cold Brew with Cream",
+          "category": "Coffee"
+        },
+        {
+          "name": "Caramel Cold Brew with Cream",
+          "category": "Coffee"
+        },
+        {
+          "name": "Chocolate Cold Brew with Cream",
+          "category": "Coffee"
+        },
+        {
+          "name": "Cold Brew with Cream and Sugar",
+          "category": "Coffee"
         }
       ]
     },
@@ -190,6 +898,1226 @@
             "quote": "$7 supreme Luxe Box - Get a Chicken Chalupa Supreme, Beefy 5-Layer Burrito, Crunchy Taco, Cinnamon Twists, and a Medium Fountain Drink."
           }
         }
+      ],
+      "menuSourceName": "tacobell.com",
+      "menuSourceUrl": "https://www.tacobell.com/food",
+      "menuItems": [
+        {
+          "name": "Crunchy Taco",
+          "category": "Tacos",
+          "price": "$1.99"
+        },
+        {
+          "name": "Soft Taco",
+          "category": "Tacos",
+          "price": "$1.99"
+        },
+        {
+          "name": "Crunchy Taco Supreme",
+          "category": "Tacos",
+          "price": "$2.89"
+        },
+        {
+          "name": "Soft Taco Supreme",
+          "category": "Tacos",
+          "price": "$2.89"
+        },
+        {
+          "name": "Nacho Cheese Doritos Locos Tacos",
+          "category": "Tacos",
+          "price": "$2.89"
+        },
+        {
+          "name": "Nacho Cheese Doritos Locos Tacos Supreme",
+          "category": "Tacos",
+          "price": "$3.59"
+        },
+        {
+          "name": "Chalupa Supreme",
+          "category": "Tacos",
+          "price": "$5.69"
+        },
+        {
+          "name": "Black Bean Chalupa Supreme",
+          "category": "Tacos",
+          "price": "$5.39"
+        },
+        {
+          "name": "Cheesy Gordita Crunch",
+          "category": "Tacos",
+          "price": "$5.69"
+        },
+        {
+          "name": "Doritos Cheesy Gordita Crunch - Nacho Cheese",
+          "category": "Tacos",
+          "price": "$6.19"
+        },
+        {
+          "name": "Cantina Chicken Crispy Taco",
+          "category": "Tacos",
+          "price": "$3.19"
+        },
+        {
+          "name": "Cantina Chicken Soft Taco",
+          "category": "Tacos",
+          "price": "$3.19"
+        },
+        {
+          "name": "Bean Burrito",
+          "category": "Burritos",
+          "price": "$1.99"
+        },
+        {
+          "name": "Beefy 5-Layer Burrito",
+          "category": "Burritos",
+          "price": "$4.19"
+        },
+        {
+          "name": "Burrito Supreme",
+          "category": "Burritos",
+          "price": "$5.69"
+        },
+        {
+          "name": "Cheesy Bean and Rice Burrito",
+          "category": "Burritos",
+          "price": "$1.49"
+        },
+        {
+          "name": "Cheesy Double Beef Burrito",
+          "category": "Burritos",
+          "price": "$2.99"
+        },
+        {
+          "name": "Chili Cheese Burrito",
+          "category": "Burritos",
+          "price": "$2.99"
+        },
+        {
+          "name": "Grilled Cheese Burrito",
+          "category": "Burritos",
+          "price": "$5.69"
+        },
+        {
+          "name": "Black Bean Grilled Cheese Burrito",
+          "category": "Burritos",
+          "price": "$5.19"
+        },
+        {
+          "name": "Cantina Chicken Burrito",
+          "category": "Burritos",
+          "price": "$6.29"
+        },
+        {
+          "name": "Crunchwrap Supreme",
+          "category": "Specialties",
+          "price": "$6.89"
+        },
+        {
+          "name": "Black Bean Crunchwrap Supreme",
+          "category": "Specialties",
+          "price": "$5.99"
+        },
+        {
+          "name": "Mexican Pizza",
+          "category": "Specialties",
+          "price": "$5.69"
+        },
+        {
+          "name": "Veggie Mexican Pizza",
+          "category": "Specialties",
+          "price": "$5.69"
+        },
+        {
+          "name": "Cheesy Roll Up",
+          "category": "Specialties",
+          "price": "$1.39"
+        },
+        {
+          "name": "Nacho Fries",
+          "category": "Specialties",
+          "price": "$2.89"
+        },
+        {
+          "name": "Large Nacho Fries",
+          "category": "Specialties",
+          "price": "$3.89"
+        },
+        {
+          "name": "Diablo Ranch Steak Nacho Fries",
+          "category": "Specialties",
+          "price": "$5.99"
+        },
+        {
+          "name": "5 Piece Crispy Chicken Nuggets",
+          "category": "Specialties",
+          "price": "$4.49"
+        },
+        {
+          "name": "10 Piece Crispy Chicken Nuggets",
+          "category": "Specialties",
+          "price": "$7.49"
+        },
+        {
+          "name": "Steak Gordita Crunch Duos 2pk",
+          "category": "Specialties",
+          "price": "$5.49"
+        },
+        {
+          "name": "Slow-Roasted Chicken Gordita Crunch Duos 2pk",
+          "category": "Specialties",
+          "price": "$5.49"
+        },
+        {
+          "name": "Creamy Chipotle Crispy Chicken Crunchwrap Slider",
+          "category": "Specialties",
+          "price": "$2.69"
+        },
+        {
+          "name": "Diablo Ranch Crispy Chicken Crunchwrap Slider",
+          "category": "Specialties",
+          "price": "$2.69"
+        },
+        {
+          "name": "Avocado Ranch Chicken Stacker",
+          "category": "Specialties",
+          "price": "$2.99"
+        },
+        {
+          "name": "3 Cheese Chicken Flatbread Melt",
+          "category": "Specialties",
+          "price": "$2.39"
+        },
+        {
+          "name": "Mini Taco Salad",
+          "category": "Specialties",
+          "price": "$2.49"
+        },
+        {
+          "name": "Chicken Quesadilla",
+          "category": "Quesadillas",
+          "price": "$5.89"
+        },
+        {
+          "name": "Steak Quesadilla",
+          "category": "Quesadillas",
+          "price": "$6.39"
+        },
+        {
+          "name": "Cheese Quesadilla",
+          "category": "Quesadillas",
+          "price": "$5.49"
+        },
+        {
+          "name": "Cantina Chicken Rolled Quesadilla",
+          "category": "Quesadillas",
+          "price": "$6.99"
+        },
+        {
+          "name": "Nachos BellGrande",
+          "category": "Nachos",
+          "price": "$6.79"
+        },
+        {
+          "name": "Chips and Nacho Cheese Sauce",
+          "category": "Nachos",
+          "price": "$2.99"
+        },
+        {
+          "name": "Chips and Guacamole",
+          "category": "Nachos",
+          "price": "$3.79"
+        },
+        {
+          "name": "Chips and Nacho Supreme Dip",
+          "category": "Nachos",
+          "price": "$2.49"
+        },
+        {
+          "name": "Cantina Chicken Bowl",
+          "category": "Bowls",
+          "price": "$8.39"
+        },
+        {
+          "name": "Veggie Bowl",
+          "category": "Bowls",
+          "price": "$7.89"
+        },
+        {
+          "name": "Classic Luxe Box",
+          "category": "Boxes & Combos",
+          "price": "$5.00"
+        },
+        {
+          "name": "Supreme Luxe Box",
+          "category": "Boxes & Combos",
+          "price": "$7.00"
+        },
+        {
+          "name": "Discovery Luxe Box",
+          "category": "Boxes & Combos",
+          "price": "$9.00"
+        },
+        {
+          "name": "Crunchwrap Supreme Combo",
+          "category": "Boxes & Combos",
+          "price": "$9.29"
+        },
+        {
+          "name": "3 Crunchy Tacos Combo",
+          "category": "Boxes & Combos",
+          "price": "$8.99"
+        },
+        {
+          "name": "Cheesy Fiesta Potatoes",
+          "category": "Snacks & Sweets",
+          "price": "$2.89"
+        },
+        {
+          "name": "Black Beans and Rice",
+          "category": "Snacks & Sweets",
+          "price": "$2.99"
+        },
+        {
+          "name": "Pintos N Cheese",
+          "category": "Snacks & Sweets",
+          "price": "$2.99"
+        },
+        {
+          "name": "Cinnamon Twists",
+          "category": "Snacks & Sweets",
+          "price": "$1.69"
+        },
+        {
+          "name": "Cinnabon Delights 2 Pack",
+          "category": "Snacks & Sweets",
+          "price": "$2.89"
+        },
+        {
+          "name": "Cinnabon Delights 12 Pack",
+          "category": "Snacks & Sweets",
+          "price": "$7.39"
+        },
+        {
+          "name": "Caramel Apple Empanada",
+          "category": "Snacks & Sweets",
+          "price": "$2.99"
+        },
+        {
+          "name": "Cheesy Toasted Breakfast Burrito Bacon",
+          "category": "Breakfast",
+          "price": "$2.19"
+        },
+        {
+          "name": "Cheesy Toasted Breakfast Burrito Sausage",
+          "category": "Breakfast",
+          "price": "$2.19"
+        },
+        {
+          "name": "Cheesy Toasted Breakfast Burrito Potato",
+          "category": "Breakfast",
+          "price": "$1.99"
+        },
+        {
+          "name": "Grande Toasted Breakfast Burrito Steak",
+          "category": "Breakfast",
+          "price": "$4.99"
+        },
+        {
+          "name": "Breakfast Crunchwrap Bacon",
+          "category": "Breakfast",
+          "price": "$4.99"
+        },
+        {
+          "name": "Breakfast Crunchwrap Sausage",
+          "category": "Breakfast",
+          "price": "$4.99"
+        },
+        {
+          "name": "Breakfast California Crunchwrap",
+          "category": "Breakfast",
+          "price": "$5.19"
+        },
+        {
+          "name": "Breakfast Quesadilla Sausage",
+          "category": "Breakfast",
+          "price": "$4.49"
+        },
+        {
+          "name": "Hash Brown",
+          "category": "Breakfast",
+          "price": "$1.99"
+        },
+        {
+          "name": "MTN DEW Baja Blast",
+          "category": "Drinks",
+          "price": "$3.19"
+        },
+        {
+          "name": "MTN DEW Baja Blast Freeze",
+          "category": "Drinks",
+          "price": "$4.19"
+        },
+        {
+          "name": "MOUNTAIN DEW BAJA BLAST dirty soda",
+          "category": "Drinks",
+          "price": "$3.29"
+        },
+        {
+          "name": "Pepsi",
+          "category": "Drinks",
+          "price": "$3.19"
+        },
+        {
+          "name": "Wild Strawberry Freeze",
+          "category": "Drinks",
+          "price": "$4.19"
+        },
+        {
+          "name": "Strawberry Passionfruit Agua Refresca",
+          "category": "Drinks",
+          "price": "$3.89"
+        },
+        {
+          "name": "Mango Peach Agua Refresca",
+          "category": "Drinks",
+          "price": "$3.89"
+        },
+        {
+          "name": "Dragonfruit Berry Agua Refresca",
+          "category": "Drinks",
+          "price": "$3.89"
+        },
+        {
+          "name": "Premium Hot Coffee",
+          "category": "Drinks",
+          "price": "$2.39"
+        },
+        {
+          "name": "Regular Iced Coffee",
+          "category": "Drinks",
+          "price": "$2.19"
+        },
+        {
+          "name": "Iced Cinnabon Delights Coffee",
+          "category": "Drinks",
+          "price": "$2.89"
+        }
+      ]
+    },
+    {
+      "chain": "Chick-fil-A",
+      "match": [
+        "chickfila",
+        "chick fil a"
+      ],
+      "menuSourceName": "chick-fil-a.com",
+      "menuSourceUrl": "https://www.chick-fil-a.com/menu",
+      "menuItems": [
+        {
+          "name": "Chick-fil-A Chicken Sandwich",
+          "category": "Entrees"
+        },
+        {
+          "name": "Chick-fil-A Deluxe Sandwich",
+          "category": "Entrees"
+        },
+        {
+          "name": "Spicy Chicken Sandwich",
+          "category": "Entrees"
+        },
+        {
+          "name": "Spicy Deluxe Sandwich",
+          "category": "Entrees"
+        },
+        {
+          "name": "Chick-fil-A Nuggets",
+          "category": "Entrees"
+        },
+        {
+          "name": "Grilled Nuggets",
+          "category": "Entrees"
+        },
+        {
+          "name": "Chick-fil-A Chick-n-Strips",
+          "category": "Entrees"
+        },
+        {
+          "name": "Grilled Chicken Sandwich",
+          "category": "Entrees"
+        },
+        {
+          "name": "Chick-fil-A Grilled Chicken Club Sandwich",
+          "category": "Entrees"
+        },
+        {
+          "name": "Chick-fil-A Cool Wrap",
+          "category": "Entrees"
+        },
+        {
+          "name": "Chicken & Waffles Sandwich",
+          "category": "Entrees"
+        },
+        {
+          "name": "Cobb Salad",
+          "category": "Salads"
+        },
+        {
+          "name": "Spicy Southwest Salad",
+          "category": "Salads"
+        },
+        {
+          "name": "Market Salad",
+          "category": "Salads"
+        },
+        {
+          "name": "Chick-fil-A Waffle Potato Fries",
+          "category": "Sides"
+        },
+        {
+          "name": "Mac & Cheese",
+          "category": "Sides"
+        },
+        {
+          "name": "Fruit Cup",
+          "category": "Sides"
+        },
+        {
+          "name": "Side Salad",
+          "category": "Sides"
+        },
+        {
+          "name": "Chicken Noodle Soup",
+          "category": "Sides"
+        },
+        {
+          "name": "Kale Crunch Side",
+          "category": "Sides"
+        },
+        {
+          "name": "Waffle Potato Chips",
+          "category": "Sides"
+        },
+        {
+          "name": "Buddy Fruits Apple Sauce",
+          "category": "Sides"
+        },
+        {
+          "name": "Chick-fil-A Chicken Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Spicy Chicken Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Chick-fil-A Chick-n-Minis",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Egg White Grill",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Hash Brown Scramble Burrito",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Hash Brown Scramble Bowl",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Chicken, Egg & Cheese Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Bacon, Egg & Cheese Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Sausage, Egg & Cheese Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Chicken, Egg & Cheese Muffin",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Bacon, Egg & Cheese Muffin",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Sausage, Egg & Cheese Muffin",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Chicken & Waffles Breakfast Sandwich",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Hash Browns",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Berry Parfait",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Nuggets Kid's Meal",
+          "category": "Kid's Meals"
+        },
+        {
+          "name": "Chocolate Milkshake",
+          "category": "Treats"
+        },
+        {
+          "name": "Vanilla Milkshake",
+          "category": "Treats"
+        },
+        {
+          "name": "Cookies & Cream Milkshake",
+          "category": "Treats"
+        },
+        {
+          "name": "Strawberry Milkshake",
+          "category": "Treats"
+        },
+        {
+          "name": "S'mores Milkshake",
+          "category": "Treats"
+        },
+        {
+          "name": "Frosted Lemonade",
+          "category": "Treats"
+        },
+        {
+          "name": "Pineapple Dragonfruit Frosted Lemonade",
+          "category": "Treats"
+        },
+        {
+          "name": "Frosted Coffee",
+          "category": "Treats"
+        },
+        {
+          "name": "S'mores Frosted Coffee",
+          "category": "Treats"
+        },
+        {
+          "name": "Chick-fil-A Icedream Cone",
+          "category": "Treats"
+        },
+        {
+          "name": "Chick-fil-A Icedream Cup",
+          "category": "Treats"
+        },
+        {
+          "name": "Chocolate Chunk Cookie",
+          "category": "Treats"
+        },
+        {
+          "name": "Chocolate Fudge Brownie",
+          "category": "Treats"
+        },
+        {
+          "name": "Chick-fil-A Lemonade",
+          "category": "Beverages"
+        },
+        {
+          "name": "Chick-fil-A Diet Lemonade",
+          "category": "Beverages"
+        },
+        {
+          "name": "Freshly-Brewed Sweetened Iced Tea",
+          "category": "Beverages"
+        },
+        {
+          "name": "Freshly-Brewed Unsweetened Iced Tea",
+          "category": "Beverages"
+        },
+        {
+          "name": "Sunjoy",
+          "category": "Beverages"
+        },
+        {
+          "name": "Pineapple Dragonfruit Lemonade",
+          "category": "Beverages"
+        },
+        {
+          "name": "Coca-Cola",
+          "category": "Beverages"
+        },
+        {
+          "name": "Dr Pepper",
+          "category": "Beverages"
+        },
+        {
+          "name": "Simply Orange",
+          "category": "Beverages"
+        },
+        {
+          "name": "Hot Coffee",
+          "category": "Coffee"
+        },
+        {
+          "name": "Iced Coffee",
+          "category": "Coffee"
+        },
+        {
+          "name": "Cream Cold Brew",
+          "category": "Coffee"
+        },
+        {
+          "name": "Toasted Marshmallow Hot Coffee",
+          "category": "Coffee"
+        }
+      ]
+    },
+    {
+      "chain": "Sonic",
+      "match": [
+        "sonic drivein",
+        "sonic drive in",
+        "sonic"
+      ],
+      "sourceName": "stories.inspirebrands.com",
+      "sourceUrl": "https://stories.inspirebrands.com/sonic-7-big-deal-meal/",
+      "items": [
+        {
+          "name": "$7 Big Deal Meal",
+          "price": "$7",
+          "note": "Cheeseburger, medium tots or fries, drink, vanilla sundae",
+          "source": {
+            "url": "https://stories.inspirebrands.com/sonic-7-big-deal-meal/",
+            "date": "2026-09-02",
+            "quote": "The $7 Big Deal Meal is a value meal from SONIC that includes a SONIC Cheeseburger, choice of Medium Tots or Fries, a Medium Drink and a Vanilla Sundae for just $7. ... The $7 Big Deal Meal is available now for a limited time at participating SONIC locations nationwide."
+          }
+        },
+        {
+          "name": "Jr Bacon Cheeseburger",
+          "price": "$1.99",
+          "note": "$1.99 Menu",
+          "source": {
+            "url": "https://stories.inspirebrands.com/sonic-debuts-the-7-big-deal-meal-bringing-more-of-what-guests-want-for-less/",
+            "date": "2026-06-01",
+            "quote": "The updated $1.99 Menu includes: Jr Bacon Cheeseburger, Vanilla Soft Serve Cup, Cheesy Baja Crispy Tender Wrap, Small Root Beer Float"
+          }
+        },
+        {
+          "name": "Cheesy Baja Crispy Tender Wrap",
+          "price": "$1.99",
+          "note": "$1.99 Menu",
+          "source": {
+            "url": "https://stories.inspirebrands.com/sonic-debuts-the-7-big-deal-meal-bringing-more-of-what-guests-want-for-less/",
+            "date": "2026-06-01",
+            "quote": "The updated $1.99 Menu includes: Jr Bacon Cheeseburger, Vanilla Soft Serve Cup, Cheesy Baja Crispy Tender Wrap, Small Root Beer Float"
+          }
+        },
+        {
+          "name": "Small Root Beer Float",
+          "price": "$1.99",
+          "note": "$1.99 Menu",
+          "source": {
+            "url": "https://stories.inspirebrands.com/sonic-debuts-the-7-big-deal-meal-bringing-more-of-what-guests-want-for-less/",
+            "date": "2026-06-01",
+            "quote": "The updated $1.99 Menu includes: Jr Bacon Cheeseburger, Vanilla Soft Serve Cup, Cheesy Baja Crispy Tender Wrap, Small Root Beer Float"
+          }
+        },
+        {
+          "name": "Vanilla Soft Serve Cup",
+          "price": "$1.99",
+          "note": "$1.99 Menu",
+          "source": {
+            "url": "https://stories.inspirebrands.com/sonic-debuts-the-7-big-deal-meal-bringing-more-of-what-guests-want-for-less/",
+            "date": "2026-06-01",
+            "quote": "The updated $1.99 Menu includes: Jr Bacon Cheeseburger, Vanilla Soft Serve Cup, Cheesy Baja Crispy Tender Wrap, Small Root Beer Float"
+          }
+        }
+      ],
+      "menuSourceName": "sonicdrivein.com",
+      "menuSourceUrl": "https://www.sonicdrivein.com/menu/",
+      "menuItems": [
+        {
+          "name": "SONIC Cheeseburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "SuperSONIC Double Cheeseburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "SuperSONIC Bacon Double Cheeseburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "SuperSONIC Jalapeno Double Cheeseburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Jr Double Cheeseburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "All-American SONIC Smasher",
+          "category": "Burgers"
+        },
+        {
+          "name": "All-American Bacon SONIC Smasher",
+          "category": "Burgers"
+        },
+        {
+          "name": "Original SONIC Smasher",
+          "category": "Burgers"
+        },
+        {
+          "name": "Hatch Green Chile Cheeseburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Crispy Tenders",
+          "category": "Chicken"
+        },
+        {
+          "name": "Premium Chicken Bites",
+          "category": "Chicken"
+        },
+        {
+          "name": "Crispy Chicken Sandwich",
+          "category": "Chicken"
+        },
+        {
+          "name": "Crispy Tender Dinner",
+          "category": "Chicken"
+        },
+        {
+          "name": "Chicken Club TOASTER",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "BLT TOASTER",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Grilled Cheese Sandwich",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Philly Cheesesteak",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Pork Tenderloin Sandwich",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Country Fried Steak Sandwich",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Chili Cheese Coney",
+          "category": "Hot Dogs"
+        },
+        {
+          "name": "All-American Dog",
+          "category": "Hot Dogs"
+        },
+        {
+          "name": "Footlong Quarter Pound Coney",
+          "category": "Hot Dogs"
+        },
+        {
+          "name": "Corn Dog",
+          "category": "Hot Dogs"
+        },
+        {
+          "name": "Chicago Dog",
+          "category": "Hot Dogs"
+        },
+        {
+          "name": "New York Dog",
+          "category": "Hot Dogs"
+        },
+        {
+          "name": "Tots",
+          "category": "Snacks & Sides"
+        },
+        {
+          "name": "Chili Cheese Tots",
+          "category": "Snacks & Sides"
+        },
+        {
+          "name": "Cheese Tots",
+          "category": "Snacks & Sides"
+        },
+        {
+          "name": "Groovy Fries",
+          "category": "Snacks & Sides"
+        },
+        {
+          "name": "Chili Cheese Groovy Fries",
+          "category": "Snacks & Sides"
+        },
+        {
+          "name": "Cheese Groovy Fries",
+          "category": "Snacks & Sides"
+        },
+        {
+          "name": "Onion Rings",
+          "category": "Snacks & Sides"
+        },
+        {
+          "name": "Mozzarella Sticks",
+          "category": "Snacks & Sides"
+        },
+        {
+          "name": "Ched 'R' Peppers",
+          "category": "Snacks & Sides"
+        },
+        {
+          "name": "Ched 'R' Bites",
+          "category": "Snacks & Sides"
+        },
+        {
+          "name": "Soft Pretzel Twist",
+          "category": "Snacks & Sides"
+        },
+        {
+          "name": "Sausage BREAKFAST TOASTER",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Bacon BREAKFAST TOASTER",
+          "category": "Breakfast"
+        },
+        {
+          "name": "SuperSONIC Breakfast Burrito",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Ultimate Meat & Cheese Breakfast Burrito",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Bacon Breakfast Burrito",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Sausage Breakfast Burrito",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Sausage, Egg and Cheese CroisSONIC",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Bacon, Egg and Cheese CroisSONIC",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Sausage, Egg and Cheese Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "French Toast Sticks",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Original Cold Brew Iced Coffee",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Cherry Limeade",
+          "category": "Drinks"
+        },
+        {
+          "name": "Limeade",
+          "category": "Drinks"
+        },
+        {
+          "name": "Strawberry Limeade",
+          "category": "Drinks"
+        },
+        {
+          "name": "Diet Cherry Limeade",
+          "category": "Drinks"
+        },
+        {
+          "name": "All Natural Lemonade",
+          "category": "Drinks"
+        },
+        {
+          "name": "Strawberry Lemonade",
+          "category": "Drinks"
+        },
+        {
+          "name": "Cherry Slush",
+          "category": "Drinks"
+        },
+        {
+          "name": "Blue Raspberry Slush",
+          "category": "Drinks"
+        },
+        {
+          "name": "Strawberry Slush",
+          "category": "Drinks"
+        },
+        {
+          "name": "Grape Slush",
+          "category": "Drinks"
+        },
+        {
+          "name": "Cherry Cream Slush",
+          "category": "Drinks"
+        },
+        {
+          "name": "Blue Coconut Cream Slush",
+          "category": "Drinks"
+        },
+        {
+          "name": "SONIC Blast with OREO Cookie Pieces",
+          "category": "Sweets"
+        },
+        {
+          "name": "SONIC Blast with REESE'S",
+          "category": "Sweets"
+        },
+        {
+          "name": "SONIC Blast with M&M'S Chocolate Candies",
+          "category": "Sweets"
+        },
+        {
+          "name": "Chocolate Chip Cookie Dough Blast",
+          "category": "Sweets"
+        },
+        {
+          "name": "Chocolate Classic Shake",
+          "category": "Sweets"
+        },
+        {
+          "name": "Vanilla Classic Shake",
+          "category": "Sweets"
+        },
+        {
+          "name": "Strawberry Classic Shake",
+          "category": "Sweets"
+        },
+        {
+          "name": "Banana Classic Shake",
+          "category": "Sweets"
+        },
+        {
+          "name": "OREO Cheesecake Master Shake",
+          "category": "Sweets"
+        },
+        {
+          "name": "Hot Fudge Sundae",
+          "category": "Sweets"
+        }
+      ]
+    },
+    {
+      "chain": "Arby's",
+      "match": [
+        "arbys"
+      ],
+      "sourceName": "stories.inspirebrands.com",
+      "sourceUrl": "https://stories.inspirebrands.com/arbys-new-buffalo-ranch-chicken-sandwich/",
+      "items": [
+        {
+          "name": "Meat & 3 Value Box",
+          "price": "$7.99",
+          "note": "Value meal",
+          "source": {
+            "url": "https://stories.inspirebrands.com/arbys-new-buffalo-ranch-chicken-sandwich/",
+            "date": "2026-08-03",
+            "quote": "Beginning today, Arby's is adding the new Buffalo Ranch Chicken Sandwich to the lineup, giving guests a satisfying new entrée option in the $7.99 value meal."
+          }
+        },
+        {
+          "name": "Sliders",
+          "price": "$1.99",
+          "note": "Limited time. Roast Beef, Buffalo Chicken, Crispy Chicken or Ham",
+          "source": {
+            "url": "https://stories.inspirebrands.com/arbys-1-99-slider-menu/",
+            "date": "2026-06-24",
+            "quote": "Arby's $1.99 Sliders are available for a limited time at participating locations nationwide."
+          }
+        }
+      ],
+      "menuSourceName": "arbys.com",
+      "menuSourceUrl": "https://www.arbys.com/menu/",
+      "menuItems": [
+        {
+          "name": "Classic Roast Beef",
+          "category": "Slow Roasted Beef"
+        },
+        {
+          "name": "Double Roast Beef",
+          "category": "Slow Roasted Beef"
+        },
+        {
+          "name": "Half Pound Roast Beef",
+          "category": "Slow Roasted Beef"
+        },
+        {
+          "name": "Classic Beef 'n Cheddar",
+          "category": "Slow Roasted Beef"
+        },
+        {
+          "name": "Double Beef 'n Cheddar",
+          "category": "Slow Roasted Beef"
+        },
+        {
+          "name": "Half Pound Beef 'n Cheddar",
+          "category": "Slow Roasted Beef"
+        },
+        {
+          "name": "Classic French Dip & Swiss",
+          "category": "Slow Roasted Beef"
+        },
+        {
+          "name": "Crispy Chicken Sandwich",
+          "category": "Crispy Juicy Chicken"
+        },
+        {
+          "name": "Buffalo Chicken Sandwich",
+          "category": "Crispy Juicy Chicken"
+        },
+        {
+          "name": "Chicken Bacon Swiss Sandwich",
+          "category": "Crispy Juicy Chicken"
+        },
+        {
+          "name": "Chicken Cordon Bleu",
+          "category": "Crispy Juicy Chicken"
+        },
+        {
+          "name": "Chicken Tenders",
+          "category": "Crispy Juicy Chicken"
+        },
+        {
+          "name": "Ham & Swiss Melt",
+          "category": "Crafted Sandwiches"
+        },
+        {
+          "name": "Roast Turkey Ranch & Bacon Sandwich",
+          "category": "Crafted Sandwiches"
+        },
+        {
+          "name": "Greek Gyro",
+          "category": "Crafted Sandwiches"
+        },
+        {
+          "name": "Corned Beef Reuben",
+          "category": "Crafted Sandwiches"
+        },
+        {
+          "name": "Roast Beef Slider",
+          "category": "Value Menu"
+        },
+        {
+          "name": "Chicken Slider",
+          "category": "Value Menu"
+        },
+        {
+          "name": "Buffalo Chicken Slider",
+          "category": "Value Menu"
+        },
+        {
+          "name": "Ham Slider",
+          "category": "Value Menu"
+        },
+        {
+          "name": "Ranch Chicken Wrap",
+          "category": "Value Menu"
+        },
+        {
+          "name": "Honey Mustard Chicken Wrap",
+          "category": "Value Menu"
+        },
+        {
+          "name": "$6 3PC Tenders & 4PC Mozzarella Sticks",
+          "category": "Value Menu",
+          "price": "$6"
+        },
+        {
+          "name": "Curly Fries",
+          "category": "Sides & Snacks"
+        },
+        {
+          "name": "Crinkle Fries",
+          "category": "Sides & Snacks"
+        },
+        {
+          "name": "Potato Cakes",
+          "category": "Sides & Snacks"
+        },
+        {
+          "name": "Mozzarella Sticks",
+          "category": "Sides & Snacks"
+        },
+        {
+          "name": "Jalapeño Bites",
+          "category": "Sides & Snacks"
+        },
+        {
+          "name": "White Cheddar Mac 'n Cheese",
+          "category": "Sides & Snacks"
+        },
+        {
+          "name": "Jamocha Shake",
+          "category": "Desserts"
+        },
+        {
+          "name": "Chocolate Shake",
+          "category": "Desserts"
+        },
+        {
+          "name": "Vanilla Shake",
+          "category": "Desserts"
+        },
+        {
+          "name": "Apple Turnover",
+          "category": "Desserts"
+        },
+        {
+          "name": "Cherry Turnover",
+          "category": "Desserts"
+        },
+        {
+          "name": "Peach Cobbler Roll 2PC",
+          "category": "Desserts"
+        },
+        {
+          "name": "Soft Drink",
+          "category": "Beverages"
+        },
+        {
+          "name": "Sweet Tea",
+          "category": "Beverages"
+        },
+        {
+          "name": "Unsweet Tea",
+          "category": "Beverages"
+        },
+        {
+          "name": "Classic Lemonade",
+          "category": "Beverages"
+        },
+        {
+          "name": "Strawberry Lemonade",
+          "category": "Beverages"
+        },
+        {
+          "name": "Classic Shirley Temple",
+          "category": "Beverages"
+        },
+        {
+          "name": "Shirley 'n Cream",
+          "category": "Beverages"
+        },
+        {
+          "name": "Bottled Water",
+          "category": "Beverages"
+        }
       ]
     },
     {
@@ -228,6 +2156,110 @@
             "date": "2026-09-28",
             "quote": "The new Honey Chicken Biscuit will be available at participating Popeyes restaurants, the Popeyes app, and Popeyes.com nationwide beginning September 28 for $5.*"
           }
+        }
+      ],
+      "menuSourceName": "news.popeyes.com menu list",
+      "menuSourceUrl": "https://news.popeyes.com/menu-item-list",
+      "menuItems": [
+        {
+          "name": "Bone in Chicken",
+          "category": "Chicken"
+        },
+        {
+          "name": "Tenders",
+          "category": "Chicken"
+        },
+        {
+          "name": "Blackened Tenders",
+          "category": "Chicken"
+        },
+        {
+          "name": "Nuggets",
+          "category": "Chicken"
+        },
+        {
+          "name": "Signature Hot Wing",
+          "category": "Chicken"
+        },
+        {
+          "name": "Sweet 'N Spicy Wing",
+          "category": "Chicken"
+        },
+        {
+          "name": "Ghost Pepper Wings",
+          "category": "Chicken"
+        },
+        {
+          "name": "Honey BBQ Wings",
+          "category": "Chicken"
+        },
+        {
+          "name": "Roasted Garlic Parmesan Wings",
+          "category": "Chicken"
+        },
+        {
+          "name": "Chicken Sandwich",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Spicy Chicken Sandwich",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Blackened Chicken Sandwich",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Spicy Blackened Chicken Sandwich",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Bacon & Cheese Chicken Sandwich",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Blackened Bacon & Cheese Chicken Sandwich",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Popcorn Shrimp",
+          "category": "Seafood"
+        },
+        {
+          "name": "Cajun Fries",
+          "category": "Sides"
+        },
+        {
+          "name": "Red Beans & Rice",
+          "category": "Sides"
+        },
+        {
+          "name": "Mashed Potatoes with Cajun Gravy",
+          "category": "Sides"
+        },
+        {
+          "name": "Mac & Cheese",
+          "category": "Sides"
+        },
+        {
+          "name": "Coleslaw",
+          "category": "Sides"
+        },
+        {
+          "name": "Biscuit",
+          "category": "Sides"
+        },
+        {
+          "name": "Cinnamon Apple Pie",
+          "category": "Desserts"
+        },
+        {
+          "name": "Strawberry Biscuit",
+          "category": "Desserts"
+        },
+        {
+          "name": "Oreo Cheesecake Cup",
+          "category": "Desserts"
         }
       ]
     },
@@ -289,6 +2321,2307 @@
             "date": "2026-05-04",
             "quote": "With four different bucket meals all priced at just $10, including the nuggets bucket returning Friday to round out the week, the lineup delivers unbeatable value worth jumping on while it lasts."
           }
+        }
+      ],
+      "menuSourceName": "kfc.com",
+      "menuSourceUrl": "https://www.kfc.com/menu",
+      "menuItems": [
+        {
+          "name": "8 Piece Fried Chicken Bucket",
+          "category": "Fried Chicken"
+        },
+        {
+          "name": "3 Piece Fried Chicken Box",
+          "category": "Fried Chicken"
+        },
+        {
+          "name": "3 Piece Fried Chicken Combo",
+          "category": "Fried Chicken"
+        },
+        {
+          "name": "Hot Ranch 6 pc. Hot Wings Combo",
+          "category": "Fried Chicken"
+        },
+        {
+          "name": "KFC Chicken Sandwich",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "KFC Spicy Chicken Sandwich",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Chicken Tender Snacker",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Original Recipe Chicken Little Sandwich",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "5-Piece Original Recipe Chicken Tenders Combo",
+          "category": "Tenders & Nuggets"
+        },
+        {
+          "name": "8 Piece Chicken Nuggets",
+          "category": "Tenders & Nuggets"
+        },
+        {
+          "name": "Popcorn Chicken ALC",
+          "category": "Tenders & Nuggets"
+        },
+        {
+          "name": "Mashed Potato Bowl",
+          "category": "Bowls & Pot Pies"
+        },
+        {
+          "name": "Chicken Pot Pie",
+          "category": "Bowls & Pot Pies"
+        },
+        {
+          "name": "Mac & Cheese Bowl",
+          "category": "Bowls & Pot Pies",
+          "price": "$5"
+        },
+        {
+          "name": "The $7 Box Feast",
+          "category": "Box Feasts & Family Meals",
+          "price": "$7"
+        },
+        {
+          "name": "The $9 Box Feast",
+          "category": "Box Feasts & Family Meals",
+          "price": "$9"
+        },
+        {
+          "name": "The $11 Box Feast",
+          "category": "Box Feasts & Family Meals",
+          "price": "$11"
+        },
+        {
+          "name": "Fan Favorite's Box",
+          "category": "Box Feasts & Family Meals"
+        },
+        {
+          "name": "KFC Secret Recipe French Fries",
+          "category": "Sides"
+        },
+        {
+          "name": "Mashed Potatoes & Gravy",
+          "category": "Sides"
+        },
+        {
+          "name": "Potato Wedges",
+          "category": "Sides"
+        },
+        {
+          "name": "Hot Ranch Loaded Wedges",
+          "category": "Sides"
+        },
+        {
+          "name": "Chocolate Chip Cake",
+          "category": "Desserts"
+        }
+      ]
+    },
+    {
+      "chain": "Jack in the Box",
+      "match": [
+        "jack in the box"
+      ],
+      "menuSourceName": "jackinthebox.com",
+      "menuSourceUrl": "https://www.jackinthebox.com/menu",
+      "menuItems": [
+        {
+          "name": "Jumbo Jack Cheeseburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Jr. Jumbo Jack Cheeseburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Bacon Ultimate Cheeseburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Buttery Smashed Jack",
+          "category": "Burgers"
+        },
+        {
+          "name": "Bacon Double Smashed Jack",
+          "category": "Burgers"
+        },
+        {
+          "name": "Hot Mess Cheeseburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Hot Mess Double Cheeseburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Jr. Bacon Cheeseburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Jack's Spicy Chicken",
+          "category": "Chicken"
+        },
+        {
+          "name": "Jack's Spicy Chicken w/ Cheese",
+          "category": "Chicken"
+        },
+        {
+          "name": "Cluck Sandwich",
+          "category": "Chicken"
+        },
+        {
+          "name": "5PC Crispy Chicken Strips",
+          "category": "Chicken"
+        },
+        {
+          "name": "8PC Chicken Nuggets",
+          "category": "Chicken"
+        },
+        {
+          "name": "Chicken Teriyaki Bowl w/ Brown Rice",
+          "category": "Chicken"
+        },
+        {
+          "name": "Grilled Chicken Teriyaki Protein Bowl",
+          "category": "Chicken"
+        },
+        {
+          "name": "Monster Tacos",
+          "category": "Tacos"
+        },
+        {
+          "name": "Jumbo Egg Rolls (3)",
+          "category": "Snacks & Fries"
+        },
+        {
+          "name": "Loaded Breakfast Sandwich",
+          "category": "All Day Breakfast"
+        },
+        {
+          "name": "Ultimate Breakfast Sandwich",
+          "category": "All Day Breakfast"
+        },
+        {
+          "name": "Grande Sausage Burrito",
+          "category": "All Day Breakfast"
+        },
+        {
+          "name": "Sourdough Grilled Cheese",
+          "category": "Kids"
+        },
+        {
+          "name": "Oreo Shake",
+          "category": "Shakes & Desserts"
+        },
+        {
+          "name": "Mini Churros",
+          "category": "Shakes & Desserts"
+        },
+        {
+          "name": "Chocolate Overload Cake",
+          "category": "Shakes & Desserts"
+        }
+      ]
+    },
+    {
+      "chain": "Whataburger",
+      "match": [
+        "whataburger"
+      ],
+      "menuSourceName": "Whataburger to-go menu (2022)",
+      "menuSourceUrl": "https://stories.whataburger.com/download/1207192/wat-22173-q3-2022-togomenu-sweetspicy-final.pdf",
+      "menuItems": [
+        {
+          "name": "Whataburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Double Meat Whataburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Triple Meat Whataburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Jalapeño & Cheese Whataburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Bacon & Cheese Whataburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Avocado Bacon Burger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Whataburger Jr.",
+          "category": "Burgers"
+        },
+        {
+          "name": "Double Meat Whataburger Jr.",
+          "category": "Burgers"
+        },
+        {
+          "name": "Whataburger Patty Melt",
+          "category": "All-Time Favorites"
+        },
+        {
+          "name": "Sweet & Spicy Bacon Burger",
+          "category": "All-Time Favorites"
+        },
+        {
+          "name": "Honey BBQ Chicken Strip Sandwich",
+          "category": "All-Time Favorites"
+        },
+        {
+          "name": "Whatachick'n Sandwich",
+          "category": "Chicken"
+        },
+        {
+          "name": "Grilled Chicken Sandwich",
+          "category": "Chicken"
+        },
+        {
+          "name": "Spicy Chicken Sandwich",
+          "category": "Chicken"
+        },
+        {
+          "name": "Whatachick'n Strips",
+          "category": "Chicken"
+        },
+        {
+          "name": "Honey Butter Chicken Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Taquito with Cheese",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Breakfast On A Bun",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Biscuit Sandwich",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Pancake Platter",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Breakfast Platter",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Biscuit & Gravy",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Buttermilk Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Egg Sandwich",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Apple & Cranberry Chicken Salad",
+          "category": "Salads"
+        },
+        {
+          "name": "Cobb Salad",
+          "category": "Salads"
+        },
+        {
+          "name": "French Fries",
+          "category": "Sides"
+        },
+        {
+          "name": "Onion Rings",
+          "category": "Sides"
+        },
+        {
+          "name": "Apple Slices",
+          "category": "Sides"
+        },
+        {
+          "name": "Hot Apple Pie",
+          "category": "Desserts"
+        },
+        {
+          "name": "Cinnamon Roll",
+          "category": "Desserts"
+        },
+        {
+          "name": "Chocolate Chip Cookie",
+          "category": "Desserts"
+        },
+        {
+          "name": "Chocolate Shake",
+          "category": "Shakes"
+        },
+        {
+          "name": "Vanilla Shake",
+          "category": "Shakes"
+        },
+        {
+          "name": "Strawberry Shake",
+          "category": "Shakes"
+        },
+        {
+          "name": "Justaburger Meal",
+          "category": "Kids Meals"
+        },
+        {
+          "name": "Soft Drinks",
+          "category": "Beverages"
+        },
+        {
+          "name": "Sweet Tea",
+          "category": "Beverages"
+        },
+        {
+          "name": "Unsweet Tea",
+          "category": "Beverages"
+        },
+        {
+          "name": "Coffee",
+          "category": "Beverages"
+        },
+        {
+          "name": "Orange Juice",
+          "category": "Beverages"
+        },
+        {
+          "name": "Milk",
+          "category": "Beverages"
+        }
+      ]
+    },
+    {
+      "chain": "Carl's Jr.",
+      "match": [
+        "carls jr"
+      ],
+      "menuSourceName": "carlsjr.com",
+      "menuSourceUrl": "https://www.carlsjr.com/full-menu",
+      "menuItems": [
+        {
+          "name": "Famous Star",
+          "category": "Charbroiled Burgers"
+        },
+        {
+          "name": "Western Bacon Cheeseburger",
+          "category": "Charbroiled Burgers"
+        },
+        {
+          "name": "Big Carl",
+          "category": "Charbroiled Burgers"
+        },
+        {
+          "name": "Guacamole Bacon Burger",
+          "category": "Charbroiled Burgers"
+        },
+        {
+          "name": "El Diablo",
+          "category": "Charbroiled Burgers"
+        },
+        {
+          "name": "Angus Maximus",
+          "category": "Charbroiled Burgers"
+        },
+        {
+          "name": "Big Cheeseburger",
+          "category": "Charbroiled Burgers"
+        },
+        {
+          "name": "California Classic Double Cheeseburger",
+          "category": "Charbroiled Burgers"
+        },
+        {
+          "name": "Double Cheeseburger",
+          "category": "Charbroiled Burgers"
+        },
+        {
+          "name": "Jalapeño Double Cheeseburger",
+          "category": "Charbroiled Burgers"
+        },
+        {
+          "name": "Cheeseburger",
+          "category": "Charbroiled Burgers"
+        },
+        {
+          "name": "Hamburger",
+          "category": "Charbroiled Burgers"
+        },
+        {
+          "name": "Spicy Chicken Maxx",
+          "category": "Chicken & More"
+        },
+        {
+          "name": "Fiery Chicken Maxx",
+          "category": "Chicken & More"
+        },
+        {
+          "name": "Hand-Breaded Chicken Sandwich",
+          "category": "Chicken & More"
+        },
+        {
+          "name": "Hand-Breaded Bacon Swiss Chicken Sandwich",
+          "category": "Chicken & More"
+        },
+        {
+          "name": "Hand-Breaded Chicken Tenders",
+          "category": "Chicken & More"
+        },
+        {
+          "name": "Chicken Stars",
+          "category": "Chicken & More"
+        },
+        {
+          "name": "Charbroiled Chicken Club Sandwich",
+          "category": "Chicken & More"
+        },
+        {
+          "name": "Charbroiled Santa Fe Chicken Sandwich",
+          "category": "Chicken & More"
+        },
+        {
+          "name": "Charbroiled BBQ Chicken Sandwich",
+          "category": "Chicken & More"
+        },
+        {
+          "name": "Spicy Chicken Sandwich",
+          "category": "Chicken & More"
+        },
+        {
+          "name": "Fried Zucchini Star",
+          "category": "Chicken & More"
+        },
+        {
+          "name": "The Breakfast Burger",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Grilled Cheese Breakfast Sandwich",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Sausage Egg & Cheese Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Bacon Egg & Cheese Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Monster Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Biscuit 'N' Gravy",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Steak and Egg Burrito",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Loaded Breakfast Burrito",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Bacon, Egg, and Cheese Burrito",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Big Country Breakfast Burrito",
+          "category": "Breakfast"
+        },
+        {
+          "name": "French Toast Dips",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Hash Rounds",
+          "category": "Breakfast"
+        },
+        {
+          "name": "BYOB - Build Your Own Bag",
+          "category": "Star Deals"
+        },
+        {
+          "name": "Famous for Four",
+          "category": "Star Deals"
+        },
+        {
+          "name": "Feast for Four",
+          "category": "Star Deals"
+        },
+        {
+          "name": "Natural-Cut French Fries",
+          "category": "Sides & Desserts"
+        },
+        {
+          "name": "Waffle Fries",
+          "category": "Sides & Desserts"
+        },
+        {
+          "name": "Onion Rings",
+          "category": "Sides & Desserts"
+        },
+        {
+          "name": "Fried Zucchini",
+          "category": "Sides & Desserts"
+        },
+        {
+          "name": "Jalapeno POPPERS Bites",
+          "category": "Sides & Desserts"
+        },
+        {
+          "name": "Chocolate Cake",
+          "category": "Sides & Desserts"
+        },
+        {
+          "name": "Strawberry Swirl Cheesecake",
+          "category": "Sides & Desserts"
+        },
+        {
+          "name": "Chocolatey Chip Cookies",
+          "category": "Sides & Desserts"
+        },
+        {
+          "name": "Hand-Scooped Ice-Cream Shakes",
+          "category": "Beverages"
+        },
+        {
+          "name": "Hand-Scooped Churro Ice-Cream Shake",
+          "category": "Beverages"
+        },
+        {
+          "name": "Churro Iced Coffee",
+          "category": "Beverages"
+        },
+        {
+          "name": "Iced Coffee",
+          "category": "Beverages"
+        },
+        {
+          "name": "Frozen Lemonade",
+          "category": "Beverages"
+        },
+        {
+          "name": "Hand-Crafted Lemonade",
+          "category": "Beverages"
+        },
+        {
+          "name": "Hand-Crafted Strawberry Lemonade",
+          "category": "Beverages"
+        },
+        {
+          "name": "Soft Drink",
+          "category": "Beverages"
+        },
+        {
+          "name": "100% Arabica Coffee",
+          "category": "Beverages"
+        },
+        {
+          "name": "Hamburger Kid's Meal",
+          "category": "Kids Meals"
+        },
+        {
+          "name": "Cheeseburger Kid's Meal",
+          "category": "Kids Meals"
+        },
+        {
+          "name": "Chicken Stars Kid's Meal",
+          "category": "Kids Meals"
+        },
+        {
+          "name": "2-piece Chicken Tender Kid's Meal",
+          "category": "Kids Meals"
+        }
+      ]
+    },
+    {
+      "chain": "Hardee's",
+      "match": [
+        "hardees"
+      ],
+      "menuSourceName": "hardees.com",
+      "menuSourceUrl": "https://www.hardees.com/full-menu",
+      "menuItems": [
+        {
+          "name": "Super Bacon Biscuit",
+          "category": "Made from Scratch Biscuits"
+        },
+        {
+          "name": "Super Sausage Biscuit",
+          "category": "Made from Scratch Biscuits"
+        },
+        {
+          "name": "Hand-Breaded Chicken Biscuit",
+          "category": "Made from Scratch Biscuits"
+        },
+        {
+          "name": "Spicy Hand-Breaded Chicken Biscuit",
+          "category": "Made from Scratch Biscuits"
+        },
+        {
+          "name": "Bacon Egg & Cheese Biscuit",
+          "category": "Made from Scratch Biscuits"
+        },
+        {
+          "name": "Sausage & Egg Biscuit",
+          "category": "Made from Scratch Biscuits"
+        },
+        {
+          "name": "Sausage Biscuit",
+          "category": "Made from Scratch Biscuits"
+        },
+        {
+          "name": "Loaded Omelet Biscuit",
+          "category": "Made from Scratch Biscuits"
+        },
+        {
+          "name": "Smoked Sausage, Egg & Cheese Biscuit",
+          "category": "Made from Scratch Biscuits"
+        },
+        {
+          "name": "Smoked Sausage Biscuit",
+          "category": "Made from Scratch Biscuits"
+        },
+        {
+          "name": "Country Fried Steak Biscuit",
+          "category": "Made from Scratch Biscuits"
+        },
+        {
+          "name": "Country Ham Biscuit",
+          "category": "Made from Scratch Biscuits"
+        },
+        {
+          "name": "Pork Chop 'N' Gravy Biscuit",
+          "category": "Made from Scratch Biscuits"
+        },
+        {
+          "name": "Biscuit 'N' Gravy",
+          "category": "Made from Scratch Biscuits"
+        },
+        {
+          "name": "Double Biscuit 'N' Gravy",
+          "category": "Made from Scratch Biscuits"
+        },
+        {
+          "name": "Monster Biscuit",
+          "category": "Made from Scratch Biscuits"
+        },
+        {
+          "name": "Cinnamon 'N' Raisin Biscuit",
+          "category": "Made from Scratch Biscuits"
+        },
+        {
+          "name": "Frisco Breakfast Sandwich",
+          "category": "Homestyle Favorites"
+        },
+        {
+          "name": "Homestyle Loaded Breakfast Burrito",
+          "category": "Homestyle Favorites"
+        },
+        {
+          "name": "Homestyle Sausage, Egg & Cheese Breakfast Burrito",
+          "category": "Homestyle Favorites"
+        },
+        {
+          "name": "Bacon Beast Homestyle Breakfast Burrito",
+          "category": "Homestyle Favorites"
+        },
+        {
+          "name": "Hardee Breakfast Platter",
+          "category": "Homestyle Favorites"
+        },
+        {
+          "name": "Super Bacon Brioche",
+          "category": "Homestyle Favorites"
+        },
+        {
+          "name": "Super Sausage Brioche",
+          "category": "Homestyle Favorites"
+        },
+        {
+          "name": "Bacon, Egg & Cheese Brioche",
+          "category": "Homestyle Favorites"
+        },
+        {
+          "name": "Sausage, Egg & Cheese Brioche",
+          "category": "Homestyle Favorites"
+        },
+        {
+          "name": "Bacon Beast Burger",
+          "category": "Charbroiled Burgers"
+        },
+        {
+          "name": "Super Star",
+          "category": "Charbroiled Burgers"
+        },
+        {
+          "name": "Famous Star",
+          "category": "Charbroiled Burgers"
+        },
+        {
+          "name": "Hardee's Frisco",
+          "category": "Charbroiled Burgers"
+        },
+        {
+          "name": "Monster Burger",
+          "category": "Charbroiled Burgers"
+        },
+        {
+          "name": "Bacon Cheeseburger",
+          "category": "Charbroiled Burgers"
+        },
+        {
+          "name": "Mushroom & Swiss",
+          "category": "Charbroiled Burgers"
+        },
+        {
+          "name": "Big Cheeseburger",
+          "category": "Charbroiled Burgers"
+        },
+        {
+          "name": "Double Cheeseburger",
+          "category": "Charbroiled Burgers"
+        },
+        {
+          "name": "Bacon Double Cheeseburger",
+          "category": "Charbroiled Burgers"
+        },
+        {
+          "name": "Hand-Breaded Chicken Sandwich",
+          "category": "Chicken & More"
+        },
+        {
+          "name": "Nashville Hot Hand-Breaded Chicken Sandwich",
+          "category": "Chicken & More"
+        },
+        {
+          "name": "BLT Hand-Breaded Chicken Sandwich",
+          "category": "Chicken & More"
+        },
+        {
+          "name": "Bacon Beast Chicken Sandwich",
+          "category": "Chicken & More"
+        },
+        {
+          "name": "Hand-Breaded Chicken Tenders",
+          "category": "Chicken & More"
+        },
+        {
+          "name": "Spicy Hand-Breaded Chicken Tenders",
+          "category": "Chicken & More"
+        },
+        {
+          "name": "Hand-Breaded Chicken Tender Wraps",
+          "category": "Chicken & More"
+        },
+        {
+          "name": "Original Hot Ham 'N' Cheese",
+          "category": "Chicken & More"
+        },
+        {
+          "name": "Big Hot Ham 'N' Cheese",
+          "category": "Chicken & More"
+        },
+        {
+          "name": "Original Roast Beef Sandwich",
+          "category": "Chicken & More"
+        },
+        {
+          "name": "Big Roast Beef",
+          "category": "Chicken & More"
+        },
+        {
+          "name": "Monster Roast Beef",
+          "category": "Chicken & More"
+        },
+        {
+          "name": "Jumbo Chili Dog",
+          "category": "Chicken & More"
+        },
+        {
+          "name": "Hash Rounds",
+          "category": "Sides & Sweets"
+        },
+        {
+          "name": "Bacon Cheddar Hash Rounds",
+          "category": "Sides & Sweets"
+        },
+        {
+          "name": "Sausage Gravy & Cheddar Hash Rounds",
+          "category": "Sides & Sweets"
+        },
+        {
+          "name": "Bacon Cheddar French Fries",
+          "category": "Sides & Sweets"
+        },
+        {
+          "name": "Bacon Cheddar Loaded Crispy Curls",
+          "category": "Sides & Sweets"
+        },
+        {
+          "name": "Beer-Battered Onion Rings",
+          "category": "Sides & Sweets"
+        },
+        {
+          "name": "Mozzarella Wedges",
+          "category": "Sides & Sweets"
+        },
+        {
+          "name": "Grits",
+          "category": "Sides & Sweets"
+        },
+        {
+          "name": "Cinnamon Roll",
+          "category": "Sides & Sweets"
+        },
+        {
+          "name": "Hand-Scooped Ice Cream Shake",
+          "category": "Sides & Sweets"
+        },
+        {
+          "name": "S'mores Hand-Scooped Ice Cream Shake",
+          "category": "Sides & Sweets"
+        },
+        {
+          "name": "S'mores Fried Pie",
+          "category": "Sides & Sweets"
+        },
+        {
+          "name": "Apple Turnover",
+          "category": "Sides & Sweets"
+        },
+        {
+          "name": "Iced Coffee",
+          "category": "Beverages"
+        },
+        {
+          "name": "S'mores Iced Coffee",
+          "category": "Beverages"
+        },
+        {
+          "name": "Hand-Crafted Lemonade",
+          "category": "Beverages"
+        },
+        {
+          "name": "Hand-Crafted Strawberry Lemonade",
+          "category": "Beverages"
+        },
+        {
+          "name": "Soft Drink",
+          "category": "Beverages"
+        },
+        {
+          "name": "Teas",
+          "category": "Beverages"
+        },
+        {
+          "name": "Rise and Shine Coffee",
+          "category": "Beverages"
+        }
+      ]
+    },
+    {
+      "chain": "Culver's",
+      "match": [
+        "culvers"
+      ],
+      "menuSourceName": "culvers.com",
+      "menuSourceUrl": "https://www.culvers.com/menu",
+      "menuItems": [
+        {
+          "name": "ButterBurger Cheese",
+          "category": "ButterBurgers"
+        },
+        {
+          "name": "ButterBurger",
+          "category": "ButterBurgers"
+        },
+        {
+          "name": "The Culver's Deluxe",
+          "category": "ButterBurgers"
+        },
+        {
+          "name": "The Culver's Bacon Deluxe",
+          "category": "ButterBurgers"
+        },
+        {
+          "name": "Mushroom & Swiss",
+          "category": "ButterBurgers"
+        },
+        {
+          "name": "Sourdough Melt",
+          "category": "ButterBurgers"
+        },
+        {
+          "name": "Wisconsin Swiss Melt",
+          "category": "ButterBurgers"
+        },
+        {
+          "name": "Smoked Cheddar CurderBurger",
+          "category": "ButterBurgers"
+        },
+        {
+          "name": "Original Chicken Tenders",
+          "category": "Chicken"
+        },
+        {
+          "name": "Buffalo Chicken Tenders",
+          "category": "Chicken"
+        },
+        {
+          "name": "Crispy Chicken",
+          "category": "Chicken"
+        },
+        {
+          "name": "Spicy Crispy Chicken",
+          "category": "Chicken"
+        },
+        {
+          "name": "Grilled Chicken",
+          "category": "Chicken"
+        },
+        {
+          "name": "North Atlantic Cod Sandwich",
+          "category": "Seafood"
+        },
+        {
+          "name": "North Atlantic Cod Dinner",
+          "category": "Seafood"
+        },
+        {
+          "name": "Butterfly Jumbo Shrimp Dinner",
+          "category": "Seafood"
+        },
+        {
+          "name": "Butterfly Jumbo Shrimp",
+          "category": "Seafood"
+        },
+        {
+          "name": "Beef Pot Roast",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Grilled Reuben Melt",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Pork Loin",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Harvest Veggie Burger",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Grilled Cheese",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Corn Dog",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Wisconsin Cheese Curds",
+          "category": "Sides"
+        },
+        {
+          "name": "Crinkle Cut Fries",
+          "category": "Sides"
+        },
+        {
+          "name": "Onion Rings",
+          "category": "Sides"
+        },
+        {
+          "name": "Fried Pickles",
+          "category": "Sides"
+        },
+        {
+          "name": "Pretzel Bites",
+          "category": "Sides"
+        },
+        {
+          "name": "George's Chili",
+          "category": "Sides"
+        },
+        {
+          "name": "George's Chili Supreme",
+          "category": "Sides"
+        },
+        {
+          "name": "Chili Cheddar Fries",
+          "category": "Sides"
+        },
+        {
+          "name": "Mashed Potatoes & Gravy",
+          "category": "Sides"
+        },
+        {
+          "name": "Coleslaw",
+          "category": "Sides"
+        },
+        {
+          "name": "Steamed Broccoli",
+          "category": "Sides"
+        },
+        {
+          "name": "Garden Side Salad",
+          "category": "Sides"
+        },
+        {
+          "name": "Applesauce",
+          "category": "Sides"
+        },
+        {
+          "name": "Concrete Mixer",
+          "category": "Fresh Frozen Custard"
+        },
+        {
+          "name": "Shake",
+          "category": "Fresh Frozen Custard"
+        },
+        {
+          "name": "Malt",
+          "category": "Fresh Frozen Custard"
+        },
+        {
+          "name": "Flavor of the Day Dish",
+          "category": "Fresh Frozen Custard"
+        },
+        {
+          "name": "Turtle Sundae",
+          "category": "Fresh Frozen Custard"
+        },
+        {
+          "name": "Caramel Cashew Sundae",
+          "category": "Fresh Frozen Custard"
+        },
+        {
+          "name": "Culver's Root Beer Float",
+          "category": "Fresh Frozen Custard"
+        },
+        {
+          "name": "Handpacked Pint",
+          "category": "Fresh Frozen Custard"
+        },
+        {
+          "name": "Pumpkin S'mores Concrete Mixer",
+          "category": "Fresh Frozen Custard"
+        },
+        {
+          "name": "Salted Caramel Pumpkin Concrete Mixer",
+          "category": "Fresh Frozen Custard"
+        },
+        {
+          "name": "Pumpkin Spice Shake",
+          "category": "Fresh Frozen Custard"
+        },
+        {
+          "name": "Chicken Cashew Salad",
+          "category": "Salads"
+        },
+        {
+          "name": "Cranberry Bacon Bleu Salad",
+          "category": "Salads"
+        },
+        {
+          "name": "Garden Fresco Salad",
+          "category": "Salads"
+        },
+        {
+          "name": "Fountain Drink",
+          "category": "Drinks"
+        },
+        {
+          "name": "Fresh Brewed Iced Tea",
+          "category": "Drinks"
+        },
+        {
+          "name": "Signature Roast Coffee",
+          "category": "Drinks"
+        }
+      ]
+    },
+    {
+      "chain": "Dairy Queen",
+      "match": [
+        "dairy queen"
+      ],
+      "sourceName": "businesswire.com",
+      "sourceUrl": "https://www.businesswire.com/news/home/20260831819447/en/Dairy-Queen-Kicks-Off-Football-Season-with-%246.99-DQ-Chicken-Strip-Basket-Deal-and-NEW-MVP-Dip-Lineup",
+      "items": [
+        {
+          "name": "DQ Chicken Strip Basket",
+          "price": "$6.99",
+          "note": "4 strips, fries, drink and a dip. Limited time",
+          "source": {
+            "url": "https://www.businesswire.com/news/home/20260831819447/en/Dairy-Queen-Kicks-Off-Football-Season-with-%246.99-DQ-Chicken-Strip-Basket-Deal-and-NEW-MVP-Dip-Lineup",
+            "date": "2026-08-31",
+            "quote": "The DQ Chicken Strip Basket, now just $6.99 for a limited time at participating DQ restaurants, delivers it all. ... a deal that includes the DQ four-piece Chicken Strip Basket featuring a choice of Original or FlameThrower Chicken Strips made with 100% white meat chicken strips. Each basket is served with golden hot fries, a refreshing drink and your choice from the NEW! MVP Dip Lineup."
+          }
+        }
+      ],
+      "menuSourceName": "dairyqueen.com",
+      "menuSourceUrl": "https://www.dairyqueen.com/en-us/menu/",
+      "menuItems": [
+        {
+          "name": "Oreo Cookie Blizzard Treat",
+          "category": "Blizzard Treats"
+        },
+        {
+          "name": "M&M's Milk Chocolate Candies Blizzard Treat",
+          "category": "Blizzard Treats"
+        },
+        {
+          "name": "Reese's Peanut Butter Cup Blizzard Treat",
+          "category": "Blizzard Treats"
+        },
+        {
+          "name": "Chocolate Chip Cookie Dough Blizzard Treat",
+          "category": "Blizzard Treats"
+        },
+        {
+          "name": "Snickers Blizzard Treat",
+          "category": "Blizzard Treats"
+        },
+        {
+          "name": "Butterfinger Blizzard Treat",
+          "category": "Blizzard Treats"
+        },
+        {
+          "name": "Heath Blizzard Treat",
+          "category": "Blizzard Treats"
+        },
+        {
+          "name": "Choco Brownie Extreme Blizzard Treat",
+          "category": "Blizzard Treats"
+        },
+        {
+          "name": "Royal New York Cheesecake Blizzard Treat",
+          "category": "Blizzard Treats"
+        },
+        {
+          "name": "Royal Ultimate Choco Brownie Blizzard Treat",
+          "category": "Blizzard Treats"
+        },
+        {
+          "name": "Turtle Pecan Cluster Blizzard Treat",
+          "category": "Blizzard Treats"
+        },
+        {
+          "name": "Mint Oreo Blizzard Treat",
+          "category": "Blizzard Treats"
+        },
+        {
+          "name": "Mocha Brownie Mudslide Blizzard Treat",
+          "category": "Blizzard Treats"
+        },
+        {
+          "name": "Pumpkin Pie Blizzard Treat",
+          "category": "Blizzard Treats"
+        },
+        {
+          "name": "Caramel Apple Cheesecake Blizzard Treat",
+          "category": "Blizzard Treats"
+        },
+        {
+          "name": "Brown Sugar Cookie Dough Blizzard Treat",
+          "category": "Blizzard Treats"
+        },
+        {
+          "name": "Enchanted Oreo Blizzard Treat",
+          "category": "Blizzard Treats"
+        },
+        {
+          "name": "Original Cheeseburger Signature Stackburger",
+          "category": "Burgers & Sandwiches"
+        },
+        {
+          "name": "Cheese Deluxe Signature Stackburger",
+          "category": "Burgers & Sandwiches"
+        },
+        {
+          "name": "Bacon Cheese Deluxe Signature Stackburger",
+          "category": "Burgers & Sandwiches"
+        },
+        {
+          "name": "Flamethrower Signature Stackburger",
+          "category": "Burgers & Sandwiches"
+        },
+        {
+          "name": "Backyard Bacon Ranch Signature Stackburger",
+          "category": "Burgers & Sandwiches"
+        },
+        {
+          "name": "Cheeseburger",
+          "category": "Burgers & Sandwiches"
+        },
+        {
+          "name": "Hamburger",
+          "category": "Burgers & Sandwiches"
+        },
+        {
+          "name": "Original Chicken Strip Sandwich",
+          "category": "Burgers & Sandwiches"
+        },
+        {
+          "name": "Spicy Chicken Strip Sandwich",
+          "category": "Burgers & Sandwiches"
+        },
+        {
+          "name": "Chicken Bacon Ranch",
+          "category": "Burgers & Sandwiches"
+        },
+        {
+          "name": "Wild Alaska Fish Sandwich",
+          "category": "Burgers & Sandwiches"
+        },
+        {
+          "name": "Hot Dog",
+          "category": "Burgers & Sandwiches"
+        },
+        {
+          "name": "Chili Cheese Dog",
+          "category": "Burgers & Sandwiches"
+        },
+        {
+          "name": "Chicken Strip Basket",
+          "category": "Chicken Baskets"
+        },
+        {
+          "name": "Flamethrower Chicken Strip Basket",
+          "category": "Chicken Baskets"
+        },
+        {
+          "name": "Honey BBQ Sauced & Tossed Chicken Strip Basket",
+          "category": "Chicken Baskets"
+        },
+        {
+          "name": "Parmesan Garlic Sauced & Tossed Chicken Strip Basket",
+          "category": "Chicken Baskets"
+        },
+        {
+          "name": "$7 Meal Deal",
+          "category": "Meal Deals"
+        },
+        {
+          "name": "Cheeseburger Meal Deal",
+          "category": "Meal Deals"
+        },
+        {
+          "name": "3 Piece Chicken Strip Meal Deal",
+          "category": "Meal Deals"
+        },
+        {
+          "name": "Fries",
+          "category": "Snacks, Sides & Salads"
+        },
+        {
+          "name": "Onion Rings",
+          "category": "Snacks, Sides & Salads"
+        },
+        {
+          "name": "Cheese Curds",
+          "category": "Snacks, Sides & Salads"
+        },
+        {
+          "name": "Pretzel Sticks with Zesty Queso",
+          "category": "Snacks, Sides & Salads"
+        },
+        {
+          "name": "Crispy Chicken Strips Salad",
+          "category": "Snacks, Sides & Salads"
+        },
+        {
+          "name": "Vanilla Cone",
+          "category": "Classic Treats"
+        },
+        {
+          "name": "Chocolate Dipped Cone",
+          "category": "Classic Treats"
+        },
+        {
+          "name": "Cherry Dipped Cone",
+          "category": "Classic Treats"
+        },
+        {
+          "name": "Hot Fudge Sundae",
+          "category": "Classic Treats"
+        },
+        {
+          "name": "Chocolate Sundae",
+          "category": "Classic Treats"
+        },
+        {
+          "name": "Caramel Sundae",
+          "category": "Classic Treats"
+        },
+        {
+          "name": "Strawberry Sundae",
+          "category": "Classic Treats"
+        },
+        {
+          "name": "Peanut Butter Sundae",
+          "category": "Classic Treats"
+        },
+        {
+          "name": "Banana Split Royal Treat",
+          "category": "Classic Treats"
+        },
+        {
+          "name": "Peanut Buster Parfait",
+          "category": "Classic Treats"
+        },
+        {
+          "name": "Dilly Bar",
+          "category": "Classic Treats"
+        },
+        {
+          "name": "Non-Dairy Dilly Bar",
+          "category": "Classic Treats"
+        },
+        {
+          "name": "Buster Bar",
+          "category": "Classic Treats"
+        },
+        {
+          "name": "Brownie & Oreo Cupfection",
+          "category": "Classic Treats"
+        },
+        {
+          "name": "Heath Caramel Brownie Cupfection",
+          "category": "Classic Treats"
+        },
+        {
+          "name": "Vanilla Shake or Malt",
+          "category": "Blended Beverages"
+        },
+        {
+          "name": "Chocolate Shake or Malt",
+          "category": "Blended Beverages"
+        },
+        {
+          "name": "Strawberry Shake or Malt",
+          "category": "Blended Beverages"
+        },
+        {
+          "name": "Caramel Shake or Malt",
+          "category": "Blended Beverages"
+        },
+        {
+          "name": "Peanut Butter Shake or Malt",
+          "category": "Blended Beverages"
+        },
+        {
+          "name": "Hot Fudge Shake or Malt",
+          "category": "Blended Beverages"
+        },
+        {
+          "name": "Vanilla MooLatte",
+          "category": "Blended Beverages"
+        },
+        {
+          "name": "Mocha MooLatte",
+          "category": "Blended Beverages"
+        },
+        {
+          "name": "Caramel MooLatte",
+          "category": "Blended Beverages"
+        },
+        {
+          "name": "Oreo DQ Coffee Cooler",
+          "category": "Blended Beverages"
+        },
+        {
+          "name": "Salted Caramel DQ Coffee Cooler",
+          "category": "Blended Beverages"
+        },
+        {
+          "name": "Misty Slush",
+          "category": "Icy Cold Beverages"
+        },
+        {
+          "name": "Misty Freeze",
+          "category": "Icy Cold Beverages"
+        },
+        {
+          "name": "Lemonade DQ Cooler",
+          "category": "Icy Cold Beverages"
+        },
+        {
+          "name": "DQ Lemonade Sparkler",
+          "category": "Icy Cold Beverages"
+        },
+        {
+          "name": "Coke",
+          "category": "Icy Cold Beverages"
+        },
+        {
+          "name": "Orange Julius Original",
+          "category": "Orange Julius"
+        },
+        {
+          "name": "Strawberry Banana Julius Original",
+          "category": "Orange Julius"
+        },
+        {
+          "name": "Strawberry Banana Premium Fruit Smoothie",
+          "category": "Orange Julius"
+        },
+        {
+          "name": "Tripleberry Premium Fruit Smoothie",
+          "category": "Orange Julius"
+        },
+        {
+          "name": "Mango Pineapple Premium Fruit Smoothie",
+          "category": "Orange Julius"
+        }
+      ]
+    },
+    {
+      "chain": "Raising Cane's",
+      "match": [
+        "raising canes"
+      ],
+      "menuSourceName": "raisingcanes.com",
+      "menuSourceUrl": "https://www.raisingcanes.com/menu",
+      "menuItems": [
+        {
+          "name": "The Box Combo",
+          "category": "Combos"
+        },
+        {
+          "name": "The Caniac Combo",
+          "category": "Combos"
+        },
+        {
+          "name": "The 3 Finger Combo",
+          "category": "Combos"
+        },
+        {
+          "name": "The Sandwich Combo",
+          "category": "Combos"
+        },
+        {
+          "name": "The Kids Combo",
+          "category": "Combos"
+        },
+        {
+          "name": "Chicken Finger",
+          "category": "Extras"
+        },
+        {
+          "name": "Crinkle-Cut Fries",
+          "category": "Extras"
+        },
+        {
+          "name": "Texas Toast",
+          "category": "Extras"
+        },
+        {
+          "name": "Coleslaw",
+          "category": "Extras"
+        },
+        {
+          "name": "Sandwich",
+          "category": "Extras"
+        },
+        {
+          "name": "Tailgate (25, 50, 75 or 100 Fingers)",
+          "category": "Tailgates"
+        },
+        {
+          "name": "Lemonade",
+          "category": "Drinks"
+        },
+        {
+          "name": "Sweet Tea",
+          "category": "Drinks"
+        },
+        {
+          "name": "Unsweet Tea",
+          "category": "Drinks"
+        },
+        {
+          "name": "Half Tea / Half Lemonade",
+          "category": "Drinks"
+        },
+        {
+          "name": "Fountain Drink",
+          "category": "Drinks"
+        },
+        {
+          "name": "Jug Lemonade",
+          "category": "Drinks"
+        },
+        {
+          "name": "Jug Sweet Tea",
+          "category": "Drinks"
+        }
+      ]
+    },
+    {
+      "chain": "In-N-Out Burger",
+      "match": [
+        "innout",
+        "in n out"
+      ],
+      "menuSourceName": "in-n-out.com",
+      "menuSourceUrl": "https://www.in-n-out.com/menu",
+      "menuItems": [
+        {
+          "name": "Double-Double",
+          "category": "Burgers"
+        },
+        {
+          "name": "Cheeseburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Hamburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "3x3",
+          "category": "Not So Secret Menu"
+        },
+        {
+          "name": "4x4",
+          "category": "Not So Secret Menu"
+        },
+        {
+          "name": "Double-Meat",
+          "category": "Not So Secret Menu"
+        },
+        {
+          "name": "Grilled Cheese",
+          "category": "Not So Secret Menu"
+        },
+        {
+          "name": "Protein Style",
+          "category": "Not So Secret Menu"
+        },
+        {
+          "name": "Animal Style",
+          "category": "Not So Secret Menu"
+        },
+        {
+          "name": "French Fries",
+          "category": "Sides"
+        },
+        {
+          "name": "Chocolate Shake",
+          "category": "Shakes"
+        },
+        {
+          "name": "Strawberry Shake",
+          "category": "Shakes"
+        },
+        {
+          "name": "Vanilla Shake",
+          "category": "Shakes"
+        },
+        {
+          "name": "Soft Drinks",
+          "category": "Beverages"
+        },
+        {
+          "name": "Signature Pink Lemonade",
+          "category": "Beverages"
+        },
+        {
+          "name": "Lite Pink Lemonade",
+          "category": "Beverages"
+        },
+        {
+          "name": "Iced Tea",
+          "category": "Beverages"
+        },
+        {
+          "name": "Coffee",
+          "category": "Beverages"
+        },
+        {
+          "name": "Hot Cocoa",
+          "category": "Beverages"
+        },
+        {
+          "name": "Milk",
+          "category": "Beverages"
+        }
+      ]
+    },
+    {
+      "chain": "Del Taco",
+      "match": [
+        "del taco"
+      ],
+      "menuSourceName": "deltaco.com",
+      "menuSourceUrl": "https://deltaco.com/menu",
+      "menuItems": [
+        {
+          "name": "The Del Taco",
+          "category": "Tacos"
+        },
+        {
+          "name": "Grilled Chicken Taco",
+          "category": "Tacos"
+        },
+        {
+          "name": "Snack Taco",
+          "category": "Tacos"
+        },
+        {
+          "name": "Beer Battered Fish Taco",
+          "category": "Tacos"
+        },
+        {
+          "name": "Seasoned Beef Big Fat Taco",
+          "category": "Tacos"
+        },
+        {
+          "name": "Grilled Chicken Big Fat Taco",
+          "category": "Tacos"
+        },
+        {
+          "name": "Carne Asada Steak Big Fat Taco",
+          "category": "Tacos"
+        },
+        {
+          "name": "Carnitas Big Fat Taco",
+          "category": "Tacos"
+        },
+        {
+          "name": "3 Carnitas Street Tacos",
+          "category": "Tacos"
+        },
+        {
+          "name": "Carne Asada Steak Street Taco",
+          "category": "Tacos"
+        },
+        {
+          "name": "Grilled Chicken Street Taco",
+          "category": "Tacos"
+        },
+        {
+          "name": "Carne Asada Steak Street Guac'd Up Taco",
+          "category": "Tacos"
+        },
+        {
+          "name": "All-American Burgertaco",
+          "category": "Tacos"
+        },
+        {
+          "name": "CrunchTada Tostada",
+          "category": "Tacos"
+        },
+        {
+          "name": "Del Combo Burrito",
+          "category": "Burritos"
+        },
+        {
+          "name": "Del Beef Burrito",
+          "category": "Burritos"
+        },
+        {
+          "name": "Del's Classic Chicken Burrito",
+          "category": "Burritos"
+        },
+        {
+          "name": "1/2 LB. Bean & Cheese Burrito",
+          "category": "Burritos"
+        },
+        {
+          "name": "8 Layer Veggie Burrito",
+          "category": "Burritos"
+        },
+        {
+          "name": "Carnitas Combo Burrito",
+          "category": "Burritos"
+        },
+        {
+          "name": "Epic Grilled Chicken Fresh Guacamole Burrito",
+          "category": "Burritos"
+        },
+        {
+          "name": "Epic Carne Asada Steak Cali Bacon Burrito",
+          "category": "Burritos"
+        },
+        {
+          "name": "Epic Grilled Chicken Loaded Queso Burrito",
+          "category": "Burritos"
+        },
+        {
+          "name": "Epic Combo Beef & Bean Burrito",
+          "category": "Burritos"
+        },
+        {
+          "name": "Epic Flamin' Hot Queso Grilled Chicken Burrito",
+          "category": "Burritos"
+        },
+        {
+          "name": "Flamin' Hot Queso Crispy Chicken Burrito",
+          "category": "Burritos"
+        },
+        {
+          "name": "Jack'd Up Beans, Rice, & Cheese Burrito",
+          "category": "Burritos"
+        },
+        {
+          "name": "Value Bean & Cheese Burrito",
+          "category": "Burritos"
+        },
+        {
+          "name": "Ranch Crispy Chicken Taco",
+          "category": "Crispy Chicken"
+        },
+        {
+          "name": "Chipotle Crispy Chicken Taco",
+          "category": "Crispy Chicken"
+        },
+        {
+          "name": "Crispy Chicken Guac'd Up Tacos",
+          "category": "Crispy Chicken"
+        },
+        {
+          "name": "3pc. Crispy Chicken & Fries Box",
+          "category": "Crispy Chicken"
+        },
+        {
+          "name": "Chicken Cheddar Quesadilla",
+          "category": "Quesadillas, Nachos & Salads"
+        },
+        {
+          "name": "Cheddar Quesadilla",
+          "category": "Quesadillas, Nachos & Salads"
+        },
+        {
+          "name": "Carnitas Quesadilla",
+          "category": "Quesadillas, Nachos & Salads"
+        },
+        {
+          "name": "Mini Cheddar Quesadilla",
+          "category": "Quesadillas, Nachos & Salads"
+        },
+        {
+          "name": "Queso Loaded Nachos",
+          "category": "Quesadillas, Nachos & Salads"
+        },
+        {
+          "name": "Carnitas Queso Loaded Nachos",
+          "category": "Quesadillas, Nachos & Salads"
+        },
+        {
+          "name": "3 Layer Queso Nachos",
+          "category": "Quesadillas, Nachos & Salads"
+        },
+        {
+          "name": "Grilled Chicken Taco Salad With Fresh Guac",
+          "category": "Quesadillas, Nachos & Salads"
+        },
+        {
+          "name": "Seasoned Beef Taco Salad With Fresh Guac",
+          "category": "Quesadillas, Nachos & Salads"
+        },
+        {
+          "name": "Double Del Cheeseburger",
+          "category": "Burgers & Fries"
+        },
+        {
+          "name": "Crinkle Cut Fries",
+          "category": "Burgers & Fries"
+        },
+        {
+          "name": "Chili Cheddar Fries",
+          "category": "Burgers & Fries"
+        },
+        {
+          "name": "Deluxe Chili Cheddar Fries",
+          "category": "Burgers & Fries"
+        },
+        {
+          "name": "Carne Asada Steak Fries",
+          "category": "Burgers & Fries"
+        },
+        {
+          "name": "Carnitas Loaded Fries",
+          "category": "Burgers & Fries"
+        },
+        {
+          "name": "Breakfast Burrito",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Carnitas Breakfast Burrito",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Egg & Cheese Big Fat Taco",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Bacon, Egg & Cheese Big Fat Taco",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Carnitas Breakfast Big Fat Taco",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Breakfast Roller",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Hashbrown Sticks",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Grilled Chicken Snacker",
+          "category": "Value Menu"
+        },
+        {
+          "name": "Chicken Cheddar Rollers",
+          "category": "Value Menu"
+        },
+        {
+          "name": "Bean & Cheese Cup",
+          "category": "Value Menu"
+        },
+        {
+          "name": "Mini Shakes",
+          "category": "Value Menu"
+        },
+        {
+          "name": "Shakes",
+          "category": "Desserts & Shakes"
+        },
+        {
+          "name": "Caramel Cheesecake Bites",
+          "category": "Desserts & Shakes"
+        },
+        {
+          "name": "Mini Sweet Cream Churros",
+          "category": "Desserts & Shakes"
+        },
+        {
+          "name": "Mini Cinnamon Churros",
+          "category": "Desserts & Shakes"
+        },
+        {
+          "name": "Donut Bites",
+          "category": "Desserts & Shakes"
+        },
+        {
+          "name": "Dirty Del",
+          "category": "Drinks"
+        },
+        {
+          "name": "Fountain Drinks",
+          "category": "Drinks"
+        },
+        {
+          "name": "Real Strawberry Lemonade",
+          "category": "Drinks"
+        },
+        {
+          "name": "Real Strawberry Sprite",
+          "category": "Drinks"
+        },
+        {
+          "name": "Gold Peak Real Brewed Tea",
+          "category": "Drinks"
+        },
+        {
+          "name": "Hot Coffee",
+          "category": "Drinks"
+        },
+        {
+          "name": "Iced Coffee",
+          "category": "Drinks"
+        }
+      ]
+    },
+    {
+      "chain": "Zaxby's",
+      "match": [
+        "zaxbys"
+      ],
+      "menuSourceName": "zaxbys.com nutrition guide",
+      "menuSourceUrl": "https://www.zaxbys.com/uploads/ZAX_NAI_Guide_Digital_2_01ab6bbb57.pdf",
+      "menuItems": [
+        {
+          "name": "Chicken Finger Plate",
+          "category": "Chicken Fingers & Wings"
+        },
+        {
+          "name": "Buffalo Chicken Finger Plate",
+          "category": "Chicken Fingers & Wings"
+        },
+        {
+          "name": "Big Zax Snak Meal",
+          "category": "Chicken Fingers & Wings"
+        },
+        {
+          "name": "Buffalo Big Zax Snak Meal",
+          "category": "Chicken Fingers & Wings"
+        },
+        {
+          "name": "Boneless Wings & Things",
+          "category": "Chicken Fingers & Wings"
+        },
+        {
+          "name": "Buffalo Boneless Wings & Things",
+          "category": "Chicken Fingers & Wings"
+        },
+        {
+          "name": "Traditional Wings & Things",
+          "category": "Chicken Fingers & Wings"
+        },
+        {
+          "name": "Buffalo Traditional Wings & Things",
+          "category": "Chicken Fingers & Wings"
+        },
+        {
+          "name": "Boneless Wings Meal",
+          "category": "Chicken Fingers & Wings"
+        },
+        {
+          "name": "Traditional Wings Meal",
+          "category": "Chicken Fingers & Wings"
+        },
+        {
+          "name": "Signature Sandwich",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Kickin' Chicken Sandwich",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Grilled Chicken Sandwich",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Nibblerz",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "The House Zalad",
+          "category": "Zalads"
+        },
+        {
+          "name": "The Cobb Zalad",
+          "category": "Zalads"
+        },
+        {
+          "name": "The Asian Zensation Zalad",
+          "category": "Zalads"
+        },
+        {
+          "name": "The Blue Zalad",
+          "category": "Zalads"
+        },
+        {
+          "name": "Crinkle Fries",
+          "category": "Sides"
+        },
+        {
+          "name": "Texas Toast",
+          "category": "Sides"
+        },
+        {
+          "name": "Cole Slaw",
+          "category": "Sides"
+        },
+        {
+          "name": "Chicken Bacon Ranch Loaded Fries",
+          "category": "Sides"
+        },
+        {
+          "name": "Fried White Cheddar Bites",
+          "category": "Sides"
+        },
+        {
+          "name": "Fried Pickles",
+          "category": "Sides"
+        },
+        {
+          "name": "Veggie Eggroll",
+          "category": "Sides"
+        },
+        {
+          "name": "Asian Slaw",
+          "category": "Sides"
+        },
+        {
+          "name": "Tater Chips",
+          "category": "Sides"
+        },
+        {
+          "name": "Chocolate Chip Cookie",
+          "category": "Desserts"
+        },
+        {
+          "name": "Fried Cheesecake Bites",
+          "category": "Desserts"
+        },
+        {
+          "name": "Handcrafted Milkshakes",
+          "category": "Desserts"
+        },
+        {
+          "name": "Rice Krispie Treat",
+          "category": "Desserts"
+        },
+        {
+          "name": "Kiddie Finger Meal",
+          "category": "Kids Meals"
+        },
+        {
+          "name": "Kiddie Cheese Sandwich Meal",
+          "category": "Kids Meals"
+        },
+        {
+          "name": "Sweet Tea",
+          "category": "Drinks"
+        },
+        {
+          "name": "Unsweet Tea",
+          "category": "Drinks"
+        },
+        {
+          "name": "Lemonade",
+          "category": "Drinks"
+        },
+        {
+          "name": "Fountain Drinks",
+          "category": "Drinks"
+        },
+        {
+          "name": "Frozen Beverages",
+          "category": "Drinks"
+        }
+      ]
+    },
+    {
+      "chain": "Bojangles",
+      "match": [
+        "bojangles"
+      ],
+      "menuSourceName": "bojangles.com",
+      "menuSourceUrl": "https://www.bojangles.com/menu/",
+      "menuItems": [
+        {
+          "name": "Cajun Filet Biscuit",
+          "category": "Bo Favorites"
+        },
+        {
+          "name": "Bo's Chicken Sandwich",
+          "category": "Bo Favorites"
+        },
+        {
+          "name": "8pc Chicken Meal",
+          "category": "Bo Favorites"
+        },
+        {
+          "name": "2pc Leg & Thigh",
+          "category": "Chicken Dinners"
+        },
+        {
+          "name": "3pc Leg & 2 Thighs",
+          "category": "Chicken Dinners"
+        },
+        {
+          "name": "2pc Breast & Wing",
+          "category": "Chicken Dinners"
+        },
+        {
+          "name": "3 Wings",
+          "category": "Chicken Dinners"
+        },
+        {
+          "name": "Bo Bites",
+          "category": "Boneless Chicken"
+        },
+        {
+          "name": "Bo's Chicken Tenders",
+          "category": "Boneless Chicken"
+        },
+        {
+          "name": "8pc Chicken Box",
+          "category": "Family Meals"
+        },
+        {
+          "name": "12pc Chicken Meal",
+          "category": "Family Meals"
+        },
+        {
+          "name": "12pc Bo's Chicken Tenders Meal",
+          "category": "Family Meals"
+        },
+        {
+          "name": "20pc Chicken Meal",
+          "category": "Family Meals"
+        },
+        {
+          "name": "Grilled Chicken Sandwich",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Carolina Crunch",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Sausage Bo-Berry Biscuit",
+          "category": "Biscuits"
+        },
+        {
+          "name": "Sausage Egg & Cheese Biscuit",
+          "category": "Biscuits"
+        },
+        {
+          "name": "Bacon, Egg & Cheese Biscuit",
+          "category": "Biscuits"
+        },
+        {
+          "name": "Sausage & Egg Biscuit",
+          "category": "Biscuits"
+        },
+        {
+          "name": "Sausage Biscuit",
+          "category": "Biscuits"
+        },
+        {
+          "name": "Egg & Cheese Biscuit",
+          "category": "Biscuits"
+        },
+        {
+          "name": "Country Ham Biscuit",
+          "category": "Biscuits"
+        },
+        {
+          "name": "Steak Biscuit",
+          "category": "Biscuits"
+        },
+        {
+          "name": "Southern Gravy Biscuit",
+          "category": "Biscuits"
+        },
+        {
+          "name": "Plain Biscuit",
+          "category": "Biscuits"
+        },
+        {
+          "name": "Bo's House Salad",
+          "category": "Salads"
+        },
+        {
+          "name": "Bo's Salad",
+          "category": "Salads"
+        },
+        {
+          "name": "Bo Fries",
+          "category": "Fixins"
+        },
+        {
+          "name": "Bo-Tato Rounds",
+          "category": "Fixins"
+        },
+        {
+          "name": "Bojangles Dirty Rice",
+          "category": "Fixins"
+        },
+        {
+          "name": "Macaroni & Cheese",
+          "category": "Fixins"
+        },
+        {
+          "name": "Mashed Potatoes & Gravy",
+          "category": "Fixins"
+        },
+        {
+          "name": "Bojangles Cajun Pintos",
+          "category": "Fixins"
+        },
+        {
+          "name": "Green Beans",
+          "category": "Fixins"
+        },
+        {
+          "name": "Cole Slaw",
+          "category": "Fixins"
+        },
+        {
+          "name": "Bo-Berry Biscuit",
+          "category": "Sweets"
+        },
+        {
+          "name": "Bo-Berry Cookie",
+          "category": "Sweets"
+        },
+        {
+          "name": "Sweet Potato Pie",
+          "category": "Sweets"
+        },
+        {
+          "name": "Salted Caramel Apple Crisp",
+          "category": "Sweets"
+        },
+        {
+          "name": "French Vanilla Milkshake",
+          "category": "Sweets"
+        },
+        {
+          "name": "Chocolate Milkshake",
+          "category": "Sweets"
+        },
+        {
+          "name": "Bo-Berry Milkshake",
+          "category": "Sweets"
+        },
+        {
+          "name": "Legendary Iced Tea Sweet",
+          "category": "Beverages"
+        },
+        {
+          "name": "Legendary Iced Tea Unsweet",
+          "category": "Beverages"
+        },
+        {
+          "name": "Premium Lemonade",
+          "category": "Beverages"
+        },
+        {
+          "name": "Iced Coffee",
+          "category": "Beverages"
+        },
+        {
+          "name": "Premium Coffee",
+          "category": "Beverages"
+        },
+        {
+          "name": "Fountain Drinks",
+          "category": "Beverages"
         }
       ]
     },
@@ -360,137 +4693,1048 @@
             "quote": "Big Buford® Combo ... $10.19+"
           }
         }
-      ]
-    },
-    {
-      "chain": "Arby's",
-      "match": [
-        "arbys"
       ],
-      "sourceName": "stories.inspirebrands.com",
-      "sourceUrl": "https://stories.inspirebrands.com/arbys-new-buffalo-ranch-chicken-sandwich/",
-      "items": [
+      "menuSourceName": "web.checkersandrallys.com",
+      "menuSourceUrl": "https://web.checkersandrallys.com/menu/",
+      "menuItems": [
         {
-          "name": "Meat & 3 Value Box",
-          "price": "$7.99",
-          "note": "Value meal",
-          "source": {
-            "url": "https://stories.inspirebrands.com/arbys-new-buffalo-ranch-chicken-sandwich/",
-            "date": "2026-08-03",
-            "quote": "Beginning today, Arby's is adding the new Buffalo Ranch Chicken Sandwich to the lineup, giving guests a satisfying new entrée option in the $7.99 value meal."
-          }
+          "name": "Big Buford",
+          "category": "Burgers"
         },
         {
-          "name": "Sliders",
-          "price": "$1.99",
-          "note": "Limited time. Roast Beef, Buffalo Chicken, Crispy Chicken or Ham",
-          "source": {
-            "url": "https://stories.inspirebrands.com/arbys-1-99-slider-menu/",
-            "date": "2026-06-24",
-            "quote": "Arby's $1.99 Sliders are available for a limited time at participating locations nationwide."
-          }
+          "name": "Triple Big Buford",
+          "category": "Burgers"
+        },
+        {
+          "name": "Smoky BBQ Bacon Buford",
+          "category": "Burgers"
+        },
+        {
+          "name": "Triple Smoky BBQ Bacon Buford",
+          "category": "Burgers"
+        },
+        {
+          "name": "Baconzilla!",
+          "category": "Burgers"
+        },
+        {
+          "name": "Triple Baconzilla!",
+          "category": "Burgers"
+        },
+        {
+          "name": "Brisket Buford",
+          "category": "Burgers"
+        },
+        {
+          "name": "Cheese Champ",
+          "category": "Burgers"
+        },
+        {
+          "name": "All American Cheeseburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Double Fry Lover's Burger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Fry-Seasoned Tenders",
+          "category": "Chicken"
+        },
+        {
+          "name": "Buffalo Fry-Seasoned Tenders",
+          "category": "Chicken"
+        },
+        {
+          "name": "Classic Mother Cruncher",
+          "category": "Chicken"
+        },
+        {
+          "name": "Bacon BBQ Mother Cruncher",
+          "category": "Chicken"
+        },
+        {
+          "name": "Spicy Chicken Sandwich",
+          "category": "Chicken"
+        },
+        {
+          "name": "Spicy Chicken Double",
+          "category": "Chicken"
+        },
+        {
+          "name": "Chicken Bites & Fries Box",
+          "category": "Chicken"
+        },
+        {
+          "name": "Half-pound Chicken Bites and Fries",
+          "category": "Chicken"
+        },
+        {
+          "name": "Classic Wings (5, 10, 20 Piece)",
+          "category": "Classic Wings"
+        },
+        {
+          "name": "Stingin' Honey Garlic Wings",
+          "category": "Classic Wings"
+        },
+        {
+          "name": "Chili Cheese Dog",
+          "category": "Hot Dogs"
+        },
+        {
+          "name": "Grilled Hot Dog",
+          "category": "Hot Dogs"
+        },
+        {
+          "name": "Deep Sea Double",
+          "category": "Fish"
+        },
+        {
+          "name": "Crispy Fish Sandwich",
+          "category": "Fish"
+        },
+        {
+          "name": "Famous Seasoned Fries",
+          "category": "Fries and Sides"
+        },
+        {
+          "name": "Cheese Chili Cheese Fries",
+          "category": "Fries and Sides"
+        },
+        {
+          "name": "Fully Loaded Fries",
+          "category": "Fries and Sides"
+        },
+        {
+          "name": "Garlic Parmesan Loaded Fries",
+          "category": "Fries and Sides"
+        },
+        {
+          "name": "Fry-Seasoned Monsterella Stix",
+          "category": "Fries and Sides"
+        },
+        {
+          "name": "Classic Milkshakes",
+          "category": "Sweet Side"
+        },
+        {
+          "name": "Sea Salt Caramel Milkshake",
+          "category": "Sweet Side"
+        },
+        {
+          "name": "Apple Pie",
+          "category": "Sweet Side"
+        },
+        {
+          "name": "Funnel Cake Fries",
+          "category": "Sweet Side"
+        },
+        {
+          "name": "Cheesecake Sundae",
+          "category": "Sweet Side"
+        },
+        {
+          "name": "Soft Serve Cone",
+          "category": "Sweet Side"
+        },
+        {
+          "name": "Slushies",
+          "category": "Chill Stop"
+        },
+        {
+          "name": "Sweet Creamery Slushies",
+          "category": "Chill Stop"
+        },
+        {
+          "name": "Nerds Layered Slushies",
+          "category": "Chill Stop"
+        },
+        {
+          "name": "Coca-Cola",
+          "category": "Soft Drinks"
+        },
+        {
+          "name": "Sprite",
+          "category": "Soft Drinks"
+        },
+        {
+          "name": "Minute Maid Lemonade",
+          "category": "Soft Drinks"
         }
       ]
     },
     {
-      "chain": "Dunkin'",
+      "chain": "Krystal",
       "match": [
-        "dunkin"
+        "krystal"
       ],
-      "sourceName": "news.dunkindonuts.com",
-      "sourceUrl": "https://news.dunkindonuts.com/news/dunkin-new-menu-september-2026",
-      "items": [
+      "menuSourceName": "krystal.com",
+      "menuSourceUrl": "https://www.krystal.com/menu/",
+      "menuItems": [
         {
-          "name": "$6 Meal Deal",
-          "price": "$6",
-          "note": "Bacon, Egg and Cheese, hash browns, medium coffee",
-          "source": {
-            "url": "https://news.dunkindonuts.com/news/dunkin-new-menu-september-2026",
-            "date": "2026-09-30",
-            "quote": "The popular $6 Meal Deal continues to deliver value with a Bacon, Egg and Cheese Sandwich, crispy Hash Browns and a medium hot or iced coffee, all for $6.* ... No substitutions. Participation may vary. Limited time offer. Cannot be combined with other offers. Exclusions and terms apply."
-          }
+          "name": "12 Chili Cheese Pups",
+          "category": "Krystals & Pups"
+        },
+        {
+          "name": "3 Bacon & Cheese Krystals Combo",
+          "category": "Combo Meals"
+        },
+        {
+          "name": "5 Cheese Krystals with Chili Cheese Fries Combo",
+          "category": "Combo Meals"
+        },
+        {
+          "name": "MVP Meal",
+          "category": "Crowd Pleasers"
+        },
+        {
+          "name": "Avocado Sausage, Egg, Cheese Toast Sandwich",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Avocado Bacon, Egg, Cheese Toast Sandwich",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Avocado Original Scrambler",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Avocado Low-Carb Scrambler",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Avocado Sunriser",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Hangover Krystal",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Pork Roll Cruz",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Fish & Grits",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Krystal Signature Spicy with Bacon Wrap",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Spicy Bacon, Egg, Cheese Wrap",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Breakfast Wrap",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Bacon, Egg, Cheese Wrap",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Bacon and Egg Patty Melt",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Spicy Bacon and Egg Patty Melt",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Maple Waffle Chik Sandwich",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Bacon, Egg & Cheese Waffle Sandwich",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Sausage, Egg & Cheese Waffle Sandwich",
+          "category": "Breakfast"
+        },
+        {
+          "name": "2 PC Mini Waffles",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Sausage Gravy Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Sweet 'n Savory Glazed Chik Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Spicy Chik Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Original Scrambler Breakfast Bowl",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Low Carb Scrambler Breakfast Bowl",
+          "category": "Breakfast"
+        },
+        {
+          "name": "3 Egg Breakfast Plate",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Bacon, Egg & Cheese Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Sausage, Egg & Cheese Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Chik Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Sunriser",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Tots",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Biscuit",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Grits",
+          "category": "Breakfast"
+        },
+        {
+          "name": "12 Original Sausage Scramblers",
+          "category": "Breakfast"
+        },
+        {
+          "name": "12 Chik Biscuits",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Glaze Bombs",
+          "category": "Breakfast"
         }
       ]
     },
     {
-      "chain": "Sonic",
+      "chain": "Panda Express",
       "match": [
-        "sonic drivein",
-        "sonic drive in",
-        "sonic"
+        "panda express"
       ],
-      "sourceName": "stories.inspirebrands.com",
-      "sourceUrl": "https://stories.inspirebrands.com/sonic-7-big-deal-meal/",
-      "items": [
+      "menuSourceName": "pandaexpress.com",
+      "menuSourceUrl": "https://www.pandaexpress.com/nutritioninformation",
+      "menuItems": [
         {
-          "name": "$7 Big Deal Meal",
-          "price": "$7",
-          "note": "Cheeseburger, medium tots or fries, drink, vanilla sundae",
-          "source": {
-            "url": "https://stories.inspirebrands.com/sonic-7-big-deal-meal/",
-            "date": "2026-09-02",
-            "quote": "The $7 Big Deal Meal is a value meal from SONIC that includes a SONIC Cheeseburger, choice of Medium Tots or Fries, a Medium Drink and a Vanilla Sundae for just $7. ... The $7 Big Deal Meal is available now for a limited time at participating SONIC locations nationwide."
-          }
+          "name": "The Original Orange Chicken",
+          "category": "Entrees"
         },
         {
-          "name": "Jr Bacon Cheeseburger",
-          "price": "$1.99",
-          "note": "$1.99 Menu",
-          "source": {
-            "url": "https://stories.inspirebrands.com/sonic-debuts-the-7-big-deal-meal-bringing-more-of-what-guests-want-for-less/",
-            "date": "2026-06-01",
-            "quote": "The updated $1.99 Menu includes: Jr Bacon Cheeseburger, Vanilla Soft Serve Cup, Cheesy Baja Crispy Tender Wrap, Small Root Beer Float"
-          }
+          "name": "Beijing Beef",
+          "category": "Entrees"
         },
         {
-          "name": "Cheesy Baja Crispy Tender Wrap",
-          "price": "$1.99",
-          "note": "$1.99 Menu",
-          "source": {
-            "url": "https://stories.inspirebrands.com/sonic-debuts-the-7-big-deal-meal-bringing-more-of-what-guests-want-for-less/",
-            "date": "2026-06-01",
-            "quote": "The updated $1.99 Menu includes: Jr Bacon Cheeseburger, Vanilla Soft Serve Cup, Cheesy Baja Crispy Tender Wrap, Small Root Beer Float"
-          }
+          "name": "Honey Walnut Shrimp",
+          "category": "Entrees"
         },
         {
-          "name": "Small Root Beer Float",
-          "price": "$1.99",
-          "note": "$1.99 Menu",
-          "source": {
-            "url": "https://stories.inspirebrands.com/sonic-debuts-the-7-big-deal-meal-bringing-more-of-what-guests-want-for-less/",
-            "date": "2026-06-01",
-            "quote": "The updated $1.99 Menu includes: Jr Bacon Cheeseburger, Vanilla Soft Serve Cup, Cheesy Baja Crispy Tender Wrap, Small Root Beer Float"
-          }
+          "name": "Broccoli Beef",
+          "category": "Entrees"
         },
         {
-          "name": "Vanilla Soft Serve Cup",
-          "price": "$1.99",
-          "note": "$1.99 Menu",
-          "source": {
-            "url": "https://stories.inspirebrands.com/sonic-debuts-the-7-big-deal-meal-bringing-more-of-what-guests-want-for-less/",
-            "date": "2026-06-01",
-            "quote": "The updated $1.99 Menu includes: Jr Bacon Cheeseburger, Vanilla Soft Serve Cup, Cheesy Baja Crispy Tender Wrap, Small Root Beer Float"
-          }
+          "name": "Kung Pao Chicken",
+          "category": "Entrees"
+        },
+        {
+          "name": "Black Pepper Chicken",
+          "category": "Entrees"
+        },
+        {
+          "name": "Grilled Teriyaki Chicken",
+          "category": "Entrees"
+        },
+        {
+          "name": "Mushroom Chicken",
+          "category": "Entrees"
+        },
+        {
+          "name": "Honey Sesame Chicken Breast",
+          "category": "Entrees"
+        },
+        {
+          "name": "String Bean Chicken Breast",
+          "category": "Entrees"
+        },
+        {
+          "name": "SweetFire Chicken Breast",
+          "category": "Entrees"
+        },
+        {
+          "name": "Black Pepper Sirloin Steak",
+          "category": "Entrees"
+        },
+        {
+          "name": "Eggplant Tofu",
+          "category": "Entrees"
+        },
+        {
+          "name": "Cantonese BBQ Brisket",
+          "category": "Entrees"
+        },
+        {
+          "name": "Chow Mein",
+          "category": "Sides"
+        },
+        {
+          "name": "Fried Rice",
+          "category": "Sides"
+        },
+        {
+          "name": "White Steamed Rice",
+          "category": "Sides"
+        },
+        {
+          "name": "Super Greens",
+          "category": "Sides"
+        },
+        {
+          "name": "Chow Fun",
+          "category": "Sides"
+        },
+        {
+          "name": "Quinoa Fried Rice",
+          "category": "Sides"
+        },
+        {
+          "name": "Bowl",
+          "category": "Meals"
+        },
+        {
+          "name": "Plate",
+          "category": "Meals"
+        },
+        {
+          "name": "Bigger Plate",
+          "category": "Meals"
+        },
+        {
+          "name": "Panda Bundles",
+          "category": "Meals"
+        },
+        {
+          "name": "Balanced Protein Meals",
+          "category": "Meals"
+        },
+        {
+          "name": "Panda Cub Meal",
+          "category": "Meals"
+        },
+        {
+          "name": "5 Person Family Meal",
+          "category": "Meals"
+        },
+        {
+          "name": "Chicken Egg Roll",
+          "category": "Appetizers and More"
+        },
+        {
+          "name": "Cream Cheese Rangoon",
+          "category": "Appetizers and More"
+        },
+        {
+          "name": "Chicken Potsticker",
+          "category": "Appetizers and More"
+        },
+        {
+          "name": "Vegetable Spring Roll",
+          "category": "Appetizers and More"
+        },
+        {
+          "name": "Hot & Sour Soup",
+          "category": "Appetizers and More"
+        },
+        {
+          "name": "Panda Crafted Beverages",
+          "category": "Drinks"
+        },
+        {
+          "name": "Coca-Cola",
+          "category": "Drinks"
+        },
+        {
+          "name": "Diet Coke",
+          "category": "Drinks"
+        },
+        {
+          "name": "Coca-Cola Zero Sugar",
+          "category": "Drinks"
+        },
+        {
+          "name": "Sprite",
+          "category": "Drinks"
+        },
+        {
+          "name": "Dr Pepper",
+          "category": "Drinks"
+        },
+        {
+          "name": "Fanta Orange",
+          "category": "Drinks"
+        },
+        {
+          "name": "Minute Maid Lemonade",
+          "category": "Drinks"
+        },
+        {
+          "name": "Sweet Tea",
+          "category": "Drinks"
+        },
+        {
+          "name": "Black Tea",
+          "category": "Drinks"
         }
       ]
     },
     {
-      "chain": "Dairy Queen",
+      "chain": "Taco John's",
       "match": [
-        "dairy queen"
+        "taco johns"
       ],
-      "sourceName": "businesswire.com",
-      "sourceUrl": "https://www.businesswire.com/news/home/20260831819447/en/Dairy-Queen-Kicks-Off-Football-Season-with-%246.99-DQ-Chicken-Strip-Basket-Deal-and-NEW-MVP-Dip-Lineup",
-      "items": [
+      "menuSourceName": "tacojohns.com",
+      "menuSourceUrl": "https://tacojohns.com/our-menu/",
+      "menuItems": [
         {
-          "name": "DQ Chicken Strip Basket",
-          "price": "$6.99",
-          "note": "4 strips, fries, drink and a dip. Limited time",
-          "source": {
-            "url": "https://www.businesswire.com/news/home/20260831819447/en/Dairy-Queen-Kicks-Off-Football-Season-with-%246.99-DQ-Chicken-Strip-Basket-Deal-and-NEW-MVP-Dip-Lineup",
-            "date": "2026-08-31",
-            "quote": "The DQ Chicken Strip Basket, now just $6.99 for a limited time at participating DQ restaurants, delivers it all. ... a deal that includes the DQ four-piece Chicken Strip Basket featuring a choice of Original or FlameThrower Chicken Strips made with 100% white meat chicken strips. Each basket is served with golden hot fries, a refreshing drink and your choice from the NEW! MVP Dip Lineup."
-          }
+          "name": "Beef Burrito",
+          "category": "Favorites"
+        },
+        {
+          "name": "Combination Burrito",
+          "category": "Favorites"
+        },
+        {
+          "name": "Taco Salad",
+          "category": "Favorites"
+        },
+        {
+          "name": "Super Nachos",
+          "category": "Favorites"
+        },
+        {
+          "name": "Super Potato Olés",
+          "category": "Favorites"
+        },
+        {
+          "name": "Boss Bowl",
+          "category": "Favorites"
+        },
+        {
+          "name": "Crispy Chicken Taco",
+          "category": "Tacos"
+        },
+        {
+          "name": "Taco Bravo",
+          "category": "Tacos"
+        },
+        {
+          "name": "Fiesta Softshell Taco",
+          "category": "Tacos"
+        },
+        {
+          "name": "Crispy Taco",
+          "category": "Tacos"
+        },
+        {
+          "name": "Softshell Taco",
+          "category": "Tacos"
+        },
+        {
+          "name": "Six-Pack And A Pound",
+          "category": "Tacos"
+        },
+        {
+          "name": "Super Six-Pack And A Pound",
+          "category": "Tacos"
+        },
+        {
+          "name": "Taco Burger",
+          "category": "Tacos"
+        },
+        {
+          "name": "Stuffed Grilled Taco",
+          "category": "Tacos"
+        },
+        {
+          "name": "Western Gold Grilled Burrito",
+          "category": "Burritos"
+        },
+        {
+          "name": "Meat & Potato Burrito",
+          "category": "Burritos"
+        },
+        {
+          "name": "Super Burrito",
+          "category": "Burritos"
+        },
+        {
+          "name": "Grilled Burrito",
+          "category": "Burritos"
+        },
+        {
+          "name": "Bean Burrito",
+          "category": "Burritos"
+        },
+        {
+          "name": "Boss Burrito",
+          "category": "Burritos"
+        },
+        {
+          "name": "Nacho Crunch Burrito",
+          "category": "Burritos"
+        },
+        {
+          "name": "Four Cheese Quesadilla",
+          "category": "Quesadillas"
+        },
+        {
+          "name": "Four Cheese Chicken Quesadilla",
+          "category": "Quesadillas"
+        },
+        {
+          "name": "Four Cheese Steak Quesadilla",
+          "category": "Quesadillas"
+        },
+        {
+          "name": "Crispy Chicken Tenders",
+          "category": "What's New"
+        },
+        {
+          "name": "Spicy Potato Griller",
+          "category": "Value Menu"
+        },
+        {
+          "name": "Scrambler Burrito",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Meat & Potato Breakfast Burrito",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Spicy Chorizo Breakfast Burrito",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Junior Breakfast Burrito",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Potato Olés Scrambler",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Potato Olés",
+          "category": "Sides"
+        },
+        {
+          "name": "Mexi Rolls",
+          "category": "Sides"
+        },
+        {
+          "name": "Chips & Nacho Cheese",
+          "category": "Sides"
+        },
+        {
+          "name": "Refried Beans",
+          "category": "Sides"
+        },
+        {
+          "name": "Red Rice",
+          "category": "Sides"
+        },
+        {
+          "name": "Churro",
+          "category": "Desserts"
+        },
+        {
+          "name": "Mexican Donut Bites",
+          "category": "Desserts"
+        },
+        {
+          "name": "Pepsi",
+          "category": "Beverages"
+        },
+        {
+          "name": "Diet Pepsi",
+          "category": "Beverages"
+        },
+        {
+          "name": "Mountain Dew",
+          "category": "Beverages"
+        },
+        {
+          "name": "Dr Pepper",
+          "category": "Beverages"
+        },
+        {
+          "name": "Starry",
+          "category": "Beverages"
+        }
+      ]
+    },
+    {
+      "chain": "Freddy's",
+      "match": [
+        "freddys frozen custard",
+        "freddys"
+      ],
+      "menuSourceName": "freddys.com",
+      "menuSourceUrl": "https://www.freddys.com/nutrition-and-allergens",
+      "menuItems": [
+        {
+          "name": "Double Steakburger",
+          "category": "Steakburgers"
+        },
+        {
+          "name": "Single Steakburger",
+          "category": "Steakburgers"
+        },
+        {
+          "name": "Triple Steakburger",
+          "category": "Steakburgers"
+        },
+        {
+          "name": "Cheeseburger",
+          "category": "Steakburgers"
+        },
+        {
+          "name": "Bacon & Cheese",
+          "category": "Steakburgers"
+        },
+        {
+          "name": "California Style",
+          "category": "Steakburgers"
+        },
+        {
+          "name": "Patty Melt",
+          "category": "Steakburgers"
+        },
+        {
+          "name": "Jalapeño Pepper Jack",
+          "category": "Steakburgers"
+        },
+        {
+          "name": "Prime Steakburger",
+          "category": "Steakburgers"
+        },
+        {
+          "name": "Grilled Cheese Steakburger",
+          "category": "Steakburgers"
+        },
+        {
+          "name": "Veggie Burger",
+          "category": "Steakburgers"
+        },
+        {
+          "name": "Chicken Tenders",
+          "category": "Chicken & Hot Dogs"
+        },
+        {
+          "name": "Spicy Chicken Sandwich",
+          "category": "Chicken & Hot Dogs"
+        },
+        {
+          "name": "Crispy Chicken Club",
+          "category": "Chicken & Hot Dogs"
+        },
+        {
+          "name": "Grilled Chicken Club",
+          "category": "Chicken & Hot Dogs"
+        },
+        {
+          "name": "Hot Dog",
+          "category": "Chicken & Hot Dogs"
+        },
+        {
+          "name": "Chili Cheese Dog",
+          "category": "Chicken & Hot Dogs"
+        },
+        {
+          "name": "Crispy Chicken Bowl",
+          "category": "Bowls"
+        },
+        {
+          "name": "Grilled Chicken Bowl",
+          "category": "Bowls"
+        },
+        {
+          "name": "Steakburger Bowl",
+          "category": "Bowls"
+        },
+        {
+          "name": "Veggie Burger Bowl",
+          "category": "Bowls"
+        },
+        {
+          "name": "Freddy's Fries",
+          "category": "Sides"
+        },
+        {
+          "name": "Cheese Fries",
+          "category": "Sides"
+        },
+        {
+          "name": "Chili Cheese Fries",
+          "category": "Sides"
+        },
+        {
+          "name": "Freddy's Tots",
+          "category": "Sides"
+        },
+        {
+          "name": "Onion Rings",
+          "category": "Sides"
+        },
+        {
+          "name": "Cheese Curds",
+          "category": "Sides"
+        },
+        {
+          "name": "Chili",
+          "category": "Sides"
+        },
+        {
+          "name": "Freddy's Kettle Cooked Potato Chips",
+          "category": "Sides"
+        },
+        {
+          "name": "Applesauce",
+          "category": "Sides"
+        },
+        {
+          "name": "Chocolate Brownie Delight Concrete",
+          "category": "Frozen Custard"
+        },
+        {
+          "name": "Chocolate Brownie Delight Shake",
+          "category": "Frozen Custard"
+        },
+        {
+          "name": "Chocolate Brownie Delight Sundae",
+          "category": "Frozen Custard"
+        },
+        {
+          "name": "Cold Brew Caramel Crunch Concrete",
+          "category": "Frozen Custard"
+        },
+        {
+          "name": "Cold Brew Caramel Crunch Shake",
+          "category": "Frozen Custard"
+        },
+        {
+          "name": "Chocolate Chip Frozen Custard Sandwich",
+          "category": "Frozen Custard"
+        },
+        {
+          "name": "Cone",
+          "category": "Frozen Custard"
+        },
+        {
+          "name": "Blue Rizzberry Custard Cream Soda",
+          "category": "Freddy's Bevies"
+        },
+        {
+          "name": "Coco Loco Custard Cream Soda",
+          "category": "Freddy's Bevies"
+        },
+        {
+          "name": "Golden Hour Orange Custard Cream Soda",
+          "category": "Freddy's Bevies"
+        },
+        {
+          "name": "Mango Magic Custard Cream Soda",
+          "category": "Freddy's Bevies"
+        },
+        {
+          "name": "Peach Peach Baby Custard Cream Soda",
+          "category": "Freddy's Bevies"
+        },
+        {
+          "name": "Mango Sunrise Lemonade",
+          "category": "Freddy's Bevies"
+        },
+        {
+          "name": "Mango Sunrise Tea",
+          "category": "Freddy's Bevies"
+        },
+        {
+          "name": "Peachy Keen Lemonade",
+          "category": "Freddy's Bevies"
+        },
+        {
+          "name": "Peachy Keen Tea",
+          "category": "Freddy's Bevies"
+        },
+        {
+          "name": "Strawberry Sunset Lemonade",
+          "category": "Freddy's Bevies"
+        },
+        {
+          "name": "Strawberry Sunset Tea",
+          "category": "Freddy's Bevies"
+        },
+        {
+          "name": "Pepsi",
+          "category": "Drinks"
+        },
+        {
+          "name": "Diet Pepsi",
+          "category": "Drinks"
+        },
+        {
+          "name": "Dr. Pepper",
+          "category": "Drinks"
+        },
+        {
+          "name": "MUG Root Beer",
+          "category": "Drinks"
+        },
+        {
+          "name": "Mountain Dew",
+          "category": "Drinks"
+        },
+        {
+          "name": "Tropicana Pink Lemonade",
+          "category": "Drinks"
+        },
+        {
+          "name": "Luzianne Iced Tea",
+          "category": "Drinks"
+        }
+      ]
+    },
+    {
+      "chain": "Five Guys",
+      "match": [
+        "five guys"
+      ],
+      "menuSourceName": "fiveguys.com",
+      "menuSourceUrl": "https://www.fiveguys.com/menu/",
+      "menuItems": [
+        {
+          "name": "Hamburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Cheeseburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Bacon Burger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Bacon Cheeseburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Little Hamburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Little Cheeseburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Little Bacon Burger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Little Bacon Cheeseburger",
+          "category": "Burgers"
+        },
+        {
+          "name": "Five Guys Style Fries",
+          "category": "Fries"
+        },
+        {
+          "name": "Cajun Style Fries",
+          "category": "Fries"
+        },
+        {
+          "name": "Hot Dog",
+          "category": "Hot Dogs"
+        },
+        {
+          "name": "Cheese Dog",
+          "category": "Hot Dogs"
+        },
+        {
+          "name": "Bacon Dog",
+          "category": "Hot Dogs"
+        },
+        {
+          "name": "Bacon Cheese Dog",
+          "category": "Hot Dogs"
+        },
+        {
+          "name": "Grilled Cheese",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "BLT",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Veggie Sandwich",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Cheese Veggie Sandwich",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Patty Melt",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Burger bowl",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Egg Sandwich",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Egg & Cheese",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Egg & Bacon",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Bacon, Egg & Cheese",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Milkshake",
+          "category": "Shakes"
+        },
+        {
+          "name": "Coca-Cola Freestyle Fountain Drink",
+          "category": "Drinks"
+        },
+        {
+          "name": "Bottled Drinks",
+          "category": "Drinks"
         }
       ]
     },
@@ -550,6 +5794,905 @@
             "date": "2026-04-28",
             "quote": "Upgrade to a Footlong Sub of the Day for $3 more"
           }
+        }
+      ],
+      "menuSourceName": "subway.com",
+      "menuSourceUrl": "https://www.subway.com/en-us/restaurant/1287-0/menu/category/sandwiches",
+      "menuItems": [
+        {
+          "name": "Steak Philly",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Chipotle Philly",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Chicken & Bacon Ranch",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Honey Mustard",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Sweet Onion Chicken Teriyaki",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Grilled Chicken",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "B.M.T.",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Spicy Italian",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "5 Meat Italian",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Meatball Pepperoni",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Meatball",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Cold Cut Combo",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Ham & Salami",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "B.L.T.",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Spicy Pepperoni",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Oven-Roasted Turkey",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Black Forest Ham",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Roast Beef",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Tuna",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Veggie Delite",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "All American Club",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Subway Club",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Turkey & Ham",
+          "category": "Sandwiches"
+        },
+        {
+          "name": "Hot Honey Turkey Italian",
+          "category": "Hot Honey Signature Swicy Collection"
+        },
+        {
+          "name": "Hot Honey Italian",
+          "category": "Hot Honey Signature Swicy Collection"
+        },
+        {
+          "name": "Doritos Hot Honey Chicken Nachos",
+          "category": "Hot Honey Signature Swicy Collection"
+        },
+        {
+          "name": "Doritos Hot Honey Steak Nachos",
+          "category": "Hot Honey Signature Swicy Collection"
+        },
+        {
+          "name": "Grilled Chicken & Avocado",
+          "category": "Fresh Fit"
+        },
+        {
+          "name": "Ham & Turkey Stacker",
+          "category": "Fresh Fit"
+        },
+        {
+          "name": "Turkey & Ranch Delite",
+          "category": "Fresh Fit"
+        },
+        {
+          "name": "Seasoned Steak & Avocado",
+          "category": "Fresh Fit"
+        },
+        {
+          "name": "Baja Chicken",
+          "category": "Protein Pockets"
+        },
+        {
+          "name": "Peppercorn Ranch Chicken",
+          "category": "Protein Pockets"
+        },
+        {
+          "name": "Italian Trio",
+          "category": "Protein Pockets"
+        },
+        {
+          "name": "Wrap (any sandwich)",
+          "category": "Wraps, Protein Bowls & Salads"
+        },
+        {
+          "name": "Protein Bowl (any sandwich)",
+          "category": "Wraps, Protein Bowls & Salads"
+        },
+        {
+          "name": "Salad (any sandwich)",
+          "category": "Wraps, Protein Bowls & Salads"
+        },
+        {
+          "name": "Bacon Egg & Cheese",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Steak Egg & Cheese",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Egg & Cheese",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Black Forest Ham Egg & Cheese",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Bacon Egg & Cheese Wrap",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Steak Egg & Cheese Wrap",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Black Forest Ham Egg & Cheese Wrap",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Egg & Cheese Wrap",
+          "category": "Breakfast"
+        },
+        {
+          "name": "Broccoli Cheddar",
+          "category": "Soups"
+        },
+        {
+          "name": "Chicken Noodle",
+          "category": "Soups"
+        },
+        {
+          "name": "Loaded Baked Potato",
+          "category": "Soups"
+        },
+        {
+          "name": "Chocolate Chip",
+          "category": "Snacks, Sides & Desserts"
+        },
+        {
+          "name": "White Chip Macadamia Nut",
+          "category": "Snacks, Sides & Desserts"
+        },
+        {
+          "name": "Oatmeal Raisin",
+          "category": "Snacks, Sides & Desserts"
+        },
+        {
+          "name": "Raspberry Cheesecake",
+          "category": "Snacks, Sides & Desserts"
+        },
+        {
+          "name": "Double Chocolate",
+          "category": "Snacks, Sides & Desserts"
+        },
+        {
+          "name": "6 Pack Cookie Box",
+          "category": "Snacks, Sides & Desserts"
+        },
+        {
+          "name": "Lays Classic",
+          "category": "Snacks, Sides & Desserts"
+        },
+        {
+          "name": "Doritos Nacho Cheese",
+          "category": "Snacks, Sides & Desserts"
+        },
+        {
+          "name": "Black Forest Ham for Kids",
+          "category": "Fresh Fit for Kids"
+        },
+        {
+          "name": "Oven-Roasted Turkey for Kids",
+          "category": "Fresh Fit for Kids"
+        },
+        {
+          "name": "Veggie Delite for Kids",
+          "category": "Fresh Fit for Kids"
+        },
+        {
+          "name": "Pepsi",
+          "category": "Drinks"
+        },
+        {
+          "name": "Diet Pepsi",
+          "category": "Drinks"
+        },
+        {
+          "name": "Pepsi Zero Sugar",
+          "category": "Drinks"
+        },
+        {
+          "name": "Starry",
+          "category": "Drinks"
+        },
+        {
+          "name": "Mountain Dew",
+          "category": "Drinks"
+        },
+        {
+          "name": "Dr Pepper",
+          "category": "Drinks"
+        },
+        {
+          "name": "Tropicana Lemonade",
+          "category": "Drinks"
+        }
+      ]
+    },
+    {
+      "chain": "Dunkin'",
+      "match": [
+        "dunkin"
+      ],
+      "sourceName": "news.dunkindonuts.com",
+      "sourceUrl": "https://news.dunkindonuts.com/news/dunkin-new-menu-september-2026",
+      "items": [
+        {
+          "name": "$6 Meal Deal",
+          "price": "$6",
+          "note": "Bacon, Egg and Cheese, hash browns, medium coffee",
+          "source": {
+            "url": "https://news.dunkindonuts.com/news/dunkin-new-menu-september-2026",
+            "date": "2026-09-30",
+            "quote": "The popular $6 Meal Deal continues to deliver value with a Bacon, Egg and Cheese Sandwich, crispy Hash Browns and a medium hot or iced coffee, all for $6.* ... No substitutions. Participation may vary. Limited time offer. Cannot be combined with other offers. Exclusions and terms apply."
+          }
+        }
+      ],
+      "menuSourceName": "dunkindonuts.com",
+      "menuSourceUrl": "https://www.dunkindonuts.com/menu/categories/hot-drinks/",
+      "menuItems": [
+        {
+          "name": "Original Blend",
+          "category": "Hot Drinks"
+        },
+        {
+          "name": "Dunkin' Midnight",
+          "category": "Hot Drinks"
+        },
+        {
+          "name": "Latte",
+          "category": "Hot Drinks"
+        },
+        {
+          "name": "Dunkalatte",
+          "category": "Hot Drinks"
+        },
+        {
+          "name": "Protein Latte",
+          "category": "Hot Drinks"
+        },
+        {
+          "name": "Cappuccino",
+          "category": "Hot Drinks"
+        },
+        {
+          "name": "Macchiato",
+          "category": "Hot Drinks"
+        },
+        {
+          "name": "Americano",
+          "category": "Hot Drinks"
+        },
+        {
+          "name": "Espresso",
+          "category": "Hot Drinks"
+        },
+        {
+          "name": "Caramel Craze Signature Latte",
+          "category": "Hot Drinks"
+        },
+        {
+          "name": "Cocoa Mocha Signature Latte",
+          "category": "Hot Drinks"
+        },
+        {
+          "name": "Pumpkin Spice Signature Latte",
+          "category": "Hot Drinks"
+        },
+        {
+          "name": "Matcha Latte",
+          "category": "Hot Drinks"
+        },
+        {
+          "name": "Chai Latte",
+          "category": "Hot Drinks"
+        },
+        {
+          "name": "Hot Chocolate",
+          "category": "Hot Drinks"
+        },
+        {
+          "name": "Tea",
+          "category": "Hot Drinks"
+        },
+        {
+          "name": "Box O' Joe Coffee",
+          "category": "Hot Drinks"
+        },
+        {
+          "name": "Iced Dunkalatte",
+          "category": "Iced Coffee & Cold Brew"
+        },
+        {
+          "name": "Cold Brew",
+          "category": "Iced Coffee & Cold Brew"
+        },
+        {
+          "name": "Cold Brew with Cold Foam",
+          "category": "Iced Coffee & Cold Brew"
+        },
+        {
+          "name": "Vanilla Creme Cold Brew",
+          "category": "Iced Coffee & Cold Brew"
+        },
+        {
+          "name": "Brown Sugar Shakin' Espresso",
+          "category": "Iced Coffee & Cold Brew"
+        },
+        {
+          "name": "Caramel Iced Macchiato",
+          "category": "Iced Coffee & Cold Brew"
+        },
+        {
+          "name": "Make Your Own Cloud Latte",
+          "category": "Iced Coffee & Cold Brew"
+        },
+        {
+          "name": "Pumpkin Spice Iced Signature Latte",
+          "category": "Iced Coffee & Cold Brew"
+        },
+        {
+          "name": "Coffee Chiller",
+          "category": "Frozen Drinks"
+        },
+        {
+          "name": "Caramel Creme Coffee Chiller",
+          "category": "Frozen Drinks"
+        },
+        {
+          "name": "Triple Mocha Coffee Chiller",
+          "category": "Frozen Drinks"
+        },
+        {
+          "name": "Frozen Matcha Latte",
+          "category": "Frozen Drinks"
+        },
+        {
+          "name": "Frozen Chocolate",
+          "category": "Frozen Drinks"
+        },
+        {
+          "name": "Strawberry Coolatta",
+          "category": "Frozen Drinks"
+        },
+        {
+          "name": "Vanilla Bean Coolatta",
+          "category": "Frozen Drinks"
+        },
+        {
+          "name": "Blue Raspberry Coolatta",
+          "category": "Frozen Drinks"
+        },
+        {
+          "name": "Mango Daydream Refresher",
+          "category": "Refreshing Sips"
+        },
+        {
+          "name": "Strawberry Dragonfruit Sparkling Refresher",
+          "category": "Refreshing Sips"
+        },
+        {
+          "name": "Berry Clementine Refresher",
+          "category": "Refreshing Sips"
+        },
+        {
+          "name": "Suncloud Lemonade",
+          "category": "Refreshing Sips"
+        },
+        {
+          "name": "Light Dunkin' Refreshers",
+          "category": "Refreshing Sips"
+        },
+        {
+          "name": "Bacon, Egg and Cheese",
+          "category": "Sandwiches & Wraps"
+        },
+        {
+          "name": "Sausage, Egg and Cheese",
+          "category": "Sandwiches & Wraps"
+        },
+        {
+          "name": "Egg and Cheese",
+          "category": "Sandwiches & Wraps"
+        },
+        {
+          "name": "Turkey Sausage, Egg and Cheese",
+          "category": "Sandwiches & Wraps"
+        },
+        {
+          "name": "Sourdough Breakfast Sandwich",
+          "category": "Sandwiches & Wraps"
+        },
+        {
+          "name": "Chicken Sausage Breakfast Sandwich",
+          "category": "Sandwiches & Wraps"
+        },
+        {
+          "name": "Maple Sugar Bacon Breakfast Sandwich",
+          "category": "Sandwiches & Wraps"
+        },
+        {
+          "name": "Chicken Bacon Sandwich",
+          "category": "Sandwiches & Wraps"
+        },
+        {
+          "name": "Biscuit Breakfast Sandwich",
+          "category": "Sandwiches & Wraps"
+        },
+        {
+          "name": "Chicken Biscuit",
+          "category": "Sandwiches & Wraps"
+        },
+        {
+          "name": "Sausage Biscuit",
+          "category": "Sandwiches & Wraps"
+        },
+        {
+          "name": "Grilled Cheese",
+          "category": "Sandwiches & Wraps"
+        },
+        {
+          "name": "Tuna Melt",
+          "category": "Sandwiches & Wraps"
+        },
+        {
+          "name": "Kolache",
+          "category": "Sandwiches & Wraps"
+        },
+        {
+          "name": "Wake-Up Wrap - Bacon, Egg and Cheese",
+          "category": "Sandwiches & Wraps"
+        },
+        {
+          "name": "Wake-Up Wrap - Sausage, Egg and Cheese",
+          "category": "Sandwiches & Wraps"
+        },
+        {
+          "name": "Wake-Up Wrap - Egg and Cheese",
+          "category": "Sandwiches & Wraps"
+        },
+        {
+          "name": "Chipotle Hash Brown Wake-Up Wrap",
+          "category": "Sandwiches & Wraps"
+        },
+        {
+          "name": "Classic Donuts",
+          "category": "Donuts, Bagels & Bakery"
+        },
+        {
+          "name": "MUNCHKINS Donut Hole Treats",
+          "category": "Donuts, Bagels & Bakery"
+        },
+        {
+          "name": "Half Dozen Donuts",
+          "category": "Donuts, Bagels & Bakery"
+        },
+        {
+          "name": "Dozen Donuts",
+          "category": "Donuts, Bagels & Bakery"
+        },
+        {
+          "name": "Bagels with Cream Cheese Spread",
+          "category": "Donuts, Bagels & Bakery"
+        },
+        {
+          "name": "Muffins",
+          "category": "Donuts, Bagels & Bakery"
+        },
+        {
+          "name": "Butter Croissant",
+          "category": "Donuts, Bagels & Bakery"
+        },
+        {
+          "name": "Apple Fritter",
+          "category": "Donuts, Bagels & Bakery"
+        },
+        {
+          "name": "Coffee Roll",
+          "category": "Donuts, Bagels & Bakery"
+        },
+        {
+          "name": "Pumpkin Donut",
+          "category": "Donuts, Bagels & Bakery"
+        },
+        {
+          "name": "Pumpkin Muffin",
+          "category": "Donuts, Bagels & Bakery"
+        },
+        {
+          "name": "Hash Browns",
+          "category": "Snacks & Savory Bites"
+        },
+        {
+          "name": "Loaded Hash Browns",
+          "category": "Snacks & Savory Bites"
+        },
+        {
+          "name": "Avocado Toast",
+          "category": "Snacks & Savory Bites"
+        },
+        {
+          "name": "Bacon-Topped Avocado Toast",
+          "category": "Snacks & Savory Bites"
+        },
+        {
+          "name": "Bacon & Cheddar Omelet Bites",
+          "category": "Snacks & Savory Bites"
+        },
+        {
+          "name": "Everything Stuffed Bagel Minis",
+          "category": "Snacks & Savory Bites"
+        },
+        {
+          "name": "Maple Sugar Snackin' Bacon",
+          "category": "Snacks & Savory Bites"
+        },
+        {
+          "name": "Ham & Swiss Croissant Stuffer",
+          "category": "Snacks & Savory Bites"
+        },
+        {
+          "name": "$6 Meal Deal",
+          "category": "Deals",
+          "price": "$6"
+        }
+      ]
+    },
+    {
+      "chain": "Starbucks",
+      "match": [
+        "starbucks"
+      ],
+      "menuSourceName": "starbucks.com",
+      "menuSourceUrl": "https://www.starbucks.com/menu",
+      "menuItems": [
+        {
+          "name": "Caffè Latte",
+          "category": "Hot Coffees"
+        },
+        {
+          "name": "Caramel Macchiato",
+          "category": "Hot Coffees"
+        },
+        {
+          "name": "Cappuccino",
+          "category": "Hot Coffees"
+        },
+        {
+          "name": "Caffè Americano",
+          "category": "Hot Coffees"
+        },
+        {
+          "name": "Caffè Mocha",
+          "category": "Hot Coffees"
+        },
+        {
+          "name": "White Chocolate Mocha",
+          "category": "Hot Coffees"
+        },
+        {
+          "name": "Flat White",
+          "category": "Hot Coffees"
+        },
+        {
+          "name": "Pumpkin Spice Latte",
+          "category": "Hot Coffees"
+        },
+        {
+          "name": "Pecan Crunch Latte",
+          "category": "Hot Coffees"
+        },
+        {
+          "name": "Cinnamon Dolce Latte",
+          "category": "Hot Coffees"
+        },
+        {
+          "name": "Starbucks Blonde Vanilla Latte",
+          "category": "Hot Coffees"
+        },
+        {
+          "name": "Pistachio Latte",
+          "category": "Hot Coffees"
+        },
+        {
+          "name": "Cortado",
+          "category": "Hot Coffees"
+        },
+        {
+          "name": "Espresso",
+          "category": "Hot Coffees"
+        },
+        {
+          "name": "Espresso Macchiato",
+          "category": "Hot Coffees"
+        },
+        {
+          "name": "Medium Roast - Pike Place Roast",
+          "category": "Hot Coffees"
+        },
+        {
+          "name": "Blonde Roast - Starbucks Sunsera",
+          "category": "Hot Coffees"
+        },
+        {
+          "name": "Featured Dark Roast - Starbucks 1971 Roast",
+          "category": "Hot Coffees"
+        },
+        {
+          "name": "Decaf Roast - Pike Place Roast",
+          "category": "Hot Coffees"
+        },
+        {
+          "name": "Caffè Misto",
+          "category": "Hot Coffees"
+        },
+        {
+          "name": "Vanilla Protein Latte",
+          "category": "Hot Coffees"
+        },
+        {
+          "name": "Caramel Protein Latte",
+          "category": "Hot Coffees"
+        },
+        {
+          "name": "Iced Coffee",
+          "category": "Cold Coffees"
+        },
+        {
+          "name": "Iced Caramel Macchiato",
+          "category": "Cold Coffees"
+        },
+        {
+          "name": "Iced Caffè Latte",
+          "category": "Cold Coffees"
+        },
+        {
+          "name": "Iced Brown Sugar Oatmilk Shaken Espresso",
+          "category": "Cold Coffees"
+        },
+        {
+          "name": "Iced Shaken Espresso",
+          "category": "Cold Coffees"
+        },
+        {
+          "name": "Iced Pumpkin Cream Shaken Espresso",
+          "category": "Cold Coffees"
+        },
+        {
+          "name": "Iced Pumpkin Spice Latte",
+          "category": "Cold Coffees"
+        },
+        {
+          "name": "Iced White Chocolate Mocha",
+          "category": "Cold Coffees"
+        },
+        {
+          "name": "Iced Caffè Mocha",
+          "category": "Cold Coffees"
+        },
+        {
+          "name": "Iced Caffè Americano",
+          "category": "Cold Coffees"
+        },
+        {
+          "name": "Iced Starbucks Blonde Vanilla Latte",
+          "category": "Cold Coffees"
+        },
+        {
+          "name": "Iced Flat White",
+          "category": "Cold Coffees"
+        },
+        {
+          "name": "Iced Vanilla Protein Latte",
+          "category": "Cold Coffees"
+        },
+        {
+          "name": "Cold Brew",
+          "category": "Cold Coffees"
+        },
+        {
+          "name": "Pumpkin Cream Cold Brew",
+          "category": "Cold Coffees"
+        },
+        {
+          "name": "Vanilla Sweet Cream Cold Brew",
+          "category": "Cold Coffees"
+        },
+        {
+          "name": "Salted Caramel Cream Cold Brew",
+          "category": "Cold Coffees"
+        },
+        {
+          "name": "Chocolate Cream Cold Brew",
+          "category": "Cold Coffees"
+        },
+        {
+          "name": "Nitro Cold Brew",
+          "category": "Cold Coffees"
+        },
+        {
+          "name": "Aerocano",
+          "category": "Cold Coffees"
+        },
+        {
+          "name": "Chai Latte",
+          "category": "Tea"
+        },
+        {
+          "name": "Iced Chai Latte",
+          "category": "Tea"
+        },
+        {
+          "name": "Matcha Latte",
+          "category": "Tea"
+        },
+        {
+          "name": "Iced Matcha Latte",
+          "category": "Tea"
+        },
+        {
+          "name": "London Fog Latte",
+          "category": "Tea"
+        },
+        {
+          "name": "Iced Black Tea",
+          "category": "Tea"
+        },
+        {
+          "name": "Iced Green Tea",
+          "category": "Tea"
+        },
+        {
+          "name": "Iced Passion Tango Tea",
+          "category": "Tea"
+        },
+        {
+          "name": "Iced Peach Green Tea Lemonade",
+          "category": "Tea"
+        },
+        {
+          "name": "Pumpkin Spice Chai",
+          "category": "Tea"
+        },
+        {
+          "name": "Pink Drink",
+          "category": "Refreshers"
+        },
+        {
+          "name": "Dragon Drink",
+          "category": "Refreshers"
+        },
+        {
+          "name": "Mango Dream",
+          "category": "Refreshers"
+        },
+        {
+          "name": "Strawberry Açaí Refresher",
+          "category": "Refreshers"
+        },
+        {
+          "name": "Strawberry Açaí Lemonade Refresher",
+          "category": "Refreshers"
+        },
+        {
+          "name": "Mango Dragonfruit Refresher",
+          "category": "Refreshers"
+        },
+        {
+          "name": "Mango Dragonfruit Lemonade Refresher",
+          "category": "Refreshers"
+        },
+        {
+          "name": "Mango Strawberry Refresher",
+          "category": "Refreshers"
+        },
+        {
+          "name": "Caramel Frappuccino Blended Beverage",
+          "category": "Frappuccino Blended Beverages"
+        },
+        {
+          "name": "Mocha Frappuccino Blended Beverage",
+          "category": "Frappuccino Blended Beverages"
+        },
+        {
+          "name": "Coffee Frappuccino Blended Beverage",
+          "category": "Frappuccino Blended Beverages"
+        },
+        {
+          "name": "Caramel Ribbon Crunch Frappuccino Blended Beverage",
+          "category": "Frappuccino Blended Beverages"
+        },
+        {
+          "name": "Mocha Cookie Crumble Frappuccino Blended Beverage",
+          "category": "Frappuccino Blended Beverages"
+        },
+        {
+          "name": "Pumpkin Spice Frappuccino Blended Beverage",
+          "category": "Frappuccino Blended Beverages"
+        },
+        {
+          "name": "Vanilla Bean Crème Frappuccino Blended Beverage",
+          "category": "Frappuccino Blended Beverages"
+        },
+        {
+          "name": "Matcha Crème Frappuccino Blended Beverage",
+          "category": "Frappuccino Blended Beverages"
+        },
+        {
+          "name": "Sausage, Cheddar & Egg Sandwich",
+          "category": "Food"
+        },
+        {
+          "name": "Double-Smoked Bacon, Cheddar & Egg Sandwich",
+          "category": "Food"
+        },
+        {
+          "name": "Bacon, Gouda & Egg Sandwich",
+          "category": "Food"
+        },
+        {
+          "name": "Pumpkin Cream Cheese Muffin",
+          "category": "Food"
+        },
+        {
+          "name": "Pumpkin Mini Pie",
+          "category": "Food"
         }
       ]
     }
