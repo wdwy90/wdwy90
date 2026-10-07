@@ -45,6 +45,10 @@ object PlacesParser {
                 websiteUri = p.str("websiteUri"),
                 mapsUri = p.str("googleMapsUri"),
                 distanceMeters = Geo.distanceMeters(fromLat, fromLng, lat, lng),
+                openNow = p.optJSONObject("currentOpeningHours")?.let { h ->
+                    if (h.has("openNow") && !h.isNull("openNow")) h.getBoolean("openNow") else null
+                },
+                businessStatus = p.str("businessStatus"),
             )
         }
         return out.sortedBy { it.distanceMeters }

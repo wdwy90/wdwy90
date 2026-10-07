@@ -91,9 +91,11 @@ class PlacesClient(
         private const val BASE = "https://places.googleapis.com/v1"
         // Fast food only: this is what drive-thrus are tagged as in Google Places.
         private val FOOD_TYPES = listOf("fast_food_restaurant")
+        // businessStatus is a Pro-tier field and currentOpeningHours Enterprise, the tier rating and
+        // websiteUri already put every request in, so neither changes the SKU.
         private const val FIELD_MASK =
             "places.id,places.displayName,places.formattedAddress,places.shortFormattedAddress," +
                 "places.location,places.rating,places.primaryTypeDisplayName,places.photos," +
-                "places.websiteUri,places.googleMapsUri"
+                "places.websiteUri,places.googleMapsUri,places.currentOpeningHours,places.businessStatus"
     }
 }

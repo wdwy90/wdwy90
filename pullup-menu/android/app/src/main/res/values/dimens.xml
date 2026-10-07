@@ -9,5 +9,5 @@
     <dimen name="radius_small">16dp</dimen>
     <dimen name="touch_target">48dp</dimen>
     <dimen name="card_elevation">2dp</dimen>
-    <dimen name="hero_height">196dp</dimen>
+    <dimen name="hero_height">168dp</dimen>
 </resources>

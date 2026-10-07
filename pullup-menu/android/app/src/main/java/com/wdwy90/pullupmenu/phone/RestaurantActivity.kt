@@ -1,6 +1,6 @@
 package com.wdwy90.pullupmenu.phone
 
-import android.animation.LayoutTransition
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Paint
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -16,6 +17,7 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -84,10 +86,15 @@ class RestaurantActivity : ThemedActivity() {
     // Items tab
     private var groups: List<ItemGroup> = emptyList()
     private var query = ""
-    private val collapsed = HashSet<String>()
-    private val sections = LinkedHashMap<String, View>()
+    /** The one category open while not searching (accordion); null when all are collapsed, the default. */
+    private var expanded: String? = null
+    private val sections = LinkedHashMap<String, Section>()
     private val chipFor = HashMap<String, TextView>()
     private var currentSection: String? = null
+    private var scrollAnimator: ValueAnimator? = null
+
+    /** A category card on the Items tab: its header row, the item list under it and the chevron. */
+    private class Section(val card: View, val header: View, val body: View, val chevron: View)
     private var searchJob: Job? = null
     private var settingSearchText = false
 
@@ -192,10 +199,6 @@ class RestaurantActivity : ThemedActivity() {
         menuPanel.accessibilityTraversalAfter = R.id.sticky
 
         setUpSearch()
-        if (motionEnabled()) {
-            itemsContent.layoutTransition = LayoutTransition().apply { enableOnlyChanging() }
-            itemsList.layoutTransition = LayoutTransition().apply { enableOnlyChanging() }
-        }
         showEmpty()
 
         lifecycleScope.launch {
@@ -343,6 +346,27 @@ class RestaurantActivity : ThemedActivity() {
         val view = findViewById<TextView>(R.id.meta)
         view.text = meta
         view.contentDescription = spoken.joinToString(", ")
+
+        // Open or closed only when Google said so, and how far the car was from the door when it was found.
+        val status = SpannableStringBuilder()
+        val statusSpoken = ArrayList<String>()
+        r.openStatus?.let { label ->
+            val color = getColor(if (label == "Open now") R.color.success else R.color.warning)
+            status.append(label, ForegroundColorSpan(color), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            status.setSpan(StyleSpan(Typeface.BOLD), 0, label.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            statusSpoken += label
+        }
+        if (!r.isDemo && r.distanceMeters > 0) {
+            val feet = (r.distanceMeters * 3.281).roundToInt()
+            if (status.isNotEmpty()) status.append("  ·  ")
+            status.append("$feet ft")
+            statusSpoken += "$feet feet away"
+        }
+        findViewById<TextView>(R.id.status).apply {
+            text = status
+            contentDescription = statusSpoken.joinToString(", ")
+            isGone = status.isEmpty()
+        }
     }
 
     private fun showHero(r: Restaurant) {
@@ -350,18 +374,23 @@ class RestaurantActivity : ThemedActivity() {
         val hero = findViewById<View>(R.id.hero)
         val image = findViewById<ImageView>(R.id.hero_image)
         val placeholder = findViewById<View>(R.id.hero_placeholder)
+        val scrim = findViewById<View>(R.id.hero_scrim)
         val credit = findViewById<TextView>(R.id.hero_credit)
         hero.alpha = 1f
         image.setImageDrawable(null)
         image.visibility = View.INVISIBLE
         placeholder.visibility = View.VISIBLE
+        scrim.visibility = View.GONE
         credit.visibility = View.GONE
         hero.setOnClickListener(null)
         hero.isClickable = false
         hero.contentDescription = null
         hero.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
 
-        val ph = r.photos.firstOrNull() ?: return
+        // No photo from Google: no empty frame either; the name row carries the identity.
+        val ph = r.photos.firstOrNull()
+        hero.isGone = ph == null
+        if (ph == null) return
         heroJob = lifecycleScope.launch {
             // Photo loads are billed: one found while this screen is in the background waits until it's seen.
             lifecycle.withStarted {}
@@ -377,6 +406,7 @@ class RestaurantActivity : ThemedActivity() {
             image.fadeIn()
             placeholder.visibility = View.GONE
             setCredit(credit, ph)
+            scrim.visibility = View.VISIBLE
             credit.visibility = View.VISIBLE
             hero.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
             hero.contentDescription = "Photo of ${r.name}. Opens full screen."
@@ -495,8 +525,9 @@ class RestaurantActivity : ThemedActivity() {
         search.text.clear()
         settingSearchText = false
         query = ""
-        collapsed.clear()
+        expanded = null // a new restaurant starts with every category collapsed
         currentSection = null
+        scrollAnimator?.cancel()
 
         val p = r.prices
         val searchBox = findViewById<View>(R.id.search_box)
@@ -522,15 +553,12 @@ class RestaurantActivity : ThemedActivity() {
     }
 
     private fun renderItems() {
-        val transition = itemsList.layoutTransition
-        itemsList.layoutTransition = null // rebuilding: no per-card animations
         itemsList.removeAllViews()
         sections.clear()
 
         if (groups.isEmpty()) {
             itemsList.addView(noItemsCard())
             renderChips(emptyList())
-            itemsList.layoutTransition = transition
             return
         }
         val searching = !ItemSearch.isBlank(query)
@@ -543,100 +571,145 @@ class RestaurantActivity : ThemedActivity() {
             else -> "$count of $total items match"
         }
         for (g in visible) {
-            // Search results are always open; otherwise sections remember being collapsed.
-            val card = sectionCard(g, expanded = searching || g.title !in collapsed, searching)
-            itemsList.addView(card)
-            sections[g.title] = card
+            // Search results are always open, so the matches show; otherwise only the one open category.
+            val section = sectionCard(g, open = searching || g.title == expanded)
+            itemsList.addView(section.card)
+            sections[g.title] = section
         }
         renderChips(visible)
-        itemsList.layoutTransition = transition
     }
 
-    private fun sectionCard(g: ItemGroup, expanded: Boolean, searching: Boolean): View {
+    /**
+     * A category card: a row with the category's name and item count that opens the items under it.
+     * One category is open at a time (tapping another closes the first), so a long menu stays a
+     * short list of categories.
+     */
+    private fun sectionCard(g: ItemGroup, open: Boolean): Section {
         val card = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setBackgroundResource(R.drawable.bg_card)
+            setBackgroundResource(R.drawable.bg_section)
             elevation = dp(1).toFloat()
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
-            ).apply { topMargin = dp(12) }
-            // The list fades in and out; the card and the cards below it resize smoothly.
-            if (motionEnabled()) layoutTransition = LayoutTransition().apply {
-                enableTransitionType(LayoutTransition.CHANGING)
-                setDuration(200)
-            }
+            ).apply { topMargin = dp(8) }
         }
         val header = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = android.view.Gravity.CENTER_VERTICAL
             minimumHeight = dp(56)
-            setPadding(dp(20), dp(8), dp(12), dp(8))
+            setPadding(dp(12), dp(6), dp(8), dp(6))
             setBackgroundResource(R.drawable.bg_row)
             isClickable = true
             isFocusable = true
         }
+        header.addView(ImageView(this).apply {
+            setImageResource(CategoryIcons.iconFor(g.title))
+            imageTintList = ColorStateList.valueOf(getColor(R.color.text_secondary))
+            setBackgroundResource(R.drawable.bg_icon_tile)
+            scaleType = ImageView.ScaleType.CENTER
+            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+            layoutParams = LinearLayout.LayoutParams(dp(36), dp(36)).apply { marginEnd = dp(12) }
+        })
         header.addView(styled(R.style.Text_Title, g.title).apply {
+            textSize = 16f
             layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
         })
         header.addView(styled(R.style.Text_Label, g.items.size.toString()).apply {
             setBackgroundResource(R.drawable.bg_count)
-            setPadding(dp(10), dp(2), dp(10), dp(2))
+            setPadding(dp(10), dp(3), dp(10), dp(3))
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+            ).apply { marginStart = dp(12) }
         })
         val chevron = ImageView(this).apply {
             setImageResource(R.drawable.ic_chevron_down)
             imageTintList = ColorStateList.valueOf(getColor(R.color.text_secondary))
             scaleType = ImageView.ScaleType.CENTER
-            rotation = if (expanded) 180f else 0f
-            layoutParams = LinearLayout.LayoutParams(dp(40), dp(40)).apply { marginStart = dp(4) }
+            rotation = if (open) 180f else 0f
+            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+            layoutParams = LinearLayout.LayoutParams(dp(40), dp(40)).apply { marginStart = dp(2) }
         }
         header.addView(chevron)
 
-        val body = LinearLayout(this).apply {
+        // The rows keep their size while the body animates open or closed (RevealLayout clips them).
+        val rows = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            visibility = if (expanded) View.VISIBLE else View.GONE
-            setPadding(0, 0, 0, dp(8))
+            layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            setPadding(0, 0, 0, dp(6))
         }
         g.items.forEachIndexed { i, item ->
-            if (i > 0) body.addView(View(this).apply {
+            if (i > 0) rows.addView(View(this).apply {
                 setBackgroundColor(getColor(R.color.divider))
                 layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(1) / 2 + 1)
-                    .apply { marginStart = dp(20); marginEnd = dp(20) }
+                    .apply { marginStart = dp(16); marginEnd = dp(16) }
             })
-            body.addView(itemRow(item))
+            rows.addView(itemRow(item))
+        }
+        val body = RevealLayout(this).apply {
+            visibility = if (open) View.VISIBLE else View.GONE
+            layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            addView(rows)
         }
         card.addView(header)
         card.addView(body)
 
-        val label = "${g.title}, ${g.items.size} ${if (g.items.size == 1) "item" else "items"}"
-        header.contentDescription = label
+        header.contentDescription = "${g.title}, ${g.items.size} ${if (g.items.size == 1) "item" else "items"}"
         ViewCompat.setAccessibilityHeading(header, true)
-        ViewCompat.setStateDescription(header, if (expanded) "Expanded" else "Collapsed")
-        header.setOnClickListener {
-            val open = body.visibility != View.VISIBLE
-            body.visibility = if (open) View.VISIBLE else View.GONE
-            if (!searching) {
-                if (open) collapsed.remove(g.title) else collapsed.add(g.title)
+        ViewCompat.setStateDescription(header, if (open) "Expanded" else "Collapsed")
+        header.setOnClickListener { toggle(g.title, reveal = true) }
+        return Section(card, header, body, chevron)
+    }
+
+    /**
+     * Opens or closes a category. Outside a search, opening one closes the one that was open and,
+     * with [reveal], scrolls so the opened category shows under the tab bar. During a search every
+     * matching category starts open and tapping only folds that one.
+     */
+    private fun toggle(title: String, reveal: Boolean) {
+        val s = sections[title] ?: return
+        val searching = !ItemSearch.isBlank(query)
+        val open = s.body.visibility != View.VISIBLE
+        if (!searching) {
+            if (open) {
+                expanded?.let { other -> if (other != title) sections[other]?.let { setOpen(it, false) } }
+                expanded = title
+            } else if (expanded == title) {
+                expanded = null
             }
-            ViewCompat.setStateDescription(header, if (open) "Expanded" else "Collapsed")
-            chevron.animate().rotation(if (open) 180f else 0f)
-                .setDuration(if (motionEnabled()) 200 else 0).setInterpolator(EASE).start()
         }
-        return card
+        val bodyHeight = setOpen(s, open)
+        if (open && reveal) {
+            // Scroll only when the card's header is under the bar or its items would run off the screen.
+            val top = s.card.topIn(mainContent)
+            val visibleTop = mainScroll.scrollY + sticky.height
+            val visibleBottom = mainScroll.scrollY + mainScroll.height
+            val bottom = top + s.header.height + bodyHeight + dp(16)
+            if (top < visibleTop + dp(4) || bottom > visibleBottom) scrollToSection(s)
+        }
+    }
+
+    /** Animates the body open or closed and returns the body's full height. */
+    private fun setOpen(s: Section, open: Boolean): Int {
+        ViewCompat.setStateDescription(s.header, if (open) "Expanded" else "Collapsed")
+        s.chevron.animate().rotation(if (open) 180f else 0f)
+            .setDuration(if (motionEnabled()) 260 else 0).setInterpolator(EASE).start()
+        s.card.animate().translationZ(if (open) dp(1).toFloat() else 0f)
+            .setDuration(if (motionEnabled()) 260 else 0).start()
+        return if (open) s.body.expandHeight() else { s.body.collapseHeight(); 0 }
     }
 
     private fun itemRow(item: PriceItem): View {
         val row = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            minimumHeight = dp(48)
+            minimumHeight = dp(44)
             gravity = android.view.Gravity.CENTER_VERTICAL
-            setPadding(dp(20), dp(12), dp(20), dp(12))
+            setPadding(dp(16), dp(10), dp(16), dp(10))
             // One screen-reader stop per item, name and note together.
             isFocusable = true
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
             contentDescription = listOfNotNull(item.name, item.note).joinToString(". ")
         }
         row.addView(styled(R.style.Text_Body, item.name).apply {
-            textSize = 16f
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
         })
         // Seasonal, limited-time or location-specific items are flagged in the data.
@@ -701,16 +774,32 @@ class RestaurantActivity : ThemedActivity() {
         mainScroll.post { trackSection() }
     }
 
-    /** Scrolls a section to just under the pinned tab bar, opening it if it was collapsed. */
+    /** Opens a category (closing the open one) and scrolls it to just under the pinned tab bar. */
     private fun jumpTo(title: String) {
-        val card = sections[title] ?: return
-        val body = (card as ViewGroup).getChildAt(1)
-        if (body.visibility != View.VISIBLE) card.getChildAt(0).performClick()
+        val s = sections[title] ?: return
         hideKeyboard()
-        mainScroll.post {
-            val target = (card.topIn(mainContent) - sticky.height - dp(4)).coerceAtLeast(0)
-            if (motionEnabled()) mainScroll.smoothScrollTo(0, target) else mainScroll.scrollTo(0, target)
-            markChip(title)
+        if (s.body.visibility != View.VISIBLE) toggle(title, reveal = false)
+        scrollToSection(s)
+        markChip(title)
+    }
+
+    /**
+     * Scrolls the section's header to just under the tab bar. The target is re-read every frame:
+     * a category closing above it moves the section up while the scroll is under way.
+     */
+    private fun scrollToSection(s: Section) {
+        scrollAnimator?.cancel()
+        fun target() = (s.card.topIn(mainContent) - sticky.height - dp(8)).coerceAtLeast(0)
+        if (!motionEnabled()) {
+            mainScroll.post { mainScroll.scrollTo(0, target()) }
+            return
+        }
+        val from = mainScroll.scrollY
+        scrollAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
+            duration = 320
+            interpolator = EASE
+            addUpdateListener { a -> mainScroll.scrollTo(0, (from + (target() - from) * a.animatedFraction).roundToInt()) }
+            start()
         }
     }
 
@@ -719,8 +808,8 @@ class RestaurantActivity : ThemedActivity() {
         if (tab != Tab.ITEMS || sections.isEmpty() || chipFor.isEmpty()) return
         val line = mainScroll.scrollY + sticky.height + dp(24)
         var current = sections.keys.first()
-        for ((title, card) in sections) {
-            if (card.topIn(mainContent) <= line) current = title else break
+        for ((title, s) in sections) {
+            if (s.card.topIn(mainContent) <= line) current = title else break
         }
         markChip(current)
     }
@@ -1052,13 +1141,6 @@ class RestaurantActivity : ThemedActivity() {
         } catch (e: ActivityNotFoundException) {
             Toast.makeText(this, "No app can open this link.", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    private fun LayoutTransition.enableOnlyChanging() {
-        enableTransitionType(LayoutTransition.CHANGING)
-        disableTransitionType(LayoutTransition.CHANGE_APPEARING)
-        disableTransitionType(LayoutTransition.CHANGE_DISAPPEARING)
-        setDuration(200)
     }
 
     private companion object {
