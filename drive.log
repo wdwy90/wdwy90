@@ -1,0 +1,60 @@
+drive dump ''
+drive auto 'off'
+drive idle ''
+shot 01-home-off
+drive searching ''
+shot 02-home-searching
+drive nothing ''
+shot 03-home-nothing
+drive error 'No internet connection. Try again.'
+shot 04-home-error-internet
+drive auto 'on'
+drive idle ''
+shot 08-home-ready
+drive found 'Burger King|1|1|2|4.1|1200 N Main St, Springfield'
+shot 09-card
+drive tap 'Items'
+shot 10-menu
+drive back ''
+shot 13-card-after-back
+drive tap 'Not here?'
+shot 14-chooser
+drive back ''
+drive home ''
+shot 15-home-last-stop
+drive found "Wendy's|0|0|0|3.9|4501 W Wabash Ave, Springfield"
+shot 17-card-closed-no-photo
+drive found "Steak 'n Shake|1|-|0|4.0|2955 South MacArthur Boulevard, Springfield, IL 62704"
+shot 19-card-long
+drive found "Joe's Burger Shack|0|1|0|4.6|88 Route 66, Springfield"
+shot 22-card-no-menu
+drive found "McDonald's|1|1|0|3.8|2700 S 6th St, Springfield"
+drive tap 'Items'
+shot 23-menu-mcd
+drive tap 'Breakfast'
+shot 24-mcd-breakfast
+drive found 'Starbucks|1|1|0|4.3|1 Old State Capitol Plaza, Springfield'
+drive tap 'Items'
+shot 28-menu-starbucks
+drive home ''
+drive idle ''
+drive tap 'Demo'
+shot 34-demo-card
+drive tap 'Items'
+shot 35-demo-menu
+drive home ''
+drive found 'Burger King|1|1|2|4.1|1200 N Main St, Springfield'
+shot 40-wide-card
+drive tap 'Items'
+shot 40-wide-menu
+drive home ''
+drive error 'No internet connection. Try again.'
+shot 40-wide-home-error
+drive home ''
+drive found 'Burger King|1|1|2|4.1|1200 N Main St, Springfield'
+shot 41-small-card
+drive tap 'Items'
+shot 41-small-menu
+drive home ''
+drive error 'No internet connection. Try again.'
+shot 41-small-home-error

@@ -1,0 +1,12 @@
+  system-images;android-33;android-automotive-distant-display-playstore;arm64-v8a | 2                 | Automotive Distant Display with Google Play arm64-v8a System Image              
+  system-images;android-33;android-automotive-distant-display-playstore;x86_64    | 2                 | Automotive Distant Display with Google Play x86_64 System Image                 
+  system-images;android-33;android-automotive;arm64-v8a                           | 5                 | Android Automotive with Google APIs arm64-v8a System Image                      
+  system-images;android-33;android-automotive;x86_64                              | 5                 | Android Automotive with Google APIs x86_64 System Image                         
+  system-images;android-34-ext9;android-automotive-playstore;arm64-v8a            | 4                 | Android Automotive with Google Play arm64-v8a System Image                      
+  system-images;android-34-ext9;android-automotive-playstore;x86_64               | 4                 | Android Automotive with Google Play x86_64 System Image                         
+  system-images;android-34-ext9;android-automotive;arm64-v8a                      | 5                 | Android Automotive with Google APIs arm64-v8a System Image                      
+  system-images;android-34-ext9;android-automotive;x86_64                         | 5                 | Android Automotive with Google APIs x86_64 System Image                         
+  system-images;android-35-ext15;android-automotive-playstore;arm64-v8a           | 3                 | Android Automotive with Google Play arm64-v8a System Image                      
+  system-images;android-35-ext15;android-automotive-playstore;x86_64              | 3                 | Android Automotive with Google Play x86_64 System Image                         
+  system-images;android-35-ext15;android-automotive;arm64-v8a                     | 3                 | Android Automotive with Google APIs arm64-v8a System Image                      
+  system-images;android-35-ext15;android-automotive;x86_64                        | 3                 | Android Automotive with Google APIs x86_64 System Image                         
