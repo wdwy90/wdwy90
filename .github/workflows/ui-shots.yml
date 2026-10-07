@@ -1,0 +1,67 @@
+name: UI screenshots (review only)
+
+# Renders the phone screens with Robolectric for a visual review and pushes the PNGs to the
+# ui-shots-out branch. Runs only on the ui-shots branch; the app's own build is not changed.
+on:
+  push:
+    branches: ["ui-shots"]
+
+permissions:
+  contents: write
+
+jobs:
+  shots:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: pullup-menu/android
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Add the screenshot test (this run only)
+        run: |
+          mkdir -p app/src/test/java/com/wdwy90/pullupmenu/shots
+          cp ../../.github/ui-shots/ScreensShot.kt app/src/test/java/com/wdwy90/pullupmenu/shots/
+          cat >> app/build.gradle.kts <<'KTS'
+
+          android.testOptions.unitTests.isIncludeAndroidResources = true
+          android.testOptions.unitTests.all {
+              it.systemProperty("robolectric.pixelCopyRenderMode", "hardware")
+              it.systemProperty("shots.dir", rootProject.file("shots").absolutePath)
+              it.maxHeapSize = "3g"
+          }
+          dependencies { testImplementation("org.robolectric:robolectric:4.17") }
+          KTS
+      - name: Render
+        run: |
+          set -o pipefail
+          ./gradlew --no-daemon testDebugUnitTest --tests 'com.wdwy90.pullupmenu.shots.*' 2>&1 | tee build.log
+      - name: Report failures
+        if: always()
+        run: |
+          annotate() {
+            msg=$(head -c 30000 | sed 's/%/%25/g; s/\r//g' | awk '{printf "%s%%0A", $0}')
+            [ -n "$msg" ] && echo "::warning title=$1::$msg"
+            true
+          }
+          grep -E "^e: |error:|What went wrong|FAILED|Exception" build.log | head -60 | annotate "Build output" || true
+          for f in app/build/test-results/testDebugUnitTest/*.xml; do
+            [ -f "$f" ] && grep -A12 "<failure" "$f" | head -40
+          done | annotate "Test failures" || true
+          for f in shots/*.FAILED.txt; do
+            [ -f "$f" ] && { echo "== $f"; head -25 "$f"; }
+          done | annotate "Screen failures" || true
+          ls -la shots 2>/dev/null | annotate "Files" || true
+      - name: Publish to ui-shots-out
+        if: always()
+        run: |
+          [ -d shots ] || exit 0
+          cd shots
+          git init -q
+          git checkout -q -b ui-shots-out
+          git add .
+          git -c user.name="ui-shots" -c user.email="ui-shots@users.noreply.github.com" commit -qm "UI screenshots for ${GITHUB_SHA::7}"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" ui-shots-out
