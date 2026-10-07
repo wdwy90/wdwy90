@@ -152,6 +152,13 @@
                             android:drawablePadding="8dp"
                             android:drawableTint="@color/text_primary"
                             android:text="Open in Maps" />
+                        <!-- Several places close together: pick the one the car is at (shown only then). -->
+                        <Button
+                            android:id="@+id/not_here"
+                            style="@style/Button.Text"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Not here?"
+                            android:visibility="gone" />
                     </com.wdwy90.pullupmenu.phone.FlowRow>
 
                     <!-- Google Maps Platform attribution: exact text, allowed colors only, never wrapped. -->
@@ -294,7 +301,7 @@
                         android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:accessibilityLiveRegion="polite"
-                        android:text="No in-app menu for this restaurant yet. Try these:" />
+                        android:text="No in-app menu for this restaurant yet. Try the buttons below." />
                     <Button
                         android:id="@+id/menu_retry"
                         style="@style/Button.Tonal"

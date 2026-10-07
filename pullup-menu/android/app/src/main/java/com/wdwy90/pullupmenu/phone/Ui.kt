@@ -12,6 +12,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.wdwy90.pullupmenu.core.MenuRepository
 import com.wdwy90.pullupmenu.core.Prefs
 
 /**
@@ -60,12 +61,18 @@ abstract class ThemedActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
+        MenuRepository.phoneScreensResumed++
         when {
             // Theme changed on the Settings screen while this one was in the back stack.
             appliedTheme != Prefs.theme(this) -> followTheme()
             // Left to the system, which still hasn't drawn it: force it after all.
             !forcedNight && nightFor(appliedTheme).let { it != null && it != shownNight } -> recreateOnce()
         }
+    }
+
+    override fun onPause() {
+        MenuRepository.phoneScreensResumed--
+        super.onPause()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

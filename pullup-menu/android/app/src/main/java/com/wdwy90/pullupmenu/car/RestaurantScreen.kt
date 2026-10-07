@@ -22,6 +22,7 @@ import androidx.core.graphics.drawable.IconCompat
 import androidx.lifecycle.lifecycleScope
 import com.wdwy90.pullupmenu.R
 import com.wdwy90.pullupmenu.core.MenuRepository
+import com.wdwy90.pullupmenu.core.PriceList
 import com.wdwy90.pullupmenu.core.Restaurant
 import com.wdwy90.pullupmenu.phone.RestaurantActivity
 import kotlinx.coroutines.CancellationException
@@ -31,7 +32,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 
 /**
  * Car screen: the restaurant card. Name, rating/category, address, at most one photo and the
- * Google attribution. "Items" opens a short item list; the full menu is on the phone.
+ * Google attribution. "Items" opens the chain's item list; the full menu is on the phone.
  */
 class RestaurantScreen(ctx: CarContext, private val restaurant: Restaurant) : Screen(ctx) {
     val restaurantId: String get() = restaurant.id
@@ -80,7 +81,7 @@ class RestaurantScreen(ctx: CarContext, private val restaurant: Restaurant) : Sc
                 Action.Builder().setTitle("Items")
                     .setIcon(icon(R.drawable.ic_menu))
                     .apply { if (apiLevel >= CarAppApiLevels.LEVEL_4) setFlags(Action.FLAG_PRIMARY) }
-                    .setOnClickListener { screenManager.push(ItemListScreen(carContext, prices)) }
+                    .setOnClickListener { openItems(prices) }
                     .build()
             )
         }
@@ -124,6 +125,16 @@ class RestaurantScreen(ctx: CarContext, private val restaurant: Restaurant) : Sc
             if (image != null && !author.isNullOrBlank()) addText("Photo by $author")
         }.build()
         return listOf(info, credit)
+    }
+
+    /**
+     * Android Auto allows five templates per task, and only a pane-type one (like this card) as the
+     * fifth. The item lists go up to three deep, so they take the card's place rather than going on
+     * top of it: Home and three lists make four. Back from the first list brings the card back.
+     */
+    private fun openItems(prices: PriceList) {
+        screenManager.popToRoot()
+        screenManager.push(ItemListScreen(carContext, restaurant, prices))
     }
 
     /** Monochrome icon; the host picks a color that contrasts with its day or night theme. */

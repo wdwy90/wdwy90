@@ -16,6 +16,8 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.IOException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.concurrent.ConcurrentHashMap
@@ -34,9 +36,20 @@ object MenuRepository {
             val atMs: Long,
             /** True if this came from automatic detection. */
             val auto: Boolean,
+            /** True once the user picked this place from the nearby list. */
+            val chosen: Boolean = false,
         ) : State
         data object NothingNearby : State
         data class Error(val message: String) : State
+    }
+
+    /** How a lookup ended, for [DriveWatcher]. */
+    sealed interface Outcome {
+        /** [place] is on screen: just found ([isNew]), or the visit going on after a background check. */
+        data class Found(val place: Restaurant, val isNew: Boolean) : Outcome
+        data object NothingNearby : Outcome
+        /** No answer. [retryable] when the same lookup may work later (no internet, a timeout, Google busy). */
+        data class Failed(val retryable: Boolean) : Outcome
     }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
@@ -66,6 +79,15 @@ object MenuRepository {
     private var lookupJob: Job? = null
     private var lookupIsAuto = false
 
+    /** True while [visit] is what's on screen: an automatic check then runs in the background (see [lookup]). */
+    internal val visitOnScreen: Boolean get() = visit.let { it != null && _state.value == it }
+
+    /** True while a Places search is in flight. Main thread only. */
+    internal val lookupInFlight: Boolean get() = lookupJob?.isActive == true
+
+    /** Phone screens in front of the user (resumed). Main thread only. */
+    internal var phoneScreensResumed = 0
+
     private val photosInFlight = ConcurrentHashMap<String, Deferred<Bitmap?>>()
 
     /** Room for a restaurant's photos at screen width (up to about 7 MB each): an eighth of the heap, 24 MB at least. */
@@ -75,7 +97,23 @@ object MenuRepository {
         override fun sizeOf(key: String, value: Bitmap) = value.allocationByteCount
     }
 
-    fun lookup(ctx: Context, lat: Double, lng: Double, auto: Boolean = false) {
+    /**
+     * Looks up the fast-food places within [radiusM] (by default the app's radius) of [lat], [lng] and
+     * shows the nearest. [onDone] hears how it ended, unless something newer replaced it first.
+     *
+     * An automatic check ([auto]) while [visit] is on screen runs in the background: the line moved
+     * on, or the car pulled into the place next door. The screen only changes when the car is now at
+     * another place (see [VisitCheck]); otherwise nothing is shown or announced again, and a failure
+     * isn't shown either.
+     */
+    fun lookup(
+        ctx: Context,
+        lat: Double,
+        lng: Double,
+        auto: Boolean = false,
+        radiusM: Double? = null,
+        onDone: (Outcome) -> Unit = {},
+    ) {
         val appCtx = ctx.applicationContext
         generation++
         val key = Prefs.apiKey(appCtx)
@@ -84,39 +122,53 @@ object MenuRepository {
                 if (Prefs.hasBuiltInKey()) "Places key missing from this build."
                 else "Add your Google Places API key in the phone app."
             )
+            onDone(Outcome.Failed(retryable = false))
             return
         }
         lookupJob?.cancel()
         lookupIsAuto = auto
-        _state.value = State.Searching
+        val background = if (auto && visitOnScreen) visit else null
+        if (background == null) _state.value = State.Searching
         lookupJob = scope.launch {
-            val result = try {
-                val chains = ChainMenus.get(appCtx)
-                val prices = ChainPrices.get(appCtx)
-                val results = PlacesClient(key, AppIdentity.headers(appCtx))
-                    .nearbyRestaurants(lat, lng, Prefs.radiusMeters(appCtx))
+            val results = try {
+                // The bundled lists take a moment to parse the first time: not on the main thread.
+                val (chains, prices) = withContext(Dispatchers.IO) { ChainMenus.get(appCtx) to ChainPrices.get(appCtx) }
+                PlacesClient(key, AppIdentity.headers(appCtx))
+                    .nearbyRestaurants(lat, lng, radiusM ?: Prefs.radiusMeters(appCtx))
                     .map { it.copy(menuUrl = chains.menuUrlFor(it.name), prices = prices.forPlace(it.name)) }
-                if (results.isEmpty()) State.NothingNearby
-                else State.Found(results.first(), results.drop(1), System.currentTimeMillis(), auto)
             } catch (e: CancellationException) {
                 throw e
-            } catch (e: UnknownHostException) {
-                State.Error("No internet connection. Try again.")
-            } catch (e: SocketTimeoutException) {
-                State.Error("Google Maps took too long. Try again.")
             } catch (e: Exception) {
                 if (BuildConfig.DEBUG) Log.w("PullUp", "lookup", e)
-                State.Error("Couldn't look up this place. Try again.")
+                if (background == null) _state.value = State.Error(errorMessage(e))
+                onDone(Outcome.Failed(retryable = isRetryable(e)))
+                return@launch
             }
+            if (background != null) {
+                // A pick from the list or the end of the visit came first: that stands.
+                if (visit !== background || _state.value !== background) return@launch
+                if (VisitCheck.staysAt(background.restaurant, background.chosen, results)) {
+                    onDone(if (results.isEmpty()) Outcome.NothingNearby else Outcome.Found(background.restaurant, isNew = false))
+                    return@launch
+                }
+            }
+            val result = if (results.isEmpty()) State.NothingNearby
+            else State.Found(results.first(), results.drop(1), System.currentTimeMillis(), auto)
             _state.value = result
             if (result is State.Found) {
                 visit = result
                 Prefs.setLastDetected(appCtx, result.restaurant.prices?.chain, result.atMs)
-                try {
-                    Notifier.arrival(appCtx, result.restaurant, carBanner = auto && Prefs.carBanner(appCtx))
-                } catch (e: Exception) {
-                    // A failed notification must not hide the result.
+                // A check made on a phone screen opens the restaurant there; no need to announce it too.
+                if (auto || phoneScreensResumed == 0) {
+                    try {
+                        Notifier.arrival(appCtx, result.restaurant, carBanner = auto && Prefs.carBanner(appCtx))
+                    } catch (e: Exception) {
+                        // A failed notification must not hide the result.
+                    }
                 }
+                onDone(Outcome.Found(result.restaurant, isNew = true))
+            } else {
+                onDone(Outcome.NothingNearby)
             }
         }
     }
@@ -124,15 +176,21 @@ object MenuRepository {
     /** User picked a different place from the nearby list. */
     fun choose(ctx: Context, restaurant: Restaurant) {
         val current = _state.value as? State.Found ?: return
+        // The user's pick wins over a background check still running.
+        generation++
+        lookupJob?.cancel()
         if (!restaurant.isDemo) Prefs.setLastDetected(ctx.applicationContext, restaurant.prices?.chain, current.atMs)
         val all = listOf(current.restaurant) + current.others
-        val chosen = current.copy(restaurant = restaurant, others = all.filter { it.id != restaurant.id })
+        val chosen = current.copy(restaurant = restaurant, others = all.filter { it.id != restaurant.id }, chosen = true)
         _state.value = chosen
         // The place picked is the one this visit is at.
         if (!restaurant.isDemo) visit = chosen
     }
 
-    /** Shows a sample card (for Play reviewers and first-time users). No notification. */
+    /**
+     * Shows a sample card (for Play reviewers and first-time users). No notification. Right away, so
+     * the bundled lists may be parsed here on first use: a one-off moment after a tap.
+     */
     fun showDemo(ctx: Context) {
         val appCtx = ctx.applicationContext
         generation++
@@ -200,6 +258,19 @@ object MenuRepository {
         lookupJob?.cancel()
         lookupIsAuto = false
         _state.value = State.Searching
+    }
+
+    private fun errorMessage(e: Exception): String = when (e) {
+        is UnknownHostException -> "No internet connection. Try again."
+        is SocketTimeoutException -> "Google Maps took too long. Try again."
+        else -> "Couldn't look up this place. Try again."
+    }
+
+    /** Network trouble or Google busy: yes. A rejected request (a bad key, say) or a bad answer: no. */
+    private fun isRetryable(e: Exception): Boolean = when (e) {
+        is PlacesClient.HttpException -> e.retryable
+        is IOException -> true
+        else -> false
     }
 
     /** Used by [DriveWatcher.checkNow] when it can't get a location. */
