@@ -105,9 +105,8 @@ class MenuSession : Session() {
         sm.push(RestaurantScreen(carContext, r))
     }
 
-    /** The card, or the item lists that take its place (see [RestaurantScreen]). */
-    private fun showsRestaurant(screen: Screen, id: String) =
-        (screen as? RestaurantScreen)?.restaurantId == id || (screen as? ItemListScreen)?.restaurantId == id
+    /** The card, the menu lists that take its place (see [RestaurantScreen]), and what they open. */
+    private fun showsRestaurant(screen: Screen, id: String) = (screen as? ShowsRestaurant)?.restaurantId == id
 
     private fun screens(): ScreenManager = carContext.getCarService(ScreenManager::class.java)
     private fun isCardIntent(i: Intent) = i.data?.scheme == Notifier.CAR_INTENT_SCHEME

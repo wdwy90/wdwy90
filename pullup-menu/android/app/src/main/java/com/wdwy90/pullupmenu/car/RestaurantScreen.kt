@@ -7,7 +7,6 @@ import android.view.Display
 import androidx.car.app.CarContext
 import androidx.car.app.CarToast
 import androidx.car.app.Screen
-import androidx.car.app.constraints.ConstraintManager
 import androidx.car.app.model.Action
 import androidx.car.app.model.ActionStrip
 import androidx.car.app.model.CarColor
@@ -17,53 +16,81 @@ import androidx.car.app.model.PaneTemplate
 import androidx.car.app.model.ParkedOnlyOnClickListener
 import androidx.car.app.model.Row
 import androidx.car.app.model.Template
-import androidx.car.app.versioning.CarAppApiLevels
 import androidx.core.graphics.drawable.IconCompat
 import androidx.lifecycle.lifecycleScope
 import com.wdwy90.pullupmenu.R
+import com.wdwy90.pullupmenu.core.CarModel
 import com.wdwy90.pullupmenu.core.MenuRepository
+import com.wdwy90.pullupmenu.core.MenuRepository.State
 import com.wdwy90.pullupmenu.core.PriceList
 import com.wdwy90.pullupmenu.core.Restaurant
 import com.wdwy90.pullupmenu.phone.RestaurantActivity
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 
 /**
- * Car screen: the restaurant card. Name, rating/category, address, at most one photo and the
- * Google attribution. "Items" opens the chain's item list; the full menu is on the phone.
+ * The restaurant card, so the driver can tell at a glance that this is the right place: its name,
+ * where it is and whether Google says it's open, its rating and type with the Google credit, one
+ * storefront photo when Google has one, and whether its menu is here. "View menu" opens the
+ * categories ([MenuScreen]); "Not here?" lists the other places close by.
  */
-class RestaurantScreen(ctx: CarContext, private val restaurant: Restaurant) : Screen(ctx) {
-    val restaurantId: String get() = restaurant.id
+class RestaurantScreen(ctx: CarContext, restaurant: Restaurant) : Screen(ctx), ShowsRestaurant {
+    override val restaurantId: String = restaurant.id
 
-    private val apiLevel = ctx.carAppApiLevel
+    /** Kept up to date with Google's latest open/closed answer while the card is up. */
+    private var restaurant = restaurant
+    private var checkedMs: Long? = null
+    private var others: List<Restaurant> = emptyList()
 
-    /** Pane images need car API 4; below that we don't even fetch the photo. */
-    private val photo = restaurant.photos.firstOrNull()?.takeIf { apiLevel >= CarAppApiLevels.LEVEL_4 }
+    /** Pane images need car API 4; below that the photo isn't even fetched. */
+    private val photo = restaurant.photos.firstOrNull()?.takeIf { CarUi.level4(ctx) && !restaurant.isDemo }
     private var image: CarIcon? = null
+
+    /** A spinner for a moment while the photo loads, so the card doesn't jump right after it opens. */
     private var loading = photo != null
 
-    private val maxRows: Int by lazy {
-        if (apiLevel >= CarAppApiLevels.LEVEL_2) {
-            carContext.getCarService(ConstraintManager::class.java)
-                .getContentLimit(ConstraintManager.CONTENT_LIMIT_TYPE_PANE)
-        } else 4
-    }
-
     init {
+        lifecycleScope.launch { MenuRepository.state.collect { follow(it) } }
         val p = photo
         if (p != null) {
             lifecycleScope.launch {
-                // The fetch is blocking I/O, so wait on it with a timeout rather than wrapping it:
-                // that way the card shows after at most 4 s even if the download is still going.
+                // The fetch is blocking I/O, so wait on it with a timeout rather than wrapping it.
                 val fetch = async { fetchPhoto(p.name) }
-                val bmp = withTimeoutOrNull(4_000) { fetch.await() }
-                if (bmp == null) fetch.cancel()
-                image = bmp?.let { CarIcon.Builder(IconCompat.createWithBitmap(it)).build() }
+                val early = withTimeoutOrNull(PHOTO_WAIT_MS) { fetch.await() }
+                image = early?.let { carIcon(it) }
                 loading = false
-                invalidate() // loading -> content is a refresh; the card is never refreshed again for a late photo
+                invalidate() // loading -> content counts as a refresh
+                if (early == null) {
+                    // A photo that comes later is added in place: the rows stay as they are.
+                    fetch.await()?.let { late ->
+                        image = carIcon(late)
+                        invalidate()
+                    }
+                }
             }
+        }
+    }
+
+    /** Takes in a newer answer from Google for this place (a background check while it's on screen). */
+    private fun follow(s: State) {
+        val found = s as? State.Found ?: return
+        val all = listOf(found.restaurant) + found.others
+        val now = all.firstOrNull { it.id == restaurantId } ?: return
+        val fresh = restaurant.copy(openNow = now.openNow, businessStatus = now.businessStatus)
+        val nearby = all.filter { it.id != restaurantId }
+        if (fresh == restaurant && found.checkedMs == checkedMs && nearby == others) return
+        restaurant = fresh
+        checkedMs = found.checkedMs
+        others = nearby
+        invalidate()
+        // Google's answer goes stale: take the open/closed line down when it does.
+        val shownUntil = found.checkedMs + CarModel.STATUS_FRESH_MS
+        lifecycleScope.launch {
+            delay((shownUntil - System.currentTimeMillis()).coerceAtLeast(0) + 1_000)
+            if (checkedMs == found.checkedMs) invalidate()
         }
     }
 
@@ -71,37 +98,38 @@ class RestaurantScreen(ctx: CarContext, private val restaurant: Restaurant) : Sc
     override fun onGetTemplate(): Template {
         val pane = Pane.Builder()
         if (loading) {
-            pane.setLoading(true) // a loading pane must have no rows
+            pane.setLoading(true) // a loading pane has no rows
         } else {
-            rows().take(maxRows.coerceAtLeast(1)).forEach { pane.addRow(it) }
-            image?.let { pane.setImage(it) } // only set when apiLevel >= 4
-        }
-        restaurant.prices?.let { prices ->
-            pane.addAction(
-                Action.Builder().setTitle("Items")
-                    .setIcon(icon(R.drawable.ic_menu))
-                    .apply { if (apiLevel >= CarAppApiLevels.LEVEL_4) setFlags(Action.FLAG_PRIMARY) }
-                    .setOnClickListener { openItems(prices) }
-                    .build()
+            val rows = CarModel.card(
+                restaurant, checkedMs, System.currentTimeMillis(),
+                showDistance = others.isNotEmpty(),
+                photoShown = image != null,
+                photoAuthor = photo?.authorName,
             )
+            rows.take(CarUi.paneLimit(carContext)).forEach { pane.addRow(row(it)) }
+            image?.let { pane.setImage(it) }
+        }
+        val prices = restaurant.prices?.takeIf { it.items.isNotEmpty() }
+        if (prices != null) {
+            pane.addAction(CarUi.action(carContext, "View menu", R.drawable.ic_menu_book, primary = true) { openMenu(prices) })
         }
         pane.addAction(
-            Action.Builder().setTitle("Menu on phone")
-                .setIcon(icon(R.drawable.ic_open_in_new))
-                .setOnClickListener(ParkedOnlyOnClickListener.create { openMenuOnPhone() })
+            Action.Builder().setTitle("Open on phone")
+                .setIcon(CarUi.icon(carContext, R.drawable.ic_open_in_new))
+                .apply { if (prices == null && CarUi.level4(carContext)) setFlags(Action.FLAG_PRIMARY) }
+                .setOnClickListener(ParkedOnlyOnClickListener.create { openOnPhone() })
                 .build()
         )
 
         val template = PaneTemplate.Builder(pane.build())
             .setTitle(restaurant.name.ifBlank { "Restaurant" })
             .setHeaderAction(Action.BACK)
-        val others = otherNearby()
         if (others.isNotEmpty()) {
             template.setActionStrip(
                 ActionStrip.Builder()
                     .addAction(
                         Action.Builder().setTitle("Not here?")
-                            .setOnClickListener { screenManager.push(ChooserScreen(carContext, others)) }
+                            .setOnClickListener { screenManager.push(ChooserScreen(carContext, restaurantId, others)) }
                             .build()
                     )
                     .build()
@@ -110,40 +138,35 @@ class RestaurantScreen(ctx: CarContext, private val restaurant: Restaurant) : Sc
         return template.build()
     }
 
-    private fun rows(): List<Row> {
-        val detail = listOfNotNull(
-            restaurant.rating?.let { "★ %.1f".format(it) },
-            restaurant.category?.ifBlank { null } ?: "Fast food",
-            if (restaurant.isDemo) "Demo" else null,
-        ).joinToString(" · ")
-        val info = Row.Builder().setTitle(detail)
-            .setImage(icon(if (restaurant.rating != null) R.drawable.ic_star else R.drawable.ic_restaurant), Row.IMAGE_TYPE_ICON)
-            .apply { if (restaurant.address.isNotBlank()) addText(restaurant.address) }
+    private fun row(r: CarModel.CardRow): Row {
+        val icon = when (r.icon) {
+            CarModel.Icon.PLACE -> CarUi.icon(carContext, R.drawable.ic_place, CarColor.PRIMARY)
+            CarModel.Icon.STAR -> CarUi.icon(carContext, R.drawable.ic_star, CarColor.YELLOW)
+            CarModel.Icon.RESTAURANT -> CarUi.icon(carContext, R.drawable.ic_restaurant, CarColor.PRIMARY)
+            CarModel.Icon.MENU -> CarUi.icon(carContext, R.drawable.ic_menu_book, CarColor.PRIMARY)
+            CarModel.Icon.NO_MENU -> CarUi.icon(carContext, R.drawable.ic_menu_book)
+        }
+        return Row.Builder().setTitle(r.title)
+            .setImage(icon, Row.IMAGE_TYPE_ICON)
+            .apply { r.lines.forEach { addText(CarUi.text(it)) } }
             .build()
-        val credit = Row.Builder().setTitle(if (restaurant.isDemo) "Sample data" else "Info from Google Maps").apply {
-            val author = photo?.authorName
-            if (image != null && !author.isNullOrBlank()) addText("Photo by $author")
-        }.build()
-        return listOf(info, credit)
     }
 
     /**
-     * Android Auto allows five templates per task, and only a pane-type one (like this card) as the
-     * fifth. The item lists go up to three deep, so they take the card's place rather than going on
-     * top of it: Home and three lists make four. Back from the first list brings the card back.
+     * Android Auto allows five screens per task, and only a pane-type one (like this card) as the
+     * fifth. The menu goes up to three lists deep, so it takes the card's place rather than going on
+     * top of it: Home and three lists make four. Back from the categories brings the card back.
      */
-    private fun openItems(prices: PriceList) {
+    private fun openMenu(prices: PriceList) {
         screenManager.popToRoot()
-        screenManager.push(ItemListScreen(carContext, restaurant, prices))
+        screenManager.push(MenuScreen(carContext, restaurant, prices))
     }
 
-    /** Monochrome icon; the host picks a color that contrasts with its day or night theme. */
-    private fun icon(res: Int): CarIcon =
-        CarIcon.Builder(IconCompat.createWithResource(carContext, res)).setTint(CarColor.DEFAULT).build()
+    private fun carIcon(bmp: Bitmap): CarIcon = CarIcon.Builder(IconCompat.createWithBitmap(bmp)).build()
 
     private suspend fun fetchPhoto(name: String): Bitmap? =
         try {
-            MenuRepository.photo(carContext, name, 480)
+            MenuRepository.photo(carContext, name, PHOTO_PX)
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
@@ -151,7 +174,7 @@ class RestaurantScreen(ctx: CarContext, private val restaurant: Restaurant) : Sc
         }
 
     /** Runs only while parked (ParkedOnlyOnClickListener). The toast is shown even if the launch is blocked. */
-    private fun openMenuOnPhone() {
+    private fun openOnPhone() {
         try {
             carContext.startActivity(
                 Intent(carContext, RestaurantActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
@@ -159,12 +182,11 @@ class RestaurantScreen(ctx: CarContext, private val restaurant: Restaurant) : Sc
             )
         } catch (e: Exception) { // ActivityNotFoundException, SecurityException
         }
-        CarToast.makeText(carContext, "Menu is on your phone. Look at it only when parked.", CarToast.LENGTH_LONG)
-            .show()
+        CarToast.makeText(carContext, "Opened on your phone. ${CarModel.PHONE_WHEN_PARKED}", CarToast.LENGTH_LONG).show()
     }
 
-    private fun otherNearby(): List<Restaurant> =
-        (MenuRepository.state.value as? MenuRepository.State.Found)
-            ?.let { s -> (listOf(s.restaurant) + s.others).filter { it.id != restaurant.id } }
-            .orEmpty()
+    private companion object {
+        const val PHOTO_WAIT_MS = 1_500L
+        const val PHOTO_PX = 480
+    }
 }
