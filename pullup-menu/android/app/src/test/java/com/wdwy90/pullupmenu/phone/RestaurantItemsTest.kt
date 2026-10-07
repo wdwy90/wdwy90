@@ -16,6 +16,8 @@ import com.wdwy90.pullupmenu.core.MenuRepository
 import com.wdwy90.pullupmenu.core.Prefs
 import com.wdwy90.pullupmenu.core.Restaurant
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -65,6 +67,31 @@ class RestaurantItemsTest {
         header(cards[2]).performClick()
         idle()
         assertEquals(View.GONE, body(cards[2]).visibility)
+    }
+
+    @Test
+    fun aTapWhileACategoryIsClosingReopensIt() {
+        show(sample("Burger King"))
+        val a = launch()
+        val cards = cards(a)
+        header(cards[1]).performClick()
+        idle()
+        val full = body(cards[1]).height
+        assertTrue("items laid out", full > 0)
+        header(cards[1]).performClick() // closing...
+        // Robolectric's animation frames advance the clock themselves, so any wait runs an
+        // animation to its end: the change of mind has to come before the next wait, while the
+        // collapse has only just started.
+        assertEquals(View.VISIBLE, body(cards[1]).visibility)
+        assertNotNull("collapse under way", body(cards[1]).getTag(R.id.tag_height_animator))
+        assertEquals("Collapsed", ViewCompat.getStateDescription(header(cards[1])).toString())
+        header(cards[1]).performClick() // ...changed my mind
+        idle()
+        assertEquals(View.VISIBLE, body(cards[1]).visibility)
+        assertEquals("Expanded", ViewCompat.getStateDescription(header(cards[1])).toString())
+        assertEquals(full, body(cards[1]).height)
+        assertEquals(1f, body(cards[1]).alpha, 0.001f)
+        assertNull(body(cards[1]).getTag(R.id.tag_height_animator))
     }
 
     @Test
@@ -138,7 +165,7 @@ class RestaurantItemsTest {
         val a = launch()
         val status = a.findViewById<TextView>(R.id.status)
         assertTrue(status.isShown)
-        assertEquals("Open now  ·  98 ft", status.text.toString())
+        assertEquals("Open now\u00A0\u00A0·  98 ft", status.text.toString())
         assertEquals("Open now, 98 feet away", status.contentDescription.toString())
 
         MenuRepository.choose(app, sample("Burger King", id = "closed").copy(businessStatus = "CLOSED_TEMPORARILY"))

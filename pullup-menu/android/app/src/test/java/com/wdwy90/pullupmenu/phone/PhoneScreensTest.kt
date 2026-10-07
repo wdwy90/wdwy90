@@ -48,6 +48,7 @@ import org.robolectric.annotation.GraphicsMode
 import java.time.Duration
 import kotlin.math.abs
 import kotlin.math.pow
+import kotlin.math.roundToInt
 
 /**
  * The phone screens with their real layouts, themes and activities (Robolectric): sizes that only
@@ -295,6 +296,10 @@ class PhoneScreensTest {
             assertEquals(2, indicator.numberOfLayers)
             val ratio = contrast(a.getColor(R.color.accent_text), a.getColor(R.color.tab_indicator))
             assertTrue("theme $theme: mark contrast $ratio", ratio >= 3.0)
+            // The selected chip's text on its tonal fill, over the bar it sits on: body-text contrast.
+            val fill = over(a.getColor(R.color.accent_soft), a.getColor(R.color.bg))
+            val chip = contrast(a.getColor(R.color.chip_text_selected), fill)
+            assertTrue("theme $theme: selected chip contrast $chip", chip >= 4.5)
         }
     }
 
@@ -405,6 +410,13 @@ class PhoneScreensTest {
         (a.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
 
     private fun uiModeManager() = app.getSystemService(UiModeManager::class.java)
+
+    /** A translucent color composited over an opaque one. */
+    private fun over(top: Int, under: Int): Int {
+        val alpha = (top ushr 24) / 255.0
+        fun mix(shift: Int) = ((top shr shift and 0xFF) * alpha + (under shr shift and 0xFF) * (1 - alpha)).roundToInt()
+        return (0xFF shl 24) or (mix(16) shl 16) or (mix(8) shl 8) or mix(0)
+    }
 
     /** WCAG contrast ratio of two opaque colors. */
     private fun contrast(a: Int, b: Int): Double {

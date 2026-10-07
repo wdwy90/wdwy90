@@ -38,6 +38,8 @@ object MenuRepository {
             val auto: Boolean,
             /** True once the user picked this place from the nearby list. */
             val chosen: Boolean = false,
+            /** When Google last answered for this place (a later check that confirms it refreshes this, not [atMs]). */
+            val checkedMs: Long = atMs,
         ) : State
         data object NothingNearby : State
         data class Error(val message: String) : State
@@ -148,7 +150,19 @@ object MenuRepository {
                 // A pick from the list or the end of the visit came first: that stands.
                 if (visit !== background || _state.value !== background) return@launch
                 if (VisitCheck.staysAt(background.restaurant, background.chosen, results)) {
-                    onDone(if (results.isEmpty()) Outcome.NothingNearby else Outcome.Found(background.restaurant, isNew = false))
+                    // Still here. Google's open/closed answer is taken from the fresh result; the visit
+                    // itself (its time, its photos and menu) stays as it was.
+                    val kept = background.restaurant
+                    val fresh = results.firstOrNull { it.id == kept.id }
+                    if (fresh != null) {
+                        val updated = background.copy(
+                            restaurant = kept.copy(openNow = fresh.openNow, businessStatus = fresh.businessStatus),
+                            checkedMs = System.currentTimeMillis(),
+                        )
+                        visit = updated
+                        _state.value = updated
+                    }
+                    onDone(if (results.isEmpty()) Outcome.NothingNearby else Outcome.Found(visit?.restaurant ?: kept, isNew = false))
                     return@launch
                 }
             }

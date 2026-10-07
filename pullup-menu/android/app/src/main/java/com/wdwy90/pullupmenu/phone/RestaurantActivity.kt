@@ -19,6 +19,7 @@ import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.HapticFeedbackConstants
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -45,6 +46,8 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat
+import androidx.core.view.doOnPreDraw
+import androidx.core.view.postDelayed
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -96,6 +99,8 @@ class RestaurantActivity : ThemedActivity() {
     private var scrollAnimator: ValueAnimator? = null
     /** The query the list was last built for; null before a restaurant's first list. */
     private var renderedQuery: String? = null
+    /** Clears the open/closed line once Google's answer is too old to call "now". */
+    private var statusExpiry: Runnable? = null
     private var pinned = false
 
     /** A category card on the Items tab: its header row, the item list under it and the chevron. */
@@ -151,6 +156,7 @@ class RestaurantActivity : ThemedActivity() {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility") // the touch listener only ends a scroll; taps go on untouched
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_restaurant)
@@ -158,6 +164,11 @@ class RestaurantActivity : ThemedActivity() {
         onBackPressedDispatcher.addCallback(this, webBack)
 
         mainScroll = findViewById(R.id.main_scroll)
+        // A finger on the list ends any scroll the app started (a category reveal, the search field).
+        mainScroll.setOnTouchListener { _, e ->
+            if (e.actionMasked == MotionEvent.ACTION_DOWN) scrollAnimator?.cancel()
+            false
+        }
         mainContent = findViewById(R.id.main_content)
         sticky = findViewById(R.id.sticky)
         stickySpacer = findViewById(R.id.sticky_spacer)
@@ -247,7 +258,12 @@ class RestaurantActivity : ThemedActivity() {
     }
 
     private fun show(r: Restaurant) {
-        if (r.id == shown?.id) return
+        if (r.id == shown?.id) {
+            // The same place, confirmed by a later check: only Google's open/closed answer can have changed.
+            shown = r
+            showMeta(r)
+            return
+        }
         shown = r
         viewer?.dismiss()
         viewer = null
@@ -341,21 +357,32 @@ class RestaurantActivity : ThemedActivity() {
             spoken += "Rated %.1f out of 5".format(rating)
         }
         val category = r.category?.ifBlank { null } ?: "Fast food"
-        if (meta.isNotEmpty()) meta.append("  ·  ")
+        if (meta.isNotEmpty()) meta.append(SEP)
         meta.append(category)
         spoken += category
         if (r.isDemo) {
-            meta.append("  ·  Demo")
+            meta.append(SEP + "Demo")
             spoken += "Demo"
         }
         val view = findViewById<TextView>(R.id.meta)
         view.text = meta
         view.contentDescription = spoken.joinToString(", ")
 
-        // Open or closed only when Google said so, and how far the car was from the door when it was found.
+        // Open or closed only when Google said so and said so recently (the answer is a snapshot, not
+        // the hours), and how far the car was from the door when it was found.
         val status = SpannableStringBuilder()
         val statusSpoken = ArrayList<String>()
-        r.openStatus?.let { label ->
+        val statusView = findViewById<TextView>(R.id.status)
+        statusExpiry?.let { statusView.removeCallbacks(it) }
+        statusExpiry = null
+        val checkedMs = (MenuRepository.state.value as? MenuRepository.State.Found)
+            ?.takeIf { it.restaurant.id == r.id }?.checkedMs ?: System.currentTimeMillis()
+        val left = STATUS_FRESH_MS - (System.currentTimeMillis() - checkedMs)
+        if (r.openStatus != null && left > 0) {
+            // Drop the line once the answer is too old to call "now".
+            statusExpiry = statusView.postDelayed(left) { if (shown?.id == r.id) showMeta(r) }
+        }
+        r.openStatus?.takeIf { left > 0 }?.let { label ->
             val color = getColor(if (label == "Open now") R.color.success else R.color.warning)
             status.append(label, ForegroundColorSpan(color), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             status.setSpan(StyleSpan(Typeface.BOLD), 0, label.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -363,11 +390,11 @@ class RestaurantActivity : ThemedActivity() {
         }
         if (!r.isDemo && r.distanceMeters > 0) {
             val feet = (r.distanceMeters * 3.281).roundToInt()
-            if (status.isNotEmpty()) status.append("  ·  ")
+            if (status.isNotEmpty()) status.append(SEP)
             status.append("$feet ft")
             statusSpoken += "$feet feet away"
         }
-        findViewById<TextView>(R.id.status).apply {
+        statusView.apply {
             text = status
             contentDescription = statusSpoken.joinToString(", ")
             isGone = status.isEmpty()
@@ -406,7 +433,12 @@ class RestaurantActivity : ThemedActivity() {
                 pulse?.cancel()
                 hero.alpha = 1f
             }
-            if (bmp == null || shown?.id != r.id) return@launch
+            if (shown?.id != r.id) return@launch
+            if (bmp == null) {
+                // The photo can't be shown: no empty frame either, as for a place without photos.
+                hero.isGone = true
+                return@launch
+            }
             image.setImageBitmap(bmp)
             image.fadeIn()
             placeholder.visibility = View.GONE
@@ -582,6 +614,7 @@ class RestaurantActivity : ThemedActivity() {
     }
 
     private fun renderItems() {
+        scrollAnimator?.cancel() // a reveal under way would otherwise follow a card that is gone
         itemsList.removeAllViews()
         sections.clear()
 
@@ -728,7 +761,7 @@ class RestaurantActivity : ThemedActivity() {
     private fun toggle(title: String, reveal: Boolean) {
         val s = sections[title] ?: return
         val searching = !ItemSearch.isBlank(query)
-        val open = s.body.visibility != View.VISIBLE
+        val open = !s.header.isActivated // the intended state: a tap mid-animation reverses it
         if (!searching) {
             if (open) {
                 expanded?.let { other -> if (other != title) sections[other]?.let { setOpen(it, false) } }
@@ -842,6 +875,9 @@ class RestaurantActivity : ThemedActivity() {
                     layoutParams = LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
                     ).apply { marginEnd = dp(8) }
+                    // A very long name wraps to a second line rather than running past the screen.
+                    maxLines = 2
+                    maxWidth = resources.displayMetrics.widthPixels - 2 * resources.getDimensionPixelSize(R.dimen.gutter)
                     contentDescription = "Jump to ${g.title}"
                     isClickable = true
                     isFocusable = true
@@ -861,7 +897,7 @@ class RestaurantActivity : ThemedActivity() {
     private fun jumpTo(title: String) {
         val s = sections[title] ?: return
         hideKeyboard()
-        if (s.body.visibility != View.VISIBLE) toggle(title, reveal = false)
+        if (!s.header.isActivated) toggle(title, reveal = false)
         scrollToSection(s) { top, _ -> top - sticky.height - dp(8) }
         markChip(title)
     }
@@ -875,7 +911,7 @@ class RestaurantActivity : ThemedActivity() {
             val wanted = (top - sticky.height - dp(8)).coerceAtLeast(0)
             if (!covered) return@post
             scrollAnimator?.cancel()
-            if (!motionEnabled()) { mainScroll.scrollTo(0, wanted); return@post }
+            if (!motionEnabled()) { mainScroll.doOnPreDraw { mainScroll.scrollTo(0, wanted) }; return@post }
             val from = mainScroll.scrollY
             scrollAnimator = ValueAnimator.ofInt(from, wanted).apply {
                 duration = 200
@@ -896,7 +932,8 @@ class RestaurantActivity : ThemedActivity() {
         val from = mainScroll.scrollY
         fun wanted() = target(s.card.topIn(mainContent), from).coerceAtLeast(0)
         if (!motionEnabled()) {
-            mainScroll.post { mainScroll.scrollTo(0, wanted()) }
+            // After the pending layout, so a category closing above has already moved this one up.
+            mainScroll.doOnPreDraw { mainScroll.scrollTo(0, wanted()) }
             return
         }
         scrollAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
@@ -1258,6 +1295,10 @@ class RestaurantActivity : ThemedActivity() {
     }
 
     private companion object {
+        /** Separator in the header's meta lines: the dot is tied to the word before it, so a line never starts with it. */
+        const val SEP = "\u00A0\u00A0·  "
+        /** How long Google's "open now" answer is shown as current. */
+        const val STATUS_FRESH_MS = 30 * 60 * 1000L
         /** Photo loads are billed one by one, so the phone shows at most this many. */
         const val MAX_PHOTOS = 4
     }

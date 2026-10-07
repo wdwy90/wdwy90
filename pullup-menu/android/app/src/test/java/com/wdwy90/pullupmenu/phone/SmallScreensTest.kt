@@ -13,6 +13,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.TextView
 import com.wdwy90.pullupmenu.R
 import com.wdwy90.pullupmenu.core.ChainMenus
 import com.wdwy90.pullupmenu.core.ChainPrices
@@ -142,6 +143,19 @@ class SmallScreensTest {
         idle(Duration.ofMillis(500))
         checkScreen("Restaurant, long names open", long)
 
+        // The longest category name in the data (36 characters, Subway): its chip wraps, its row too.
+        showSample(sample().copy(
+            id = "long-category", name = "Subway",
+            menuUrl = ChainMenus.get(app).menuUrlFor("Subway"), prices = ChainPrices.get(app).forPlace("Subway"),
+        ))
+        val longCat = launch(RestaurantActivity::class.java)
+        val chipRow = longCat.findViewById<ViewGroup>(R.id.chips)
+        val longChip = (0 until chipRow.childCount).map { chipRow.getChildAt(it) as TextView }.maxBy { it.text.length }
+        assertTrue(longChip.text.toString(), longChip.text.length >= 30)
+        longChip.performClick()
+        idle(Duration.ofMillis(500))
+        checkScreen("Restaurant, long category name open", longCat)
+
         // The longest single word in any category name ("ButterBurgers", Culver's), opened.
         showSample(sample().copy(
             id = "long-words", name = "Culver's",
@@ -187,6 +201,10 @@ class SmallScreensTest {
             lng = -89.6,
             rating = 4.1,
             category = "Fast food restaurant",
+            // So the header's open/closed and distance line is laid out and audited too.
+            openNow = true,
+            businessStatus = "OPERATIONAL",
+            distanceMeters = 350.0,
             photos = (1..4).map {
                 PlacePhoto("places/sample/photos/$it", "Sample Photographer $it", "https://example.com/p$it", "https://maps.google.com/?q=$it")
             },
