@@ -255,12 +255,12 @@ class MainActivity : ThemedActivity() {
     }
 
     private fun setAction(tile: View, subtitle: String, enabled: Boolean) {
-        val title = tile.findViewById<TextView>(R.id.action_title).text
+        val title = tile.findViewById<TextView>(R.id.action_title)
         tile.findViewById<TextView>(R.id.action_subtitle).text = subtitle
         // Stays tappable when "disabled" so it can explain why; only looks dimmed.
         tile.findViewById<View>(R.id.action_icon).alpha = if (enabled) 1f else 0.5f
-        tile.findViewById<View>(R.id.action_title).alpha = if (enabled) 1f else 0.6f
-        tile.contentDescription = "$title. $subtitle"
+        title.alpha = if (enabled) 1f else 0.6f
+        tile.contentDescription = "${title.text}. $subtitle"
     }
 
     // ---- Actions ----

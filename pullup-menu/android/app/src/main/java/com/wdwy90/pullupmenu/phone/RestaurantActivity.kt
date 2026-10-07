@@ -143,6 +143,8 @@ class RestaurantActivity : ThemedActivity() {
         tabBar = TabBar(findViewById(R.id.tabs)) { i -> selectTab(Tab.entries[i], animate = true) }
 
         // The tab bar floats above the scroll view; the spacer keeps its place in the content.
+        // Taps on the bar's empty space must not reach the content hidden underneath it.
+        swallowTouches(sticky)
         sticky.addOnLayoutChangeListener { _, _, top, _, bottom, _, oldTop, _, oldBottom ->
             if (bottom - top != oldBottom - oldTop) sticky.post { syncStickyHeight() }
         }
@@ -219,8 +221,10 @@ class RestaurantActivity : ThemedActivity() {
         monogram.visibility = if (initial != null) View.VISIBLE else View.GONE
 
         showMeta(r)
-        findViewById<TextView>(R.id.address).text = r.address
-        findViewById<View>(R.id.address_row).visibility = if (r.address.isBlank()) View.GONE else View.VISIBLE
+        findViewById<TextView>(R.id.address).apply {
+            text = r.address
+            visibility = if (r.address.isBlank()) View.GONE else View.VISIBLE
+        }
 
         val navigate = findViewById<Button>(R.id.navigate)
         val maps = findViewById<Button>(R.id.open_maps)
@@ -847,6 +851,9 @@ class RestaurantActivity : ThemedActivity() {
     }
 
     // ---- Helpers ----
+
+    @SuppressLint("ClickableViewAccessibility") // consumes leftover touches only; nothing to click
+    private fun swallowTouches(view: View) = view.setOnTouchListener { _, _ -> true }
 
     private fun styled(style: Int, s: String) = TextView(this, null, 0, style).apply { text = s }
 

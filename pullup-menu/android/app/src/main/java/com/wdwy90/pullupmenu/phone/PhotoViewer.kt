@@ -1,5 +1,6 @@
 package com.wdwy90.pullupmenu.phone
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.graphics.Bitmap
@@ -30,6 +31,7 @@ import kotlin.math.abs
  * photographer credit and a link to the photo on Google Maps, as Google requires.
  * Photos come from [MenuRepository.photo] at the same size as the grid, so they are usually cached.
  */
+@SuppressLint("ClickableViewAccessibility") // performClick is called; TalkBack uses the arrows and actions
 class PhotoViewer(
     private val activity: Activity,
     private val scope: LifecycleCoroutineScope,
@@ -38,8 +40,8 @@ class PhotoViewer(
     private val widthPx: Int,
     private val open: (String) -> Unit,
 ) {
-    private val dialog = Dialog(activity, R.style.Theme_PullUp_Viewer)
-    private val root: View = activity.layoutInflater.inflate(R.layout.dialog_photo, null)
+    private val dialog = Dialog(activity, R.style.Theme_PullUp_Viewer).apply { setContentView(R.layout.dialog_photo) }
+    private val root: View = dialog.findViewById(R.id.viewer_root)
     private val image: ImageView = root.findViewById(R.id.viewer_image)
     private val progress: ProgressBar = root.findViewById(R.id.viewer_progress)
     private val counter: TextView = root.findViewById(R.id.viewer_counter)
@@ -56,7 +58,6 @@ class PhotoViewer(
     private var chromeVisible = true
 
     init {
-        dialog.setContentView(root)
         dialog.window?.let { w ->
             w.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
             WindowCompat.setDecorFitsSystemWindows(w, false)
