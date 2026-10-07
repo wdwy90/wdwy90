@@ -173,6 +173,24 @@ class ScreensShot {
             val dialog: Dialog? = ShadowDialog.getLatestDialog()
             if (dialog?.window != null) capture(dialog.window!!, "11-photo-viewer")
         }
+        step("06c-restaurant-not-here") {
+            // Another place found close by: "Not here?" shows in the header and opens the chooser.
+            val here = sample().copy(distanceMeters = 8.0)
+            val next = sample().copy(
+                id = "next-door", name = "Taco Bell", distanceMeters = 31.0,
+                menuUrl = ChainMenus.get(app).menuUrlFor("Taco Bell"),
+                prices = ChainPrices.get(app).forPlace("Taco Bell"),
+            )
+            setState(MenuRepository.State.Found(here, listOf(next), System.currentTimeMillis(), auto = true))
+            val a = Robolectric.buildActivity(RestaurantActivity::class.java).setup().get()
+            capture(a.window, it)
+            a.findViewById<View>(R.id.not_here).performClick()
+            idle(Duration.ofMillis(400))
+            val dialog = ShadowDialog.getLatestDialog() as? android.app.AlertDialog
+                ?: error("Not here? opened no chooser")
+            capture(dialog.window!!, "06d-restaurant-chooser")
+            dialog.dismiss()
+        }
         step("13-restaurant-no-list") {
             val other = sample().copy(id = "other-place", name = "Joe's Diner and Drive-In", prices = null, menuUrl = null, photos = emptyList())
             setState(MenuRepository.State.Found(other, emptyList(), System.currentTimeMillis(), auto = false))
