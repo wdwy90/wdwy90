@@ -120,7 +120,9 @@
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:maxLines">1</item>
-        <!-- Large font sizes on a narrow phone: shrink the label to fit its third of the bar. -->
+        <!-- Large font sizes on a narrow phone: shrink the label to fit inside the selected pill
+             (inset 4dp, see TabBar) with a little room to spare. -->
+        <item name="android:paddingHorizontal">8dp</item>
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:autoSizeMinTextSize">10sp</item>
         <item name="android:autoSizeMaxTextSize">15sp</item>
