@@ -59,6 +59,23 @@ jobs:
               print(f"{sev} {iid} x{len(items)}: " + " | ".join(items[:3]))
           ' app/build/reports/lint-results-debug.xml | head -c 20000 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
           [ -n "$msg" ] && echo "::notice title=Lint summary::$msg" || true
+      - name: Summarize unit tests
+        if: always()
+        run: |
+          ls app/build/test-results/testDebugUnitTest/*.xml >/dev/null 2>&1 || exit 0
+          msg=$(python3 -c '
+          import glob, collections, xml.etree.ElementTree as ET
+          ran, failed, skipped = collections.Counter(), 0, 0
+          for p in glob.glob("app/build/test-results/testDebugUnitTest/*.xml"):
+              s = ET.parse(p).getroot()
+              name = s.get("name", "?").split(".")  # package, e.g. core in com.wdwy90.pullupmenu.core.FooTest
+              ran[name[-2] if len(name) > 1 else name[0]] += int(s.get("tests", 0))
+              failed += int(s.get("failures", 0)) + int(s.get("errors", 0))
+              skipped += int(s.get("skipped", 0))
+          parts = ", ".join("%s %d" % kv for kv in sorted(ran.items()))
+          print("%d tests (%s), %d failed, %d skipped" % (sum(ran.values()), parts, failed, skipped))
+          ')
+          echo "::notice title=Unit tests::$msg"
       - uses: actions/upload-artifact@v5
         with:
           name: pullup-menu-apk

@@ -40,6 +40,9 @@ class FlowRow @JvmOverloads constructor(
     private val lineGap: Int
     private val spread: Boolean
 
+    // Not a scrolling container: show a press on a child right away.
+    override fun shouldDelayChildPressedState() = false
+
     init {
         val default = (8 * resources.displayMetrics.density).roundToInt()
         val a = context.obtainStyledAttributes(attrs, R.styleable.FlowRow)
@@ -150,6 +153,9 @@ class ColumnGrid @JvmOverloads constructor(
     var columnsShown: Int
         private set
 
+    // Not a scrolling container: show a press on a child right away.
+    override fun shouldDelayChildPressedState() = false
+
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.ColumnGrid)
         columns = a.getInt(R.styleable.ColumnGrid_android_columnCount, 2).coerceAtLeast(1)
@@ -228,6 +234,9 @@ class ColumnGrid @JvmOverloads constructor(
         for (i in 0 until childCount) {
             val cell = getChildAt(i)
             if (cell.visibility == GONE) continue
+            // A cell that hasn't asked for layout may take its size from Android's measure cache and
+            // keep its text laid out for another width: lay it out at this one before reading it.
+            cell.forceRemeasure()
             cell.measure(spec, ANY_HEIGHT)
             if (cell.breaksAWord()) return true
         }
@@ -236,6 +245,17 @@ class ColumnGrid @JvmOverloads constructor(
 }
 
 private val ANY_HEIGHT = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+
+/** Makes this view, and the views shown inside it, measure for real next time instead of from the cache. */
+private fun View.forceRemeasure() {
+    forceLayout()
+    if (this is ViewGroup) {
+        for (i in 0 until childCount) {
+            val child = getChildAt(i)
+            if (child.visibility != View.GONE) child.forceRemeasure()
+        }
+    }
+}
 
 /** True if this view's text (or text inside it), as last measured, breaks a word across two lines. */
 fun View.breaksAWord(): Boolean {

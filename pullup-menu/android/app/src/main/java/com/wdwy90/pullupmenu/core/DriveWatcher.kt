@@ -86,6 +86,7 @@ object DriveWatcher {
         client = null
         detector.reset()
         redLight.clear()
+        departure.reset()
     }
 
     /**
@@ -139,10 +140,10 @@ object DriveWatcher {
         val t = timeMs(loc)
         val speed = if (loc.hasSpeed()) loc.speed.toDouble() else null
         if (redLight.onSample(lat, lng, t, speed)) MenuRepository.dismissFalseAlarm(ctx)
-        (MenuRepository.state.value as? MenuRepository.State.Found)?.let { visit ->
+        MenuRepository.visit?.let { visit ->
             val r = visit.restaurant
             val accuracy = if (loc.hasAccuracy()) loc.accuracy.toDouble() else null
-            if (!r.isDemo && departure.onSample("${r.id}@${visit.atMs}", r.lat, r.lng, lat, lng, accuracy)) {
+            if (departure.onSample("${r.id}@${visit.atMs}", r.lat, r.lng, lat, lng, accuracy)) {
                 MenuRepository.visitOver(ctx, visit)
             }
         }
