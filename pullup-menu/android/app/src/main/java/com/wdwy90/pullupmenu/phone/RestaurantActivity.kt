@@ -47,6 +47,7 @@ import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat
 import androidx.core.view.doOnPreDraw
+import androidx.core.view.postDelayed
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -379,7 +380,7 @@ class RestaurantActivity : ThemedActivity() {
         val left = STATUS_FRESH_MS - (System.currentTimeMillis() - checkedMs)
         if (r.openStatus != null && left > 0) {
             // Drop the line once the answer is too old to call "now".
-            statusExpiry = Runnable { if (shown?.id == r.id) showMeta(r) }.also { statusView.postDelayed(it, left) }
+            statusExpiry = statusView.postDelayed(left) { if (shown?.id == r.id) showMeta(r) }
         }
         r.openStatus?.takeIf { left > 0 }?.let { label ->
             val color = getColor(if (label == "Open now") R.color.success else R.color.warning)
@@ -1294,8 +1295,8 @@ class RestaurantActivity : ThemedActivity() {
     }
 
     private companion object {
-        /** Separator in the header's meta lines; non-breaking, so a line never starts with the dot. */
-        const val SEP = "\u00A0\u00A0·\u00A0\u00A0"
+        /** Separator in the header's meta lines: the dot is tied to the word before it, so a line never starts with it. */
+        const val SEP = "\u00A0\u00A0·  "
         /** How long Google's "open now" answer is shown as current. */
         const val STATUS_FRESH_MS = 30 * 60 * 1000L
         /** Photo loads are billed one by one, so the phone shows at most this many. */
