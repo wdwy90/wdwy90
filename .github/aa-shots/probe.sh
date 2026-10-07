@@ -57,6 +57,11 @@ d search "pizza";                         s 27-search-none
 d back
 d found "Starbucks|1|1|0|4.3|1 Old State Capitol Plaza, Springfield"
 d tap "View menu";                        s 28-menu-starbucks
+d tap search
+d search "pumpkin";                       s 28b-search-seasonal-notes
+d found "Taco Bell|1|0|0|4.0|2500 Wabash Ave, Springfield|Christopher Montgomery-Alexander Photography"; s 28c-card-long-photo-credit
+d found "Whataburger|0|1|0|4.5|3700 S 6th St, Springfield"
+d tap "View menu";                        s 28d-menu-unverified-source
 # A host that allows only 6 rows per list (the least Android Auto guarantees).
 d limit 6
 d found "McDonald's|0|1|0|3.8|2700 S 6th St, Springfield"

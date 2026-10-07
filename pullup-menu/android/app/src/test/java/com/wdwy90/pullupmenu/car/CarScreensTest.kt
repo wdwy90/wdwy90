@@ -18,6 +18,7 @@ import com.wdwy90.pullupmenu.core.ItemGroup
 import com.wdwy90.pullupmenu.core.ItemGroups
 import com.wdwy90.pullupmenu.core.MenuRepository
 import com.wdwy90.pullupmenu.core.MenuRepository.State
+import com.wdwy90.pullupmenu.core.PlacePhoto
 import com.wdwy90.pullupmenu.core.Restaurant
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.json.JSONObject
@@ -149,11 +150,15 @@ class CarScreensTest {
     fun theOldestHostsGetNoPrimaryButtonsOrPhoto() {
         // API level 1 hosts have no primary flag and no pane image; the screens must still build.
         host(CarAppApiLevels.LEVEL_1)
-        val bk = place("Burger King")
+        val bk = place("Burger King").copy(photos = listOf(PlacePhoto("places/bk/photos/1", "Jordan Lee", null, null)))
         setState(State.Found(bk, emptyList(), System.currentTimeMillis(), auto = true))
         HomeScreen(car, MenuSession()).onGetTemplate()
         val card = RestaurantScreen(car, bk).onGetTemplate() as PaneTemplate
         assertTrue(card.pane.actions.none { it.flags != 0 })
+        // No spinner and no photo: the card shows its rows straight away, with no photo credit.
+        assertTrue(!card.pane.isLoading && card.pane.image == null)
+        assertEquals(3, card.pane.rows.size)
+        assertTrue(card.pane.rows.flatMap { it.texts }.none { it.toString().startsWith("Photo") })
         assertEquals(6, CarUi.listLimit(car))
         MenuScreen(car, bk, bk.prices!!).onGetTemplate()
     }
