@@ -28,6 +28,16 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
           mkdir -p "$OUT"
+      - name: Use the shipped 1.9 (25) app source instead (before render only)
+        if: hashFiles('.github/aa-shots/mode-before') != ''
+        run: |
+          git fetch -q --depth=1 origin 213b5a58f81001e466eed4068edcda576cbb2d67
+          rm -rf pullup-menu/android
+          git checkout FETCH_HEAD -- pullup-menu/android
+          cp .github/aa-shots/DebugDriverBefore.kt .github/aa-shots/DebugDriver.kt
+          cp .github/aa-shots/probe-before.sh .github/aa-shots/probe.sh
+          echo "OUTBRANCH=aa-shots-out-before" >> "$GITHUB_ENV"
+          grep -n "versionName" pullup-menu/android/app/build.gradle.kts
       - name: Build the debug APK with the automotive activity (this run only)
         working-directory: pullup-menu/android
         run: |
@@ -98,7 +108,7 @@ jobs:
           cd "$OUT"
           rm -f logcat-all.txt.gz; [ -f logcat-all.txt ] && gzip -f logcat-all.txt
           git init -q
-          git checkout -q -b aa-shots-out
+          git checkout -q -b "${OUTBRANCH:-aa-shots-out}"
           git add .
           git -c user.name="aa-shots" -c user.email="aa-shots@users.noreply.github.com" commit -qm "Android Auto screenshots for ${GITHUB_SHA::7}"
-          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" aa-shots-out
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" "${OUTBRANCH:-aa-shots-out}"
