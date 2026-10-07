@@ -77,7 +77,7 @@ class RestaurantScreen(ctx: CarContext, private val restaurant: Restaurant) : Sc
             pane.addAction(
                 Action.Builder().setTitle("Items")
                     .apply { if (apiLevel >= CarAppApiLevels.LEVEL_4) setFlags(Action.FLAG_PRIMARY) }
-                    .setOnClickListener { screenManager.push(PriceListScreen(carContext, prices)) }
+                    .setOnClickListener { screenManager.push(ItemListScreen(carContext, prices)) }
                     .build()
             )
         }

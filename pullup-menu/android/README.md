@@ -100,6 +100,6 @@ sideloaded APK will not appear in the car.
 - `core/ChainMenus.kt`, `core/ChainPrices.kt` – official menu links and typical prices from `../shared/`
 - `core/MenuRepository.kt` – shared state between car screen and phone, demo mode
 - `core/Prefs.kt`, `core/Notifier.kt` – settings, arrival and watching notifications
-- `car/` – Android Auto screens: `HomeScreen`, `RestaurantScreen` (card), `PriceListScreen`, `ChooserScreen`
+- `car/` – Android Auto screens: `HomeScreen`, `RestaurantScreen` (card), `ItemListScreen` (full item list by menu section), `ChooserScreen`
 - `phone/` – setup screen (`MainActivity`), menu/prices/photos (`RestaurantActivity`), phone watching
   (`ArrivalService`), home-screen widget (`DriveWidget`, `StartWatchingActivity`)
