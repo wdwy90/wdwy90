@@ -1,0 +1,4 @@
+DayNightMode changed to: night
+Night mode: yes
+DayNightMode changed to: day
+Night mode: no

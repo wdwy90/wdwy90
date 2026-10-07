@@ -1,0 +1,14 @@
+Starting: Intent { cmp=com.wdwy90.pullupmenu/androidx.car.app.activity.CarAppActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.wdwy90.pullupmenu/androidx.car.app.activity.CarAppActivity
+TotalTime: 790
+WaitTime: 795
+Complete
+Starting: Intent { cmp=com.wdwy90.pullupmenu/androidx.car.app.activity.CarAppActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.wdwy90.pullupmenu/androidx.car.app.activity.CarAppActivity
+TotalTime: 483
+WaitTime: 499
+Complete

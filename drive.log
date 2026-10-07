@@ -1,0 +1,139 @@
+drive dump ''
+drive auto 'off'
+drive idle ''
+shot 01-home-off
+drive searching ''
+shot 02-home-searching
+drive nothing ''
+shot 03-home-nothing
+drive error 'No internet connection. Try again.'
+shot 04-home-error-internet
+drive error "Couldn't get your location. Try again in a moment."
+shot 05-home-error-location
+drive error 'Add your Google Places API key in the phone app.'
+shot 06-home-error-key
+drive perm 'on'
+shot 07-home-permission
+drive perm 'off'
+drive auto 'on'
+drive idle ''
+shot 08-home-ready
+drive found 'Burger King|1|1|2|4.1|1200 N Main St, Springfield'
+shot 09-card
+drive tap 'View menu'
+shot 10-menu
+drive tap 'Burgers'
+shot 11-burgers
+drive back ''
+shot 12-menu-after-back
+drive back ''
+shot 13-card-after-back
+drive tap 'Not here?'
+shot 14-chooser
+drive back ''
+drive home ''
+shot 15-home-last-stop
+drive tap 'Show restaurant'
+shot 16-card-from-home
+drive found "Wendy's|0|0|0|3.9|4501 W Wabash Ave, Springfield"
+shot 17-card-closed-no-photo
+drive tap 'View menu'
+shot 18-menu-wendys
+drive found "Steak 'n Shake|1|-|0|4.0|2955 South MacArthur Boulevard, Springfield, IL 62704"
+shot 19-card-long
+drive found 'Subway|0|1|0|4.2|3001 Freedom Dr, Springfield'
+drive tap 'View menu'
+shot 20-menu-subway
+drive tap 'Hot Honey Signature Swicy Collection'
+shot 21-subway-long-category
+drive found "Joe's Burger Shack|0|1|0|4.6|88 Route 66, Springfield"
+shot 22-card-no-menu
+drive found "McDonald's|1|1|0|3.8|2700 S 6th St, Springfield"
+drive tap 'View menu'
+shot 23-menu-mcd
+drive tap 'Breakfast'
+shot 24-mcd-breakfast
+drive back ''
+drive tap 'search'
+shot 25-search-empty
+drive search 'chicken'
+shot 26-search-chicken
+drive search 'pizza'
+shot 27-search-none
+drive back ''
+drive found 'Starbucks|1|1|0|4.3|1 Old State Capitol Plaza, Springfield'
+drive tap 'View menu'
+shot 28-menu-starbucks
+drive tap 'search'
+drive search 'pumpkin'
+shot 28b-search-seasonal-notes
+drive found 'Taco Bell|1|0|0|4.0|2500 Wabash Ave, Springfield|Christopher Montgomery-Alexander Photography'
+shot 28c-card-long-photo-credit
+drive found 'Whataburger|0|1|0|4.5|3700 S 6th St, Springfield'
+drive tap 'View menu'
+shot 28d-menu-unverified-source
+drive limit '6'
+drive found "McDonald's|0|1|0|3.8|2700 S 6th St, Springfield"
+drive tap 'View menu'
+shot 29-limit6-menu-mcd
+drive tap 'Burgers, Chicken & Fish Sandwiches'
+shot 30-limit6-combined
+drive back ''
+drive tap 'Fries & Sides, Breakfast'
+shot 31-limit6-combined-with-parts
+drive tap 'Breakfast 1 of 4'
+shot 32-limit6-part-items
+drive found 'Burger King|0|1|0|4.1|1200 N Main St, Springfield'
+drive tap 'View menu'
+shot 33-limit6-menu-bk
+drive limit '0'
+drive home ''
+drive idle ''
+drive tap 'Demo'
+shot 34-demo-card
+drive tap 'View menu'
+shot 35-demo-menu
+shot 36-night
+shot 37-day
+drive found 'Burger King|1|1|2|4.1|1200 N Main St, Springfield'
+shot 38-day-restart-card
+drive home ''
+drive found 'Burger King|1|1|2|4.1|1200 N Main St, Springfield'
+shot 40-wide-card
+drive tap 'View menu'
+shot 40-wide-menu
+drive tap 'Chicken & Fish'
+shot 40-wide-items
+drive home ''
+drive error 'No internet connection. Try again.'
+shot 40-wide-home-error
+drive home ''
+drive found 'Burger King|1|1|2|4.1|1200 N Main St, Springfield'
+shot 41-small-card
+drive tap 'View menu'
+shot 41-small-menu
+drive tap 'Chicken & Fish'
+shot 41-small-items
+drive home ''
+drive error 'No internet connection. Try again.'
+shot 41-small-home-error
+drive home ''
+drive found 'Burger King|1|1|2|4.1|1200 N Main St, Springfield'
+shot 42-dense-card
+drive tap 'View menu'
+shot 42-dense-menu
+drive tap 'Chicken & Fish'
+shot 42-dense-items
+drive home ''
+drive error 'No internet connection. Try again.'
+shot 42-dense-home-error
+drive home ''
+drive found 'Burger King|1|1|2|4.1|1200 N Main St, Springfield'
+shot 43-portrait-card
+drive tap 'View menu'
+shot 43-portrait-menu
+drive tap 'Chicken & Fish'
+shot 43-portrait-items
+drive home ''
+drive error 'No internet connection. Try again.'
+shot 43-portrait-home-error
