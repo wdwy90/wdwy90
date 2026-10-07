@@ -7,6 +7,7 @@
     <color name="surface_elevated">#25272D</color>
     <color name="accent">#FF6B35</color>
     <color name="accent_text">#FF6B35</color>
+    <color name="chip_text_selected">#FF6B35</color>
     <color name="accent_soft">#29FF6B35</color>
     <color name="on_accent">#101114</color>
     <color name="text_primary">#F7F7F8</color>

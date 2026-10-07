@@ -80,25 +80,30 @@
                             android:scaleType="centerCrop"
                             android:importantForAccessibility="no"
                             android:visibility="invisible" />
-                        <View
+                        <!-- The scrim grows with the credit (two lines at large text), always 40dp above it. -->
+                        <FrameLayout
                             android:id="@+id/hero_scrim"
-                            android:layout_width="match_parent" android:layout_height="96dp"
+                            android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
+                            android:paddingTop="40dp"
                             android:background="@drawable/bg_scrim_bottom"
-                            android:importantForAccessibility="no"
-                            android:visibility="gone" />
-                        <!-- Google asks for the photographer's name with the photo; shown whole, never cut. -->
-                        <TextView
-                            android:id="@+id/hero_credit"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:layout_gravity="bottom|start"
-                            android:minHeight="@dimen/touch_target"
-                            android:gravity="center_vertical"
-                            android:paddingStart="14dp" android:paddingEnd="14dp"
-                            android:textSize="12sp" android:fontFamily="sans-serif-medium"
-                            android:textColor="@color/on_image"
-                            android:shadowColor="#99000000" android:shadowRadius="3" android:shadowDy="1"
-                            android:visibility="gone" />
+                            android:importantForAccessibility="noHideDescendants"
+                            android:visibility="gone">
+                            <!-- Google asks for the photographer's name with the photo; shown whole, never cut. -->
+                            <TextView
+                                android:id="@+id/hero_credit"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:layout_gravity="bottom|start"
+                                android:minHeight="@dimen/touch_target"
+                                android:gravity="center_vertical"
+                                android:paddingStart="14dp" android:paddingEnd="14dp"
+                                android:paddingTop="8dp" android:paddingBottom="8dp"
+                                android:textSize="12sp" android:fontFamily="sans-serif-medium"
+                                android:textColor="@color/on_image"
+                                android:shadowColor="#99000000" android:shadowRadius="3" android:shadowDy="1"
+                                android:importantForAccessibility="yes"
+                                android:visibility="gone" />
+                        </FrameLayout>
                     </FrameLayout>
 
                     <LinearLayout
@@ -232,7 +237,7 @@
                             android:layout_marginStart="12dp"
                             android:background="@null"
                             android:hint="Search this menu"
-                            android:imeOptions="actionSearch"
+                            android:imeOptions="actionSearch|flagNoExtractUi"
                             android:importantForAutofill="no"
                             android:inputType="text"
                             android:singleLine="true"
@@ -415,6 +420,7 @@
                     android:id="@+id/chips"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:gravity="center_vertical"
                     android:paddingStart="@dimen/gutter" android:paddingEnd="@dimen/gutter" />
             </HorizontalScrollView>
             <!-- Marks the bar's edge once it is pinned and content scrolls under it (dark has no shadows). -->

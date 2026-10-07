@@ -68,6 +68,24 @@ class RestaurantItemsTest {
     }
 
     @Test
+    fun aTapWhileACategoryIsClosingReopensIt() {
+        show(sample("Burger King"))
+        val a = launch()
+        val cards = cards(a)
+        header(cards[1]).performClick()
+        idle()
+        header(cards[1]).performClick() // closing...
+        shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(60))
+        assertEquals(View.VISIBLE, body(cards[1]).visibility) // still animating closed
+        header(cards[1]).performClick() // ...changed my mind
+        idle()
+        assertEquals(View.VISIBLE, body(cards[1]).visibility)
+        assertEquals("Expanded", ViewCompat.getStateDescription(header(cards[1])).toString())
+        assertTrue(body(cards[1]).height > 0)
+        assertEquals(1f, body(cards[1]).alpha, 0.001f)
+    }
+
+    @Test
     fun categoryRowsTellScreenReadersWhatATapDoes() {
         show(sample("Burger King"))
         val a = launch()
@@ -138,7 +156,7 @@ class RestaurantItemsTest {
         val a = launch()
         val status = a.findViewById<TextView>(R.id.status)
         assertTrue(status.isShown)
-        assertEquals("Open now  ·  98 ft", status.text.toString())
+        assertEquals("Open now\u00A0\u00A0·\u00A0\u00A098 ft", status.text.toString())
         assertEquals("Open now, 98 feet away", status.contentDescription.toString())
 
         MenuRepository.choose(app, sample("Burger King", id = "closed").copy(businessStatus = "CLOSED_TEMPORARILY"))

@@ -37,6 +37,12 @@ class PlacesClientTest {
         assertEquals(key, conn.getRequestProperty("X-Goog-Api-Key"))
         val circle = JSONObject(conn.sent.toString()).getJSONObject("locationRestriction").getJSONObject("circle")
         assertEquals(125.0, circle.getDouble("radius"), 0.0)
+        // Every field the parser reads is asked for, so the header's status never silently disappears.
+        val mask = conn.getRequestProperty("X-Goog-FieldMask").split(',')
+        for (field in listOf("places.id", "places.location", "places.rating", "places.photos",
+            "places.currentOpeningHours", "places.businessStatus", "places.websiteUri", "places.googleMapsUri")) {
+            assertTrue(field, field in mask)
+        }
     }
 
     @Test fun anErrorSaysWhetherTryingAgainCanHelp() {
