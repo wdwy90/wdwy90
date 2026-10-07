@@ -42,9 +42,11 @@ class MenuSearchScreen(
         val results = CarModel.search(groups, query, CarUi.listLimit(carContext))
         val list = ItemList.Builder()
         results.items.forEach { item ->
+            // Its category, and its availability note as in the menu lists ("Seasonal, may not be available now").
+            val text = listOfNotNull(item.category, item.note?.ifBlank { null }).joinToString(" · ")
             list.addItem(
                 Row.Builder().setTitle(item.name.ifBlank { "Item" })
-                    .apply { item.category?.let { addText(it) } }
+                    .apply { if (text.isNotEmpty()) addText(text) }
                     .build()
             )
         }

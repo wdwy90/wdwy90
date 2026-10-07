@@ -54,7 +54,7 @@ class MenuSession : Session() {
         }
         lifecycleScope.launch(Dispatchers.Main) {
             MenuRepository.state.collect { s ->
-                if (s is State.Found && s.atMs >= startedAtMs && key(s) != lastAutoKey) {
+                if (s is State.Found && key(s) != lastAutoKey && (s.atMs >= startedAtMs || replacesShown(s))) {
                     lastAutoKey = key(s)
                     openCard(s.restaurant)
                 }
@@ -104,6 +104,13 @@ class MenuSession : Session() {
         sm.popToRoot()
         sm.push(RestaurantScreen(carContext, r))
     }
+
+    /**
+     * A place picked on the phone ("Not here?") for a visit found before this session started: it
+     * replaces the other place's screens if the car shows any.
+     */
+    private fun replacesShown(s: State.Found): Boolean =
+        s.chosen && screens().screenStack.any { it is ShowsRestaurant && it.restaurantId != s.restaurant.id }
 
     /** The card, the menu lists that take its place (see [RestaurantScreen]), and what they open. */
     private fun showsRestaurant(screen: Screen, id: String) = (screen as? ShowsRestaurant)?.restaurantId == id

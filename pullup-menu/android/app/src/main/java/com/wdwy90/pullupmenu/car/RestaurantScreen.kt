@@ -26,6 +26,7 @@ import com.wdwy90.pullupmenu.core.PriceList
 import com.wdwy90.pullupmenu.core.Restaurant
 import com.wdwy90.pullupmenu.phone.RestaurantActivity
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -44,6 +45,7 @@ class RestaurantScreen(ctx: CarContext, restaurant: Restaurant) : Screen(ctx), S
     private var restaurant = restaurant
     private var checkedMs: Long? = null
     private var others: List<Restaurant> = emptyList()
+    private var statusTimer: Job? = null
 
     /** Pane images need car API 4; below that the photo isn't even fetched. */
     private val photo = restaurant.photos.firstOrNull()?.takeIf { CarUi.level4(ctx) && !restaurant.isDemo }
@@ -79,20 +81,34 @@ class RestaurantScreen(ctx: CarContext, restaurant: Restaurant) : Screen(ctx), S
         val found = s as? State.Found ?: return
         val all = listOf(found.restaurant) + found.others
         val now = all.firstOrNull { it.id == restaurantId } ?: return
-        val fresh = restaurant.copy(openNow = now.openNow, businessStatus = now.businessStatus)
-        val nearby = all.filter { it.id != restaurantId }
-        if (fresh == restaurant && found.checkedMs == checkedMs && nearby == others) return
-        restaurant = fresh
-        checkedMs = found.checkedMs
-        others = nearby
-        invalidate()
+        // checkedMs is when Google last answered for the visit's own place; the others are as old as the lookup.
+        val asOf = if (now.id == found.restaurant.id) found.checkedMs else found.atMs
+        val before = view()
+        restaurant = restaurant.copy(openNow = now.openNow, businessStatus = now.businessStatus)
+        checkedMs = asOf
+        others = all.filter { it.id != restaurantId }
+        // The host slows an app down that sends updates that change nothing.
+        if (view() != before) invalidate()
         // Google's answer goes stale: take the open/closed line down when it does.
-        val shownUntil = found.checkedMs + CarModel.STATUS_FRESH_MS
-        lifecycleScope.launch {
-            delay((shownUntil - System.currentTimeMillis()).coerceAtLeast(0) + 1_000)
-            if (checkedMs == found.checkedMs) invalidate()
+        statusTimer?.cancel()
+        val until = asOf + CarModel.STATUS_FRESH_MS
+        if (restaurant.openStatus != null && until > System.currentTimeMillis()) {
+            statusTimer = lifecycleScope.launch {
+                delay(until - System.currentTimeMillis() + 1_000)
+                invalidate()
+            }
         }
     }
+
+    /** The rows as they'd be drawn now, and whether "Not here?" is up. */
+    private fun view(): Pair<List<CarModel.CardRow>, Boolean> = rows() to others.isNotEmpty()
+
+    private fun rows(): List<CarModel.CardRow> = CarModel.card(
+        restaurant, checkedMs, System.currentTimeMillis(),
+        showDistance = others.isNotEmpty(),
+        photoShown = image != null,
+        photoAuthor = photo?.authorName,
+    )
 
     @Suppress("DEPRECATION")
     override fun onGetTemplate(): Template {
@@ -100,13 +116,7 @@ class RestaurantScreen(ctx: CarContext, restaurant: Restaurant) : Screen(ctx), S
         if (loading) {
             pane.setLoading(true) // a loading pane has no rows
         } else {
-            val rows = CarModel.card(
-                restaurant, checkedMs, System.currentTimeMillis(),
-                showDistance = others.isNotEmpty(),
-                photoShown = image != null,
-                photoAuthor = photo?.authorName,
-            )
-            rows.take(CarUi.paneLimit(carContext)).forEach { pane.addRow(row(it)) }
+            rows().take(CarUi.paneLimit(carContext)).forEach { pane.addRow(row(it)) }
             image?.let { pane.setImage(it) }
         }
         val prices = restaurant.prices?.takeIf { it.items.isNotEmpty() }
@@ -120,8 +130,11 @@ class RestaurantScreen(ctx: CarContext, restaurant: Restaurant) : Screen(ctx), S
             )
         )
 
+        // Google's place name goes up with the rows that credit Google; until then, the chain's name
+        // from the app's own list (a loading pane may change its title when the rows arrive).
+        val title = if (loading) prices?.chain ?: "Pull Up Menu" else restaurant.name.ifBlank { "Restaurant" }
         val template = PaneTemplate.Builder(pane.build())
-            .setTitle(restaurant.name.ifBlank { "Restaurant" })
+            .setTitle(title)
             .setHeaderAction(Action.BACK)
         if (others.isNotEmpty()) {
             template.setActionStrip(
@@ -172,7 +185,10 @@ class RestaurantScreen(ctx: CarContext, restaurant: Restaurant) : Screen(ctx), S
             null
         }
 
-    /** Runs only while parked (ParkedOnlyOnClickListener). The toast is shown even if the launch is blocked. */
+    /**
+     * Runs only while parked (ParkedOnlyOnClickListener). Android may block the launch without
+     * saying so, so the toast says where to look rather than that it opened.
+     */
     private fun openOnPhone() {
         try {
             carContext.startActivity(
@@ -181,7 +197,7 @@ class RestaurantScreen(ctx: CarContext, restaurant: Restaurant) : Screen(ctx), S
             )
         } catch (e: Exception) { // ActivityNotFoundException, SecurityException
         }
-        CarToast.makeText(carContext, "Opened on your phone. ${CarModel.PHONE_WHEN_PARKED}", CarToast.LENGTH_LONG).show()
+        CarToast.makeText(carContext, "See it in Pull Up Menu on your phone. ${CarModel.PHONE_WHEN_PARKED}", CarToast.LENGTH_LONG).show()
     }
 
     private companion object {

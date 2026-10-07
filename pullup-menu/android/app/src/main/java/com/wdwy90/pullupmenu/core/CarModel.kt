@@ -13,6 +13,9 @@ object CarModel {
     /** Tells the driver to keep their eyes on the road (Android Auto quality rule VI-1). */
     const val PHONE_WHEN_PARKED = "Only look at your phone when parked."
 
+    /** Shown wherever Google's data is (Places API attribution). */
+    const val GOOGLE_CREDIT = "Info from Google Maps"
+
     /** Google's open/closed answer is shown for this long after Google gave it. */
     const val STATUS_FRESH_MS = 30 * 60 * 1000L
 
@@ -57,7 +60,7 @@ object CarModel {
             Lookup.Searching -> Home(title, listOf("Finding restaurant…"), Mark.SEARCHING, "Check now", false)
             is Lookup.Found -> Home(
                 title,
-                listOfNotNull("Last stop: ${lookup.name}", if (lookup.fromGoogle) "Info from Google Maps" else null),
+                listOfNotNull("Last stop: ${lookup.name}", if (lookup.fromGoogle) GOOGLE_CREDIT else null),
                 Mark.FOUND, "Check now", true,
             )
             Lookup.NothingNearby -> Home(
@@ -107,10 +110,12 @@ object CarModel {
     data class CardRow(val title: String, val lines: List<Line>, val icon: Icon)
 
     /**
-     * The restaurant card's rows: where it is (and whether it's open), what it is (rating, type and
-     * the Google credit), and whether its menu is here. [checkedMs] is when Google last answered for
-     * it; open/closed shows only while that answer is fresh. [showDistance] when other places are
-     * close by, so the driver can tell which one this is. [photoShown] adds the photographer's credit.
+     * The restaurant card's rows: where it is (and whether it's open) with the Google credit, what it
+     * is (rating and type) with the photo's credit, and whether its menu is here. [checkedMs] is when
+     * Google last answered for it; open/closed shows only while that answer is fresh. [showDistance]
+     * when other places are close by, so the driver can tell which one this is. [photoShown] adds the
+     * photographer's credit as the only text of its row: the host lets a row's only text wrap to two
+     * lines, where a second text is cut to one, and a photo credit must never be cut.
      */
     fun card(
         r: Restaurant,
@@ -130,7 +135,11 @@ object CarModel {
         }
         val place = CardRow(
             r.address.ifBlank { "Address not available" },
-            if (where.isEmpty()) emptyList() else listOf(Line(where)),
+            listOfNotNull(
+                if (where.isEmpty()) null else Line(where),
+                // The name in the header, the address and the rest come from Google (not the demo's).
+                if (r.isDemo) null else Line(GOOGLE_CREDIT),
+            ),
             Icon.PLACE,
         )
 
@@ -138,11 +147,8 @@ object CarModel {
         val rating = r.rating?.let { String.format(Locale.US, "%.1f", it) }
         val credit = when {
             r.isDemo -> listOf(Line("Sample restaurant for the demo"))
-            photoShown -> listOf(
-                Line("Info from Google Maps"),
-                Line(photoAuthor?.ifBlank { null }?.let { "Photo: $it" } ?: "Photo from Google Maps"),
-            )
-            else -> listOf(Line("Info from Google Maps"))
+            photoShown -> listOf(Line(photoAuthor?.ifBlank { null }?.let { "Photo: $it" } ?: "Photo from Google Maps"))
+            else -> emptyList()
         }
         val about = CardRow(listOfNotNull(rating, kind).joinToString(" · "), credit, if (rating != null) Icon.STAR else Icon.RESTAURANT)
 
@@ -177,6 +183,13 @@ object CarModel {
         }
         CarMenu.Kind.COMBINED -> "${e.groups.size} categories · ${items(e.itemCount)}"
     }
+
+    /**
+     * The last row of the categories, as on the phone: where the item list comes from (a chain's own
+     * site, or Pull Up Menu's own list, which says it isn't verified) and when it was checked.
+     */
+    fun source(p: PriceList): Pair<String, String?> =
+        "Source: ${p.sourceName.ifBlank { "Pull Up Menu list (not verified)" }}" to p.checked.ifBlank { null }?.let { "Checked $it" }
 
     /** Search results: what fits on one list, and how many more matched. */
     data class Results(val items: List<PriceItem>, val more: Int)

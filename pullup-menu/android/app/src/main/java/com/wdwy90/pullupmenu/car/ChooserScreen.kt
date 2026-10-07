@@ -37,7 +37,7 @@ class ChooserScreen(
                     .build()
             )
         }
-        list.addItem(Row.Builder().setTitle("Info from Google Maps").build())
+        list.addItem(Row.Builder().setTitle(CarModel.GOOGLE_CREDIT).build())
         return ListTemplate.Builder()
             .setTitle("Which one are you at?")
             .setHeaderAction(Action.BACK)
