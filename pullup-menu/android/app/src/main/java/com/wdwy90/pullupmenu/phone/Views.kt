@@ -15,6 +15,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.wdwy90.pullupmenu.R
 import kotlin.math.abs
+import kotlin.math.roundToInt
 
 /** A frame as tall as it is wide (photo grid tiles). */
 class SquareFrameLayout @JvmOverloads constructor(
@@ -23,6 +24,170 @@ class SquareFrameLayout @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, widthMeasureSpec)
     }
+}
+
+/**
+ * Lays its children out left to right and starts a new line whenever the next one doesn't fit, so
+ * on small phones or with large text a button or a value moves down a line instead of being
+ * squeezed, cut off or broken mid-word. With `flowSpread`, the children on a line are pushed to its
+ * two ends (a label at the start, its value at the end). `flowGap` and `flowLineGap` space the
+ * children; their own margins are ignored.
+ */
+class FlowRow @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null,
+) : ViewGroup(context, attrs) {
+    private val gap: Int
+    private val lineGap: Int
+    private val spread: Boolean
+    /** The shown children, line by line, as last measured. */
+    private var lines: List<List<View>> = emptyList()
+
+    init {
+        val default = (8 * resources.displayMetrics.density).roundToInt()
+        val a = context.obtainStyledAttributes(attrs, R.styleable.FlowRow)
+        gap = a.getDimensionPixelSize(R.styleable.FlowRow_flowGap, default)
+        lineGap = a.getDimensionPixelSize(R.styleable.FlowRow_flowLineGap, default)
+        spread = a.getBoolean(R.styleable.FlowRow_flowSpread, false)
+        a.recycle()
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val room = if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.UNSPECIFIED) {
+            Int.MAX_VALUE
+        } else {
+            MeasureSpec.getSize(widthMeasureSpec) - paddingLeft - paddingRight
+        }
+        val lines = ArrayList<MutableList<View>>()
+        var used = 0
+        for (i in 0 until childCount) {
+            val child = getChildAt(i)
+            if (child.visibility == GONE) continue
+            // A wrap_content child is measured at most as wide as the row: longer text wraps inside it.
+            measureChild(child, widthMeasureSpec, heightMeasureSpec)
+            val line = lines.lastOrNull()
+            if (line == null || used + gap + child.measuredWidth > room) {
+                lines += mutableListOf(child)
+                used = child.measuredWidth
+            } else {
+                line += child
+                used += gap + child.measuredWidth
+            }
+        }
+        this.lines = lines
+        val widest = lines.maxOfOrNull { lineWidth(it) } ?: 0
+        val height = lines.sumOf { line -> line.maxOf { it.measuredHeight } } + lineGap * (lines.size - 1).coerceAtLeast(0)
+        setMeasuredDimension(
+            resolveSize(widest + paddingLeft + paddingRight, widthMeasureSpec),
+            resolveSize(height + paddingTop + paddingBottom, heightMeasureSpec),
+        )
+    }
+
+    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        val room = width - paddingLeft - paddingRight
+        val rtl = layoutDirection == LAYOUT_DIRECTION_RTL
+        var y = paddingTop
+        for (line in lines) {
+            val tallest = line.maxOf { it.measuredHeight }
+            val extra = if (spread && line.size > 1) (room - lineWidth(line)).coerceAtLeast(0) / (line.size - 1) else 0
+            var x = 0
+            line.forEachIndexed { i, child ->
+                // On a spread line the last child ends right at the end (no rounding left over).
+                if (extra > 0 && i == line.size - 1) x = room - child.measuredWidth
+                val left = if (rtl) paddingLeft + room - x - child.measuredWidth else paddingLeft + x
+                val top = y + (tallest - child.measuredHeight) / 2
+                child.layout(left, top, left + child.measuredWidth, top + child.measuredHeight)
+                x += child.measuredWidth + gap + extra
+            }
+            y += tallest + lineGap
+        }
+    }
+
+    private fun lineWidth(line: List<View>) = line.sumOf { it.measuredWidth } + gap * (line.size - 1)
+}
+
+/**
+ * Equal columns (`android:columnCount` across, `gridGap` apart) with the cells of a row stretched to
+ * the same height. Drops to one column when a word in a cell wouldn't fit its column (small phones,
+ * large text), so text is never broken mid-word. For a parent that limits its width; the cells'
+ * own margins are ignored.
+ */
+class ColumnGrid @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null,
+) : ViewGroup(context, attrs) {
+    private val columns: Int
+    private val gap: Int
+
+    /** Columns in the current layout: the set number, or 1 when a word wouldn't fit. */
+    var columnsShown: Int
+        private set
+
+    init {
+        val a = context.obtainStyledAttributes(attrs, R.styleable.ColumnGrid)
+        columns = a.getInt(R.styleable.ColumnGrid_android_columnCount, 2).coerceAtLeast(1)
+        gap = a.getDimensionPixelSize(R.styleable.ColumnGrid_gridGap, (12 * resources.displayMetrics.density).roundToInt())
+        a.recycle()
+        columnsShown = columns
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val available = MeasureSpec.getSize(widthMeasureSpec)
+        val room = (available - paddingLeft - paddingRight).coerceAtLeast(0)
+        val cells = shown()
+        columnsShown = if (columns > 1 && cells.any { breaksAWordAt(it, columnWidth(room, columns)) }) 1 else columns
+        val cellSpec = MeasureSpec.makeMeasureSpec(columnWidth(room, columnsShown), MeasureSpec.EXACTLY)
+        var height = paddingTop + paddingBottom
+        cells.chunked(columnsShown).forEachIndexed { i, row ->
+            row.forEach { it.measure(cellSpec, ANY_HEIGHT) }
+            val tallest = row.maxOf { it.measuredHeight }
+            for (cell in row) {
+                if (cell.measuredHeight != tallest) {
+                    cell.measure(cellSpec, MeasureSpec.makeMeasureSpec(tallest, MeasureSpec.EXACTLY))
+                }
+            }
+            height += tallest + if (i > 0) gap else 0
+        }
+        setMeasuredDimension(resolveSize(available, widthMeasureSpec), resolveSize(height, heightMeasureSpec))
+    }
+
+    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        val cellWidth = columnWidth(width - paddingLeft - paddingRight, columnsShown)
+        val rtl = layoutDirection == LAYOUT_DIRECTION_RTL
+        var y = paddingTop
+        for (row in shown().chunked(columnsShown)) {
+            row.forEachIndexed { i, cell ->
+                val x = i * (cellWidth + gap)
+                val left = if (rtl) width - paddingRight - x - cellWidth else paddingLeft + x
+                cell.layout(left, y, left + cell.measuredWidth, y + cell.measuredHeight)
+            }
+            y += row.maxOf { it.measuredHeight } + gap
+        }
+    }
+
+    private fun shown() = (0 until childCount).map { getChildAt(it) }.filter { it.visibility != GONE }
+
+    private fun columnWidth(room: Int, n: Int) = ((room - gap * (n - 1)) / n).coerceAtLeast(0)
+
+    private fun breaksAWordAt(cell: View, cellWidth: Int): Boolean {
+        cell.measure(MeasureSpec.makeMeasureSpec(cellWidth, MeasureSpec.EXACTLY), ANY_HEIGHT)
+        return cell.breaksAWord()
+    }
+}
+
+private val ANY_HEIGHT = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+
+/** True if this view's text (or text inside it), as last measured, breaks a word across two lines. */
+fun View.breaksAWord(): Boolean = when {
+    visibility == View.GONE -> false
+    this is TextView -> {
+        val text = this.text
+        val layout = this.layout
+        layout != null && (0 until layout.lineCount - 1).any { line ->
+            val end = layout.getLineEnd(line)
+            end in 1 until text.length && text[end - 1].isLetterOrDigit() && text[end].isLetterOrDigit()
+        }
+    }
+    this is ViewGroup -> (0 until childCount).any { getChildAt(it).breaksAWord() }
+    else -> false
 }
 
 /**

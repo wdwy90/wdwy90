@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Full-screen photo viewer. Swipe (or the arrow buttons) to move between photos. -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/viewer_root"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="@android:color/black">
@@ -86,9 +87,13 @@
             android:gravity="center_vertical"
             android:textColor="#FFFFFFFF"
             android:textSize="14sp" />
-        <LinearLayout
+        <!-- The link at the start and the attribution at the end, or the attribution on its own
+             line when both don't fit (large text). -->
+        <com.wdwy90.pullupmenu.phone.FlowRow
             android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="horizontal" android:gravity="center_vertical">
+            app:flowGap="@dimen/space_2"
+            app:flowLineGap="0dp"
+            app:flowSpread="true">
             <TextView
                 android:id="@+id/viewer_maps"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -101,16 +106,15 @@
                 android:textSize="14sp"
                 android:fontFamily="sans-serif-medium"
                 android:text="Open in Maps" />
-            <Space
-                android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
             <!-- Google Maps Platform attribution: exact text, white on a dark background, never wrapped. -->
             <TextView
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_2"
+                android:minHeight="@dimen/touch_target"
+                android:gravity="center_vertical"
                 android:text="@string/google_maps"
                 android:textSize="12sp" android:fontFamily="sans-serif" android:textStyle="normal"
                 android:textColor="#FFFFFFFF"
                 android:maxLines="1" android:singleLine="true" />
-        </LinearLayout>
+        </com.wdwy90.pullupmenu.phone.FlowRow>
     </LinearLayout>
 </FrameLayout>

@@ -38,6 +38,7 @@ object DriveWatcher {
     private var appCtx: Context? = null
     private val detector = ArrivalDetector()
     private val redLight = RedLightFilter()
+    private val departure = DepartureDetector()
 
     val isWatching: Boolean get() = owners.isNotEmpty()
 
@@ -138,6 +139,13 @@ object DriveWatcher {
         val t = timeMs(loc)
         val speed = if (loc.hasSpeed()) loc.speed.toDouble() else null
         if (redLight.onSample(lat, lng, t, speed)) MenuRepository.dismissFalseAlarm(ctx)
+        (MenuRepository.state.value as? MenuRepository.State.Found)?.let { visit ->
+            val r = visit.restaurant
+            val accuracy = if (loc.hasAccuracy()) loc.accuracy.toDouble() else null
+            if (!r.isDemo && departure.onSample("${r.id}@${visit.atMs}", r.lat, r.lng, lat, lng, accuracy)) {
+                MenuRepository.visitOver(ctx, visit)
+            }
+        }
         if (detector.onSample(ArrivalDetector.Sample(lat, lng, t, speed)) && !redLight.isIgnored(lat, lng)) {
             redLight.onTrigger(lat, lng, t)
             MenuRepository.lookup(ctx, lat, lng, auto = true)

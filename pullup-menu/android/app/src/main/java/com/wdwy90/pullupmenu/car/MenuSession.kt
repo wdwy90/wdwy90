@@ -14,6 +14,7 @@ import com.wdwy90.pullupmenu.core.Notifier
 import com.wdwy90.pullupmenu.core.Prefs
 import com.wdwy90.pullupmenu.core.Restaurant
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 
 class MenuSession : Session() {
@@ -59,8 +60,9 @@ class MenuSession : Session() {
                 }
             }
         }
+        // A red light, or the car has driven away from the restaurant: back to Home, ready for the next.
         lifecycleScope.launch(Dispatchers.Main) {
-            MenuRepository.dismissed.collect { id ->
+            merge(MenuRepository.dismissed, MenuRepository.left).collect { id ->
                 val sm = screens()
                 if (sm.screenStack.any { it is RestaurantScreen && it.restaurantId == id }) sm.popToRoot()
             }

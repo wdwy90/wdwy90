@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Layouts that adapt to small phones and large text (see Views.kt). -->
+    <declare-styleable name="FlowRow">
+        <!-- Space between children on a line (default 8dp). -->
+        <attr name="flowGap" format="dimension" />
+        <!-- Space between lines (default 8dp). -->
+        <attr name="flowLineGap" format="dimension" />
+        <!-- Push the children on a line to its two ends, e.g. a label and its value. -->
+        <attr name="flowSpread" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="ColumnGrid">
+        <attr name="android:columnCount" />
+        <!-- Space between columns and rows (default 12dp). -->
+        <attr name="gridGap" format="dimension" />
+    </declare-styleable>
+</resources>

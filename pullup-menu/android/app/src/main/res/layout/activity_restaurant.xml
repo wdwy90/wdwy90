@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical">
@@ -130,11 +131,11 @@
                         android:gravity="center_vertical"
                         android:textIsSelectable="true" />
 
-                    <LinearLayout
+                    <!-- Side by side, or one under the other when they don't fit (small phones, large text). -->
+                    <com.wdwy90.pullupmenu.phone.FlowRow
                         android:id="@+id/header_actions"
                         android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:orientation="horizontal">
+                        android:layout_marginTop="4dp">
                         <Button
                             android:id="@+id/navigate"
                             style="@style/Button.Primary"
@@ -147,12 +148,11 @@
                             android:id="@+id/open_maps"
                             style="@style/Button.Tonal"
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
                             android:drawableStart="@drawable/ic_open_in_new"
                             android:drawablePadding="8dp"
                             android:drawableTint="@color/text_primary"
                             android:text="Open in Maps" />
-                    </LinearLayout>
+                    </com.wdwy90.pullupmenu.phone.FlowRow>
 
                     <!-- Google Maps Platform attribution: exact text, allowed colors only, never wrapped. -->
                     <TextView
@@ -248,14 +248,15 @@
                     android:id="@+id/photos_content"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingStart="14dp" android:paddingEnd="14dp"
-                    android:paddingTop="8dp"
+                    android:paddingStart="@dimen/gutter" android:paddingEnd="@dimen/gutter"
+                    android:paddingTop="14dp"
                     android:visibility="gone">
-                    <GridLayout
+                    <!-- Two photos a row, or one when a credit's word wouldn't fit (large text). -->
+                    <com.wdwy90.pullupmenu.phone.ColumnGrid
                         android:id="@+id/photo_grid"
                         android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:columnCount="2"
-                        android:useDefaultMargins="false" />
+                        app:gridGap="12dp" />
                     <TextView
                         android:id="@+id/photos_message"
                         style="@style/Text.Secondary"
