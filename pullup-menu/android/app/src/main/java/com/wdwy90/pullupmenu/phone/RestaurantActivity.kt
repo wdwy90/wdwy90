@@ -39,7 +39,10 @@ import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withStarted
 import com.wdwy90.pullupmenu.R
@@ -287,12 +290,10 @@ class RestaurantActivity : ThemedActivity() {
     /** "Not here?" shows only when there's another place to pick. */
     private fun updateNotHere() {
         val notHere = findViewById<View>(R.id.not_here)
-        notHere.visibility = if (otherNearby().isEmpty()) View.GONE else View.VISIBLE
+        notHere.isGone = otherNearby().isEmpty()
         val actions = findViewById<ViewGroup>(R.id.header_actions)
-        actions.visibility =
-            if ((0 until actions.childCount).any { actions.getChildAt(it).visibility == View.VISIBLE }) View.VISIBLE
-            else View.GONE
-        if (notHere.visibility == View.GONE) chooser?.dismiss()
+        actions.isVisible = (0 until actions.childCount).any { actions.getChildAt(it).isVisible }
+        if (notHere.isGone) chooser?.dismiss()
     }
 
     /** Strip mall case: pick which of the places found nearby the car is at, as on the car screen. */
@@ -752,7 +753,7 @@ class RestaurantActivity : ThemedActivity() {
 
         menuLoadFailed = false
         menuRetry.visibility = View.GONE
-        menuMessage.text = "No in-app menu for this restaurant yet. Try these:"
+        menuMessage.text = "No in-app menu for this restaurant yet. Try the buttons below."
         menuMessageCard.visibility = if (menuUrl == null) View.VISIBLE else View.GONE
         browser.visibility = if (menuUrl != null) View.VISIBLE else View.GONE
         browser.setOnClickListener { menuUrl?.let { open(web?.url ?: it) } }
@@ -833,8 +834,8 @@ class RestaurantActivity : ThemedActivity() {
                         // browser, so it never looks like this restaurant's menu. Redirects, page scripts
                         // and the chain's own site stay here.
                         val elsewhere = request.isForMainFrame && request.hasGesture() && !request.isRedirect &&
-                            !WebLinks.sameSite(uri.host, view.url?.let { Uri.parse(it).host }) &&
-                            !WebLinks.sameSite(uri.host, shown?.menuUrl?.let { Uri.parse(it).host })
+                            !WebLinks.sameSite(uri.host, view.url?.toUri()?.host) &&
+                            !WebLinks.sameSite(uri.host, shown?.menuUrl?.toUri()?.host)
                         return elsewhere && openOutside(uri)
                     }
                 }
