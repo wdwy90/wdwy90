@@ -531,6 +531,11 @@ class RestaurantActivity : ThemedActivity() {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) hideKeyboard()
             false
         }
+        // The magnifier takes the accent with the field's outline while it has focus.
+        val icon = findViewById<ImageView>(R.id.search_icon)
+        search.setOnFocusChangeListener { _, focused ->
+            icon.imageTintList = ColorStateList.valueOf(getColor(if (focused) R.color.accent_text else R.color.text_secondary))
+        }
         clear.setOnClickListener {
             search.text.clear()
             search.requestFocus()
@@ -621,7 +626,9 @@ class RestaurantActivity : ThemedActivity() {
             isClickable = true
             isFocusable = true
         }
-        header.addView(ImageView(this).apply {
+        // The icon is left out at the largest text sizes: the row's width then goes to the words,
+        // so a long category name wraps between words instead of inside one.
+        if (resources.configuration.fontScale < 1.5f) header.addView(ImageView(this).apply {
             setImageResource(CategoryIcons.iconFor(g.title))
             imageTintList = ColorStateList.valueOf(getColor(R.color.text_secondary))
             setBackgroundResource(R.drawable.bg_icon_tile)
@@ -629,17 +636,19 @@ class RestaurantActivity : ThemedActivity() {
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
             layoutParams = LinearLayout.LayoutParams(dp(36), dp(36)).apply { marginEnd = dp(12) }
         })
-        header.addView(styled(R.style.Text_Title, g.title).apply {
-            textSize = 16f
+        // Name and count side by side; the count drops under the name when the name needs the width.
+        val titleRow = FlowRow(this).apply {
             layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+        }
+        titleRow.addView(styled(R.style.Text_Title, g.title).apply {
+            textSize = 16f
+            setPadding(0, dp(2), 0, dp(2))
         })
         val badge = styled(R.style.Text_Label, g.items.size.toString()).apply {
             setPadding(dp(10), dp(3), dp(10), dp(3))
-            layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
-            ).apply { marginStart = dp(12) }
         }
-        header.addView(badge)
+        titleRow.addView(badge)
+        header.addView(titleRow)
         val chevron = ImageView(this).apply {
             setImageResource(R.drawable.ic_chevron_down)
             scaleType = ImageView.ScaleType.CENTER
