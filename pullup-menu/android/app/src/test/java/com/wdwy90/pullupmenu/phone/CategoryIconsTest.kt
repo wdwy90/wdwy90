@@ -21,7 +21,7 @@ class CategoryIconsTest {
         check(R.drawable.ic_cat_taco, "Tacos", "Burritos", "Quesadillas, Nachos & Salads")
         check(R.drawable.ic_cat_salad, "Salads", "Bowls", "Soups")
         check(R.drawable.ic_cat_fish, "Fish", "Seafood")
-        check(R.drawable.ic_cat_meal, "Happy Meal", "Kids Meals", "Combos", "Value Menu", "Family Meals")
+        check(R.drawable.ic_cat_meal, "Happy Meal", "Kids Meals", "Combos", "Value Menu", "Family Meals", "8 Piece Meal", "Team Meals")
         check(R.drawable.ic_cat_star, "Favorites", "Seasonal", "What's New", "Not So Secret Menu")
     }
 
@@ -34,5 +34,13 @@ class CategoryIconsTest {
 
     @Test fun unknownNamesGetThePlate() {
         check(R.drawable.ic_cat_plate, "Entrees", "Lunch", "Chill Stop", "Zalads", "Menu", "")
+        // A chain's own product names are not food words: they get the plain icon too.
+        check(R.drawable.ic_cat_plate, "Frosty", "Freddy's Bevies", "Substitutions")
+    }
+
+    @Test fun shortWordsMatchWholeWordsOnly() {
+        check(R.drawable.ic_cat_coffee, "Tea", "Teas", "McCafe")
+        check(R.drawable.ic_cat_meal, "Pieces & Buckets", "Boxes")
+        check(R.drawable.ic_cat_plate, "Team", "Piecework")
     }
 }

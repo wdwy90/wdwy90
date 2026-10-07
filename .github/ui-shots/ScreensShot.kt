@@ -221,6 +221,16 @@ class ScreensShot {
             idle(Duration.ofMillis(800))
             capture(a.window, it)
         }
+        step("19-restaurant-long-category") {
+            // The longest category name in the data (36 characters, Subway): its chip wraps to two lines.
+            val sw = chain("Subway", "Subway", id = "longcat")
+            setState(MenuRepository.State.Found(sw, emptyList(), System.currentTimeMillis(), auto = true))
+            val a = Robolectric.buildActivity(RestaurantActivity::class.java).setup().get()
+            val row = a.findViewById<android.widget.LinearLayout>(R.id.chips)
+            (0 until row.childCount).map { row.getChildAt(it) as android.widget.TextView }.maxBy { it.text.length }.performClick()
+            idle(Duration.ofMillis(800))
+            capture(a.window, it)
+        }
         step("06c-restaurant-not-here") {
             // Another place found close by: "Not here?" shows in the header and opens the chooser.
             val here = sample().copy(distanceMeters = 8.0)

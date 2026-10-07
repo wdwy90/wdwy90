@@ -505,13 +505,19 @@ class RevealLayout(context: Context) : FrameLayout(context) {
  */
 fun View.expandHeight(onFrame: ((Float) -> Unit)? = null): Int {
     cancelHeightAnimation()
-    val parent = parent as View
-    val width = parent.width - parent.paddingLeft - parent.paddingRight
+    // Measured at the width the rows will get; before the first layout, the nearest laid-out
+    // ancestor's inner width stands in (an unlimited width would measure every row as one line).
+    var box: View? = parent as? View
+    while (box != null && box.width == 0) box = box.parent as? View
+    val width = box?.let { it.width - it.paddingLeft - it.paddingRight } ?: 0
     measure(
-        View.MeasureSpec.makeMeasureSpec(width.coerceAtLeast(0), if (width > 0) View.MeasureSpec.EXACTLY else View.MeasureSpec.UNSPECIFIED),
+        View.MeasureSpec.makeMeasureSpec(width.coerceAtLeast(0), if (width > 0) View.MeasureSpec.AT_MOST else View.MeasureSpec.UNSPECIFIED),
         View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
     )
     val target = measuredHeight
+    // A view caught mid-collapse carries on from where it is instead of jumping to nothing.
+    val fromHeight = if (visibility == View.VISIBLE && layoutParams.height >= 0) layoutParams.height else 0
+    val fromAlpha = if (visibility == View.VISIBLE) alpha else 0f
     visibility = View.VISIBLE
     if (!motionEnabled()) {
         layoutParams = layoutParams.apply { height = ViewGroup.LayoutParams.WRAP_CONTENT }
@@ -519,14 +525,14 @@ fun View.expandHeight(onFrame: ((Float) -> Unit)? = null): Int {
         onFrame?.invoke(1f)
         return target
     }
-    layoutParams = layoutParams.apply { height = 0 }
-    alpha = 0f
-    animateHeight(0, target, 300, EASE_ENTER) {
+    layoutParams = layoutParams.apply { height = fromHeight }
+    alpha = fromAlpha
+    animateHeight(fromHeight, target, 300, EASE_ENTER) {
         layoutParams = layoutParams.apply { height = ViewGroup.LayoutParams.WRAP_CONTENT }
         alpha = 1f
     }.addUpdateListener { a ->
         val f = a.animatedFraction
-        alpha = (f * 1.6f).coerceAtMost(1f)
+        alpha = fromAlpha + (1f - fromAlpha) * (f * 1.6f).coerceAtMost(1f)
         onFrame?.invoke(f)
     }
     return target
@@ -542,11 +548,12 @@ fun View.collapseHeight() {
         alpha = 1f
         return
     }
+    val fromAlpha = alpha
     animateHeight(height, 0, 200, EASE_EXIT) {
         visibility = View.GONE
         layoutParams = layoutParams.apply { height = ViewGroup.LayoutParams.WRAP_CONTENT }
         alpha = 1f
-    }.addUpdateListener { a -> alpha = 1f - a.animatedFraction }
+    }.addUpdateListener { a -> alpha = fromAlpha * (1f - a.animatedFraction) }
 }
 
 private fun View.animateHeight(from: Int, to: Int, ms: Long, easing: TimeInterpolator, onDone: () -> Unit): ValueAnimator {
