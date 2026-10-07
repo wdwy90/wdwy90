@@ -20,7 +20,9 @@ class PlacesParserTest {
           "authorAttributions":[{"displayName":"Ann Lee","uri":"https://maps.google.com/maps/contrib/7"}]},
          {"name":"places/near/photos/c","authorAttributions":[]},
          {"name":""}],
-       "websiteUri":"https://joes.example","googleMapsUri":"https://maps.google.com/?cid=1"}
+       "websiteUri":"https://joes.example","googleMapsUri":"https://maps.google.com/?cid=1",
+       "businessStatus":"OPERATIONAL",
+       "currentOpeningHours":{"openNow":true,"weekdayDescriptions":["Monday: 6:00 AM – 11:00 PM"]}}
     ]}
     """.trimIndent()
 
@@ -48,6 +50,33 @@ class PlacesParserTest {
         assertEquals("https://joes.example", joe.websiteUri)
         assertNull(r[1].rating)
         assertEquals(11.1, joe.distanceMeters, 0.5)
+        assertEquals(true, joe.openNow)
+        assertEquals("OPERATIONAL", joe.businessStatus)
+        assertEquals("Open now", joe.openStatus)
+        assertNull(r[1].openNow)
+        assertNull(r[1].businessStatus)
+        assertNull(r[1].openStatus)
+    }
+
+    @Test fun openStatusNeverGuessed() {
+        fun r(openNow: Boolean?, status: String?) = Restaurant(
+            "x", "X", "", 0.0, 0.0, null, null, emptyList(), null, null, openNow = openNow, businessStatus = status,
+        )
+        assertNull(r(null, null).openStatus)
+        assertNull(r(null, "OPERATIONAL").openStatus)
+        assertEquals("Open now", r(true, "OPERATIONAL").openStatus)
+        assertEquals("Closed now", r(false, null).openStatus)
+        assertEquals("Temporarily closed", r(true, "CLOSED_TEMPORARILY").openStatus)
+        assertEquals("Permanently closed", r(null, "CLOSED_PERMANENTLY").openStatus)
+        val parsed = PlacesParser.parseNearby(
+            """{"places":[{"id":"a","location":{"latitude":1,"longitude":1},
+                 "businessStatus":"CLOSED_TEMPORARILY","currentOpeningHours":{"openNow":null}},
+                {"id":"b","location":{"latitude":1,"longitude":1},"currentOpeningHours":{"openNow":false}}]}""",
+            1.0, 1.0,
+        )
+        assertEquals("Temporarily closed", parsed[0].openStatus)
+        assertNull(parsed[0].openNow)
+        assertEquals("Closed now", parsed[1].openStatus)
     }
 
     @Test fun absoluteUrl() {

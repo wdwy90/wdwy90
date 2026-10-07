@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Looper
 import android.util.LruCache
 import android.view.View
+import android.view.ViewGroup
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.widget.EditText
@@ -106,6 +107,10 @@ class SmallScreensTest {
 
         val screen = launch(RestaurantActivity::class.java)
         checkScreen("Restaurant, items", screen)
+        // Categories start collapsed: open one so the item rows are audited too.
+        sectionHeader(screen, 0).performClick()
+        idle(Duration.ofMillis(500))
+        checkScreen("Restaurant, a category open", screen)
         screen.findViewById<EditText>(R.id.search).setText("zzz")
         idle(Duration.ofMillis(400))
         checkScreen("Restaurant, no items match", screen)
@@ -126,6 +131,26 @@ class SmallScreensTest {
         assertNotNull("photo viewer", viewer?.window)
         check("Photo viewer", viewer.window!!.decorView)
         viewer.dismiss()
+
+        // The longest item and category names in the data (Dairy Queen: 52-character items), opened.
+        showSample(sample().copy(
+            id = "long-names", name = "Dairy Queen Grill & Chill - Springfield Plaza",
+            menuUrl = ChainMenus.get(app).menuUrlFor("Dairy Queen"), prices = ChainPrices.get(app).forPlace("Dairy Queen"),
+        ))
+        val long = launch(RestaurantActivity::class.java)
+        long.findViewById<ViewGroup>(R.id.chips).getChildAt(2).performClick() // Chicken Baskets
+        idle(Duration.ofMillis(500))
+        checkScreen("Restaurant, long names open", long)
+
+        // The longest single word in any category name ("ButterBurgers", Culver's), opened.
+        showSample(sample().copy(
+            id = "long-words", name = "Culver's",
+            menuUrl = ChainMenus.get(app).menuUrlFor("Culver's"), prices = ChainPrices.get(app).forPlace("Culver's"),
+        ))
+        val words = launch(RestaurantActivity::class.java)
+        sectionHeader(words, 0).performClick() // ButterBurgers
+        idle(Duration.ofMillis(500))
+        checkScreen("Restaurant, long words open", words)
 
         showSample(sample().copy(id = "other-place", name = "Joe's Diner and Drive-In", menuUrl = null, prices = null))
         val other = launch(RestaurantActivity::class.java)
@@ -191,6 +216,9 @@ class SmallScreensTest {
         idle(Duration.ofMillis(300))
         return a
     }
+
+    private fun sectionHeader(a: Activity, n: Int): View =
+        (a.findViewById<ViewGroup>(R.id.items_list).getChildAt(n) as ViewGroup).getChildAt(0)
 
     private fun idle(d: Duration? = null) {
         val looper = shadowOf(Looper.getMainLooper())

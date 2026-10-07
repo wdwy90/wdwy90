@@ -10,7 +10,7 @@ version.
 | Where | What it shows |
 |---|---|
 | Car screen (Android Auto) | Restaurant card: name, rating and category, address, at most one Google photo with its credit. **Items** (known chains) opens the item names by menu section. The lists take the card's place and go at most three deep, as Android Auto allows; Back on the first list brings the card back. **Menu on phone** works only while parked. **Not here?** picks a neighbor (strip malls). No food-photo grid. |
-| Phone | **Items** tab: item names for known chains (no prices), with a search box, the chain's disclaimer and source. **Menu** tab: the chain's official menu page shown inside the app (links to other sites open in the browser), plus Maps, website and search buttons. **Photos** tab: up to 4 Google photos, each with the photographer's name. **Not here?** next to Navigate picks another place Google found nearby. |
+| Phone | Header: photo, name, rating and category, open or closed (when Google says), distance from where the car stopped, address. **Items** tab: item names for known chains (no prices) under collapsed category rows, one open at a time; a search opens every matching category. **Menu** tab: the chain's official menu page shown inside the app (links to other sites open in the browser), plus Maps, website and search buttons. **Photos** tab: up to 4 Google photos, each with the photographer's name. **Not here?** next to Navigate picks another place Google found nearby. |
 
 ## Auto-detect drive-thrus (Settings on the phone, default off)
 
@@ -75,7 +75,7 @@ sideloaded APK will not appear in the car.
 
 - **Release bundle for Play:** GitHub → **Actions → Build Pull Up Menu release bundle → Run workflow**
   (also runs on every push to this branch). Download the `pullup-menu-play-bundle` artifact, a zip
-  holding `PullUpMenu-<versionName>-<versionCode>.aab` (`PullUpMenu-1.8.1-…` for this version). It
+  holding `PullUpMenu-<versionName>-<versionCode>.aab` (`PullUpMenu-1.9-…` for this version). It
   needs the repository secrets `UPLOAD_KEY_ZIP_BASE64` (base64 of the upload-key backup zip: keystore
   + `keystore.properties`) and `PLACES_API_KEY`; without the key zip it skips. versionCode is the run
   number + 3, so every upload is higher than the last. The job fails if the bundle would be signed

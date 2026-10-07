@@ -1,6 +1,6 @@
 package com.wdwy90.pullupmenu.phone
 
-import android.animation.LayoutTransition
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Paint
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -16,6 +17,8 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
+import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -41,6 +44,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -84,10 +88,18 @@ class RestaurantActivity : ThemedActivity() {
     // Items tab
     private var groups: List<ItemGroup> = emptyList()
     private var query = ""
-    private val collapsed = HashSet<String>()
-    private val sections = LinkedHashMap<String, View>()
+    /** The one category open while not searching (accordion); null when all are collapsed, the default. */
+    private var expanded: String? = null
+    private val sections = LinkedHashMap<String, Section>()
     private val chipFor = HashMap<String, TextView>()
     private var currentSection: String? = null
+    private var scrollAnimator: ValueAnimator? = null
+    /** The query the list was last built for; null before a restaurant's first list. */
+    private var renderedQuery: String? = null
+    private var pinned = false
+
+    /** A category card on the Items tab: its header row, the item list under it and the chevron. */
+    private class Section(val card: View, val header: View, val body: View, val chevron: ImageView, val badge: TextView)
     private var searchJob: Job? = null
     private var settingSearchText = false
 
@@ -192,10 +204,6 @@ class RestaurantActivity : ThemedActivity() {
         menuPanel.accessibilityTraversalAfter = R.id.sticky
 
         setUpSearch()
-        if (motionEnabled()) {
-            itemsContent.layoutTransition = LayoutTransition().apply { enableOnlyChanging() }
-            itemsList.layoutTransition = LayoutTransition().apply { enableOnlyChanging() }
-        }
         showEmpty()
 
         lifecycleScope.launch {
@@ -343,6 +351,27 @@ class RestaurantActivity : ThemedActivity() {
         val view = findViewById<TextView>(R.id.meta)
         view.text = meta
         view.contentDescription = spoken.joinToString(", ")
+
+        // Open or closed only when Google said so, and how far the car was from the door when it was found.
+        val status = SpannableStringBuilder()
+        val statusSpoken = ArrayList<String>()
+        r.openStatus?.let { label ->
+            val color = getColor(if (label == "Open now") R.color.success else R.color.warning)
+            status.append(label, ForegroundColorSpan(color), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            status.setSpan(StyleSpan(Typeface.BOLD), 0, label.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            statusSpoken += label
+        }
+        if (!r.isDemo && r.distanceMeters > 0) {
+            val feet = (r.distanceMeters * 3.281).roundToInt()
+            if (status.isNotEmpty()) status.append("  ·  ")
+            status.append("$feet ft")
+            statusSpoken += "$feet feet away"
+        }
+        findViewById<TextView>(R.id.status).apply {
+            text = status
+            contentDescription = statusSpoken.joinToString(", ")
+            isGone = status.isEmpty()
+        }
     }
 
     private fun showHero(r: Restaurant) {
@@ -350,18 +379,23 @@ class RestaurantActivity : ThemedActivity() {
         val hero = findViewById<View>(R.id.hero)
         val image = findViewById<ImageView>(R.id.hero_image)
         val placeholder = findViewById<View>(R.id.hero_placeholder)
+        val scrim = findViewById<View>(R.id.hero_scrim)
         val credit = findViewById<TextView>(R.id.hero_credit)
         hero.alpha = 1f
         image.setImageDrawable(null)
         image.visibility = View.INVISIBLE
         placeholder.visibility = View.VISIBLE
+        scrim.visibility = View.GONE
         credit.visibility = View.GONE
         hero.setOnClickListener(null)
         hero.isClickable = false
         hero.contentDescription = null
         hero.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
 
-        val ph = r.photos.firstOrNull() ?: return
+        // No photo from Google: no empty frame either; the name row carries the identity.
+        val ph = r.photos.firstOrNull()
+        hero.isGone = ph == null
+        if (ph == null) return
         heroJob = lifecycleScope.launch {
             // Photo loads are billed: one found while this screen is in the background waits until it's seen.
             lifecycle.withStarted {}
@@ -377,6 +411,7 @@ class RestaurantActivity : ThemedActivity() {
             image.fadeIn()
             placeholder.visibility = View.GONE
             setCredit(credit, ph)
+            scrim.visibility = View.VISIBLE
             credit.visibility = View.VISIBLE
             hero.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
             hero.contentDescription = "Photo of ${r.name}. Opens full screen."
@@ -429,16 +464,26 @@ class RestaurantActivity : ThemedActivity() {
     private fun updateSticky() {
         if (tab == Tab.MENU || mainScroll.visibility != View.VISIBLE) {
             sticky.translationY = 0f
-            sticky.elevation = dp(3).toFloat()
+            setPinned(true)
             setTopTitleAlpha(if (shown != null) 1f else 0f)
             return
         }
         val y = mainScroll.scrollY
         val offset = (stickySpacer.top - y).coerceAtLeast(0)
         sticky.translationY = offset.toFloat()
-        sticky.elevation = if (offset == 0 && y > 0) dp(3).toFloat() else 0f
+        setPinned(offset == 0 && y > 0)
         val nameBottom = nameView.topIn(mainContent) + nameView.height
         setTopTitleAlpha(((y - nameBottom + dp(16)) / dp(24).toFloat()).coerceIn(0f, 1f))
+    }
+
+    /** A pinned bar gets a shadow (light theme) and a hairline (both themes) along its bottom edge. */
+    private fun setPinned(pinned: Boolean) {
+        if (pinned == this.pinned) return
+        this.pinned = pinned
+        val hairline = findViewById<View>(R.id.sticky_hairline)
+        val ms = if (motionEnabled()) 150L else 0L
+        hairline.animate().alpha(if (pinned) 1f else 0f).setDuration(ms).start()
+        sticky.animate().z(if (pinned) dp(3).toFloat() else 0f).setDuration(ms).start()
     }
 
     /**
@@ -469,7 +514,14 @@ class RestaurantActivity : ThemedActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
             override fun afterTextChanged(s: Editable?) {
-                clear.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
+                val show = !s.isNullOrEmpty()
+                if (show && clear.visibility != View.VISIBLE && motionEnabled()) {
+                    clear.alpha = 0f
+                    clear.scaleX = 0.8f
+                    clear.scaleY = 0.8f
+                    clear.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(120).setInterpolator(EASE).start()
+                }
+                clear.visibility = if (show) View.VISIBLE else View.GONE
                 if (settingSearchText) return
                 searchJob?.cancel()
                 searchJob = lifecycleScope.launch {
@@ -483,6 +535,12 @@ class RestaurantActivity : ThemedActivity() {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) hideKeyboard()
             false
         }
+        // The magnifier takes the accent with the field's outline while it has focus.
+        val icon = findViewById<ImageView>(R.id.search_icon)
+        search.setOnFocusChangeListener { _, focused ->
+            icon.imageTintList = ColorStateList.valueOf(getColor(if (focused) R.color.accent_text else R.color.text_secondary))
+            if (focused) revealSearchBox()
+        }
         clear.setOnClickListener {
             search.text.clear()
             search.requestFocus()
@@ -495,8 +553,10 @@ class RestaurantActivity : ThemedActivity() {
         search.text.clear()
         settingSearchText = false
         query = ""
-        collapsed.clear()
+        expanded = null // a new restaurant starts with every category collapsed
+        renderedQuery = null
         currentSection = null
+        scrollAnimator?.cancel()
 
         val p = r.prices
         val searchBox = findViewById<View>(R.id.search_box)
@@ -522,19 +582,17 @@ class RestaurantActivity : ThemedActivity() {
     }
 
     private fun renderItems() {
-        val transition = itemsList.layoutTransition
-        itemsList.layoutTransition = null // rebuilding: no per-card animations
         itemsList.removeAllViews()
         sections.clear()
 
         if (groups.isEmpty()) {
             itemsList.addView(noItemsCard())
             renderChips(emptyList())
-            itemsList.layoutTransition = transition
             return
         }
         val searching = !ItemSearch.isBlank(query)
         val visible = ItemSearch.filter(groups, query)
+        if (!searching && groups.size == 1) expanded = groups[0].title
         val total = groups.sumOf { it.items.size }
         val count = visible.sumOf { it.items.size }
         searchSummary.text = when {
@@ -543,100 +601,183 @@ class RestaurantActivity : ThemedActivity() {
             else -> "$count of $total items match"
         }
         for (g in visible) {
-            // Search results are always open; otherwise sections remember being collapsed.
-            val card = sectionCard(g, expanded = searching || g.title !in collapsed, searching)
-            itemsList.addView(card)
-            sections[g.title] = card
+            // Search results are always open, so the matches show; otherwise only the one open category.
+            val section = sectionCard(g, open = searching || g.title == expanded)
+            itemsList.addView(section.card)
+            sections[g.title] = section
         }
         renderChips(visible)
-        itemsList.layoutTransition = transition
+        // A new result set settles in rather than snapping (never on a restaurant's first list).
+        if (renderedQuery != null && renderedQuery != query && motionEnabled()) {
+            itemsList.alpha = 0.6f
+            itemsList.animate().alpha(1f).setDuration(150).setInterpolator(EASE_ENTER).start()
+        }
+        renderedQuery = query
     }
 
-    private fun sectionCard(g: ItemGroup, expanded: Boolean, searching: Boolean): View {
+    /**
+     * A category card: a row with the category's name and item count that opens the items under it.
+     * One category is open at a time (tapping another closes the first), so a long menu stays a
+     * short list of categories.
+     */
+    private fun sectionCard(g: ItemGroup, open: Boolean): Section {
         val card = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setBackgroundResource(R.drawable.bg_card)
+            setBackgroundResource(R.drawable.bg_section)
             elevation = dp(1).toFloat()
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
-            ).apply { topMargin = dp(12) }
-            // The list fades in and out; the card and the cards below it resize smoothly.
-            if (motionEnabled()) layoutTransition = LayoutTransition().apply {
-                enableTransitionType(LayoutTransition.CHANGING)
-                setDuration(200)
-            }
+            ).apply { topMargin = dp(8) }
         }
         val header = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = android.view.Gravity.CENTER_VERTICAL
             minimumHeight = dp(56)
-            setPadding(dp(20), dp(8), dp(12), dp(8))
+            setPadding(dp(12), dp(6), dp(8), dp(6))
             setBackgroundResource(R.drawable.bg_row)
             isClickable = true
             isFocusable = true
         }
-        header.addView(styled(R.style.Text_Title, g.title).apply {
+        // The icon is left out at the largest text sizes: the row's width then goes to the words,
+        // so a long category name wraps between words instead of inside one.
+        if (resources.configuration.fontScale < 1.5f) header.addView(ImageView(this).apply {
+            setImageResource(CategoryIcons.iconFor(g.title))
+            imageTintList = getColorStateList(R.color.cat_icon_tint)
+            setBackgroundResource(R.drawable.bg_icon_tile)
+            scaleType = ImageView.ScaleType.CENTER
+            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+            layoutParams = LinearLayout.LayoutParams(dp(36), dp(36)).apply { marginEnd = dp(12) }
+        })
+        // Name and count side by side; the count drops under the name when the name needs the width.
+        val titleRow = FlowRow(this).apply {
             layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+        }
+        titleRow.addView(styled(R.style.Text_Title, g.title).apply {
+            textSize = 16f
+            setPadding(0, dp(2), 0, dp(2))
         })
-        header.addView(styled(R.style.Text_Label, g.items.size.toString()).apply {
-            setBackgroundResource(R.drawable.bg_count)
-            setPadding(dp(10), dp(2), dp(10), dp(2))
-        })
+        val badge = styled(R.style.Text_Label, g.items.size.toString()).apply {
+            setPadding(dp(10), dp(3), dp(10), dp(3))
+        }
+        titleRow.addView(badge)
+        header.addView(titleRow)
         val chevron = ImageView(this).apply {
             setImageResource(R.drawable.ic_chevron_down)
-            imageTintList = ColorStateList.valueOf(getColor(R.color.text_secondary))
             scaleType = ImageView.ScaleType.CENTER
-            rotation = if (expanded) 180f else 0f
-            layoutParams = LinearLayout.LayoutParams(dp(40), dp(40)).apply { marginStart = dp(4) }
+            rotation = if (open) 180f else 0f
+            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+            layoutParams = LinearLayout.LayoutParams(dp(40), dp(40)).apply { marginStart = dp(2) }
         }
         header.addView(chevron)
+        markOpen(badge, chevron, open)
 
-        val body = LinearLayout(this).apply {
+        // The rows keep their size while the body animates open or closed (RevealLayout clips them).
+        val rows = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            visibility = if (expanded) View.VISIBLE else View.GONE
-            setPadding(0, 0, 0, dp(8))
+            layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            setPadding(0, 0, 0, dp(6))
         }
         g.items.forEachIndexed { i, item ->
-            if (i > 0) body.addView(View(this).apply {
+            if (i > 0) rows.addView(View(this).apply {
                 setBackgroundColor(getColor(R.color.divider))
                 layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(1) / 2 + 1)
-                    .apply { marginStart = dp(20); marginEnd = dp(20) }
+                    .apply { marginStart = dp(16); marginEnd = dp(16) }
             })
-            body.addView(itemRow(item))
+            rows.addView(itemRow(item))
+        }
+        val body = RevealLayout(this).apply {
+            visibility = if (open) View.VISIBLE else View.GONE
+            layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            addView(rows)
         }
         card.addView(header)
         card.addView(body)
 
-        val label = "${g.title}, ${g.items.size} ${if (g.items.size == 1) "item" else "items"}"
-        header.contentDescription = label
+        header.contentDescription = "${g.title}, ${g.items.size} ${if (g.items.size == 1) "item" else "items"}"
         ViewCompat.setAccessibilityHeading(header, true)
-        ViewCompat.setStateDescription(header, if (expanded) "Expanded" else "Collapsed")
+        describeOpen(header, open)
         header.setOnClickListener {
-            val open = body.visibility != View.VISIBLE
-            body.visibility = if (open) View.VISIBLE else View.GONE
-            if (!searching) {
-                if (open) collapsed.remove(g.title) else collapsed.add(g.title)
-            }
-            ViewCompat.setStateDescription(header, if (open) "Expanded" else "Collapsed")
-            chevron.animate().rotation(if (open) 180f else 0f)
-                .setDuration(if (motionEnabled()) 200 else 0).setInterpolator(EASE).start()
+            it.performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK)
+            toggle(g.title, reveal = true)
         }
-        return card
+        return Section(card, header, body, chevron, badge)
+    }
+
+    /**
+     * What a screen reader says about a category row: its state, and what a double tap will do.
+     * The row's activated state also reaches its icon tile, which takes the accent while open.
+     */
+    private fun describeOpen(header: View, open: Boolean) {
+        header.isActivated = open
+        ViewCompat.setStateDescription(header, if (open) "Expanded" else "Collapsed")
+        ViewCompat.replaceAccessibilityAction(header, AccessibilityActionCompat.ACTION_CLICK, if (open) "Collapse" else "Expand", null)
+    }
+
+    /** The open category's count and chevron take the accent; the others stay quiet. */
+    private fun markOpen(badge: TextView, chevron: ImageView, open: Boolean) {
+        badge.setBackgroundResource(if (open) R.drawable.bg_count_active else R.drawable.bg_count)
+        badge.setTextColor(getColor(if (open) R.color.accent_text else R.color.text_secondary))
+        chevron.imageTintList = ColorStateList.valueOf(getColor(if (open) R.color.accent_text else R.color.text_secondary))
+    }
+
+    /**
+     * Opens or closes a category. Outside a search, opening one closes the one that was open and,
+     * with [reveal], scrolls so the opened category shows under the tab bar. During a search every
+     * matching category starts open and tapping only folds that one.
+     */
+    private fun toggle(title: String, reveal: Boolean) {
+        val s = sections[title] ?: return
+        val searching = !ItemSearch.isBlank(query)
+        val open = s.body.visibility != View.VISIBLE
+        if (!searching) {
+            if (open) {
+                expanded?.let { other -> if (other != title) sections[other]?.let { setOpen(it, false) } }
+                expanded = title
+            } else if (expanded == title) {
+                expanded = null
+            }
+        }
+        val bodyHeight = setOpen(s, open)
+        if (open && reveal) {
+            // Scroll just enough: a header under the bar comes down to it, a long category scrolls
+            // until its items fit (never past its header), a short one near the top stays put.
+            val viewport = mainScroll.height
+            val cardHeight = s.header.height + bodyHeight + dp(8)
+            scrollToSection(s) { top, from ->
+                val alignTop = top - sticky.height - dp(8)
+                if (alignTop < from) alignTop else minOf(maxOf(from, top + cardHeight - viewport), alignTop)
+            }
+        }
+    }
+
+    /** Animates the body open or closed and returns the body's full height. */
+    private fun setOpen(s: Section, open: Boolean): Int {
+        describeOpen(s.header, open)
+        markOpen(s.badge, s.chevron, open)
+        // Opening eases out over 300 ms with the body; closing is quicker (200 ms), like Material's
+        // emphasized enter and exit.
+        val ms = if (!motionEnabled()) 0L else if (open) 300L else 200L
+        val easing = if (open) EASE_ENTER else EASE_EXIT
+        s.chevron.animate().rotation(if (open) 180f else 0f).setDuration(ms).setInterpolator(easing).start()
+        s.card.animate().translationZ(if (open) dp(1).toFloat() else 0f).setDuration(ms).setInterpolator(easing).start()
+        return if (open) s.body.expandHeight() else { s.body.collapseHeight(); 0 }
     }
 
     private fun itemRow(item: PriceItem): View {
         val row = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            minimumHeight = dp(48)
+            minimumHeight = dp(44)
             gravity = android.view.Gravity.CENTER_VERTICAL
-            setPadding(dp(20), dp(12), dp(20), dp(12))
-            // One screen-reader stop per item, name and note together.
-            isFocusable = true
+            setPadding(dp(16), dp(10), dp(16), dp(10))
+            // One screen-reader stop per item, name and note together; not a keyboard stop, so a
+            // D-pad walks the categories instead of every row.
+            isFocusable = false
+            ViewCompat.setScreenReaderFocusable(this, true)
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
             contentDescription = listOfNotNull(item.name, item.note).joinToString(". ")
         }
         row.addView(styled(R.style.Text_Body, item.name).apply {
-            textSize = 16f
+            if (!ItemSearch.isBlank(query)) text = highlighted(item.name)
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
         })
         // Seasonal, limited-time or location-specific items are flagged in the data.
@@ -649,6 +790,20 @@ class RestaurantActivity : ThemedActivity() {
             })
         }
         return row
+    }
+
+    /** The item's name with the search words it contains in bold (words matched through its note or category get no mark). */
+    private fun highlighted(name: String): CharSequence {
+        val out = SpannableStringBuilder(name)
+        val lower = name.lowercase()
+        for (word in query.lowercase().split(' ').filter { it.isNotBlank() }) {
+            var at = lower.indexOf(word)
+            while (at >= 0) {
+                out.setSpan(StyleSpan(Typeface.BOLD), at, at + word.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                at = lower.indexOf(word, at + word.length)
+            }
+        }
+        return out
     }
 
     private fun noItemsCard(): View {
@@ -690,6 +845,7 @@ class RestaurantActivity : ThemedActivity() {
                     contentDescription = "Jump to ${g.title}"
                     isClickable = true
                     isFocusable = true
+                    readAsButton()
                     setOnClickListener { jumpTo(g.title) }
                 }
                 chips.addView(chip)
@@ -701,26 +857,73 @@ class RestaurantActivity : ThemedActivity() {
         mainScroll.post { trackSection() }
     }
 
-    /** Scrolls a section to just under the pinned tab bar, opening it if it was collapsed. */
+    /** Opens a category (closing the open one) and scrolls it to just under the pinned tab bar. */
     private fun jumpTo(title: String) {
-        val card = sections[title] ?: return
-        val body = (card as ViewGroup).getChildAt(1)
-        if (body.visibility != View.VISIBLE) card.getChildAt(0).performClick()
+        val s = sections[title] ?: return
         hideKeyboard()
+        if (s.body.visibility != View.VISIBLE) toggle(title, reveal = false)
+        scrollToSection(s) { top, _ -> top - sticky.height - dp(8) }
+        markChip(title)
+    }
+
+    /** Brings the search field out from under the pinned tab bar when it takes focus there. */
+    private fun revealSearchBox() {
+        val box = findViewById<View>(R.id.search_box)
         mainScroll.post {
-            val target = (card.topIn(mainContent) - sticky.height - dp(4)).coerceAtLeast(0)
-            if (motionEnabled()) mainScroll.smoothScrollTo(0, target) else mainScroll.scrollTo(0, target)
-            markChip(title)
+            val top = box.topIn(mainContent)
+            val covered = top < mainScroll.scrollY + sticky.height
+            val wanted = (top - sticky.height - dp(8)).coerceAtLeast(0)
+            if (!covered) return@post
+            scrollAnimator?.cancel()
+            if (!motionEnabled()) { mainScroll.scrollTo(0, wanted); return@post }
+            val from = mainScroll.scrollY
+            scrollAnimator = ValueAnimator.ofInt(from, wanted).apply {
+                duration = 200
+                interpolator = EASE
+                addUpdateListener { a -> mainScroll.scrollTo(0, a.animatedValue as Int) }
+                start()
+            }
         }
     }
 
-    /** Highlights the chip of the section at the top of the screen. */
+    /**
+     * Scrolls to the section: [target] maps the card's top (in content coordinates) and the scroll
+     * position the scroll started from to the wanted position. It is re-read every frame, because a
+     * category closing above the section moves the section up while the scroll is under way.
+     */
+    private fun scrollToSection(s: Section, target: (top: Int, from: Int) -> Int) {
+        scrollAnimator?.cancel()
+        val from = mainScroll.scrollY
+        fun wanted() = target(s.card.topIn(mainContent), from).coerceAtLeast(0)
+        if (!motionEnabled()) {
+            mainScroll.post { mainScroll.scrollTo(0, wanted()) }
+            return
+        }
+        scrollAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
+            duration = 300 // lands with the category's expand
+            interpolator = EASE
+            addUpdateListener { a -> mainScroll.scrollTo(0, (from + (wanted() - from) * a.animatedFraction).roundToInt()) }
+            start()
+        }
+    }
+
+    /** Highlights the chip of the open category while it is on screen, else of the one at the top. */
     private fun trackSection() {
         if (tab != Tab.ITEMS || sections.isEmpty() || chipFor.isEmpty()) return
-        val line = mainScroll.scrollY + sticky.height + dp(24)
+        val top = mainScroll.scrollY + sticky.height
+        val bottom = mainScroll.scrollY + mainScroll.height
+        val open = expanded?.let { title -> sections[title]?.let { title to it } }
+        if (open != null && ItemSearch.isBlank(query)) {
+            val cardTop = open.second.card.topIn(mainContent)
+            if (cardTop < bottom && cardTop + open.second.card.height > top) {
+                markChip(open.first)
+                return
+            }
+        }
+        val line = top + dp(24)
         var current = sections.keys.first()
-        for ((title, card) in sections) {
-            if (card.topIn(mainContent) <= line) current = title else break
+        for ((title, s) in sections) {
+            if (s.card.topIn(mainContent) <= line) current = title else break
         }
         markChip(current)
     }
@@ -1052,13 +1255,6 @@ class RestaurantActivity : ThemedActivity() {
         } catch (e: ActivityNotFoundException) {
             Toast.makeText(this, "No app can open this link.", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    private fun LayoutTransition.enableOnlyChanging() {
-        enableTransitionType(LayoutTransition.CHANGING)
-        disableTransitionType(LayoutTransition.CHANGE_APPEARING)
-        disableTransitionType(LayoutTransition.CHANGE_DISAPPEARING)
-        setDuration(200)
     }
 
     private companion object {

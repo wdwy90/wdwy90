@@ -1,6 +1,7 @@
 package com.wdwy90.pullupmenu.phone
 
 import android.animation.ObjectAnimator
+import android.animation.TimeInterpolator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
@@ -13,6 +14,9 @@ import android.view.animation.PathInterpolator
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.AccessibilityDelegateCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.wdwy90.pullupmenu.R
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -368,8 +372,24 @@ class ScrollForwardingLayout @JvmOverloads constructor(
     }
 }
 
-/** Material "emphasized" easing. */
+/** Material "emphasized" easing: movement, slides and scrolls. */
 val EASE: PathInterpolator get() = PathInterpolator(0.2f, 0f, 0f, 1f)
+
+/** Material "emphasized decelerate": things arriving or opening. */
+val EASE_ENTER: PathInterpolator get() = PathInterpolator(0.05f, 0.7f, 0.1f, 1f)
+
+/** Material "emphasized accelerate": things leaving or closing. */
+val EASE_EXIT: PathInterpolator get() = PathInterpolator(0.3f, 0f, 0.8f, 0.15f)
+
+/** Tells screen readers this view acts as a button (chips are plain text views). */
+fun View.readAsButton() {
+    ViewCompat.setAccessibilityDelegate(this, object : AccessibilityDelegateCompat() {
+        override fun onInitializeAccessibilityNodeInfo(host: View, info: AccessibilityNodeInfoCompat) {
+            super.onInitializeAccessibilityNodeInfo(host, info)
+            info.className = android.widget.Button::class.java.name
+        }
+    })
+}
 
 /**
  * The segmented Items / Menu / Photos bar ([R.layout.view_tabs]). The indicator slides behind the
@@ -446,4 +466,111 @@ fun View.topIn(ancestor: View): Int {
         v = v.parent as? View ?: break
     }
     return y
+}
+
+/**
+ * Holds one child at its natural height whatever height this view is given, so a view animating
+ * open or closed (see [expandHeight]) uncovers its rows instead of squeezing them: the child is
+ * measured without a height limit and anything past this view's edge is clipped.
+ */
+class RevealLayout(context: Context) : FrameLayout(context) {
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val child = getChildAt(0)
+        var height = 0
+        if (child != null) {
+            child.measure(
+                ViewGroup.getChildMeasureSpec(widthMeasureSpec, paddingLeft + paddingRight, child.layoutParams.width),
+                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
+            )
+            height = child.measuredHeight
+        }
+        val width = resolveSize(MeasureSpec.getSize(widthMeasureSpec), widthMeasureSpec)
+        setMeasuredDimension(
+            width,
+            if (MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY) MeasureSpec.getSize(heightMeasureSpec)
+            else height + paddingTop + paddingBottom,
+        )
+    }
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        val child = getChildAt(0) ?: return
+        child.layout(paddingLeft, paddingTop, paddingLeft + child.measuredWidth, paddingTop + child.measuredHeight)
+    }
+}
+
+/**
+ * Opens a collapsed view: grows it from 0 to its natural height while fading it in (instantly when
+ * animations are off). [onFrame] gets the progress (0..1) each frame, for a scroll that follows the
+ * growing view. Returns the height the view will end up with, for the caller's scroll maths.
+ */
+fun View.expandHeight(onFrame: ((Float) -> Unit)? = null): Int {
+    cancelHeightAnimation()
+    val parent = parent as View
+    val width = parent.width - parent.paddingLeft - parent.paddingRight
+    measure(
+        View.MeasureSpec.makeMeasureSpec(width.coerceAtLeast(0), if (width > 0) View.MeasureSpec.EXACTLY else View.MeasureSpec.UNSPECIFIED),
+        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+    )
+    val target = measuredHeight
+    visibility = View.VISIBLE
+    if (!motionEnabled()) {
+        layoutParams = layoutParams.apply { height = ViewGroup.LayoutParams.WRAP_CONTENT }
+        alpha = 1f
+        onFrame?.invoke(1f)
+        return target
+    }
+    layoutParams = layoutParams.apply { height = 0 }
+    alpha = 0f
+    animateHeight(0, target, 300, EASE_ENTER) {
+        layoutParams = layoutParams.apply { height = ViewGroup.LayoutParams.WRAP_CONTENT }
+        alpha = 1f
+    }.addUpdateListener { a ->
+        val f = a.animatedFraction
+        alpha = (f * 1.6f).coerceAtMost(1f)
+        onFrame?.invoke(f)
+    }
+    return target
+}
+
+/** Closes an open view: shrinks it to 0 while fading out, then hides it (instantly when animations are off). */
+fun View.collapseHeight() {
+    cancelHeightAnimation()
+    if (visibility == View.GONE) return
+    if (!motionEnabled() || height == 0) {
+        visibility = View.GONE
+        layoutParams = layoutParams.apply { height = ViewGroup.LayoutParams.WRAP_CONTENT }
+        alpha = 1f
+        return
+    }
+    animateHeight(height, 0, 200, EASE_EXIT) {
+        visibility = View.GONE
+        layoutParams = layoutParams.apply { height = ViewGroup.LayoutParams.WRAP_CONTENT }
+        alpha = 1f
+    }.addUpdateListener { a -> alpha = 1f - a.animatedFraction }
+}
+
+private fun View.animateHeight(from: Int, to: Int, ms: Long, easing: TimeInterpolator, onDone: () -> Unit): ValueAnimator {
+    val animator = ValueAnimator.ofInt(from, to).apply {
+        duration = ms
+        interpolator = easing
+        addUpdateListener { a ->
+            layoutParams = layoutParams.apply { height = a.animatedValue as Int }
+        }
+        addListener(object : android.animation.AnimatorListenerAdapter() {
+            private var cancelled = false
+            override fun onAnimationCancel(animation: android.animation.Animator) { cancelled = true }
+            override fun onAnimationEnd(animation: android.animation.Animator) {
+                setTag(R.id.tag_height_animator, null)
+                if (!cancelled) onDone()
+            }
+        })
+    }
+    setTag(R.id.tag_height_animator, animator)
+    animator.start()
+    return animator
+}
+
+private fun View.cancelHeightAnimation() {
+    (getTag(R.id.tag_height_animator) as? ValueAnimator)?.cancel()
+    setTag(R.id.tag_height_animator, null)
 }

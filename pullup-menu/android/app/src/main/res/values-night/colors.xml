@@ -22,4 +22,6 @@
     <color name="tab_indicator">#30323A</color>
     <!-- Rating star -->
     <color name="star">#FBBF24</color>
+    <!-- Text over a photo (on its scrim). -->
+    <color name="on_image">#FFFFFF</color>
 </resources>
