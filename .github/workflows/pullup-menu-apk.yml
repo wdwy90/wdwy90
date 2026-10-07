@@ -44,6 +44,21 @@ jobs:
           for f in app/build/test-results/testDebugUnitTest/*.xml; do
             [ -f "$f" ] && grep -A4 "<failure" "$f" | head -20
           done | annotate "Unit test failures" || true
+      - name: Summarize lint warnings
+        if: always()
+        run: |
+          [ -f app/build/reports/lint-results-debug.xml ] || exit 0
+          msg=$(python3 -c '
+          import sys, collections, xml.etree.ElementTree as ET
+          seen = collections.OrderedDict()
+          for i in ET.parse(sys.argv[1]).getroot().iter("issue"):
+              loc = i.find("location")
+              where = (loc.get("file", "").split("/app/")[-1] + ":" + loc.get("line", "?")) if loc is not None else ""
+              seen.setdefault((i.get("severity"), i.get("id")), []).append(where + " " + (i.get("message") or "")[:140])
+          for (sev, iid), items in seen.items():
+              print(f"{sev} {iid} x{len(items)}: " + " | ".join(items[:3]))
+          ' app/build/reports/lint-results-debug.xml | head -c 20000 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+          [ -n "$msg" ] && echo "::notice title=Lint summary::$msg" || true
       - uses: actions/upload-artifact@v5
         with:
           name: pullup-menu-apk

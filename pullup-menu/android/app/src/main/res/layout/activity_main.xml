@@ -44,10 +44,12 @@
         <!-- Detection status pill -->
         <LinearLayout
             android:id="@+id/status_pill"
-            android:layout_width="wrap_content" android:layout_height="32dp"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:minHeight="32dp"
             android:layout_marginTop="@dimen/space_2"
             android:orientation="horizontal" android:gravity="center_vertical"
             android:paddingStart="12dp" android:paddingEnd="14dp"
+            android:paddingTop="4dp" android:paddingBottom="4dp"
             android:background="@drawable/bg_pill_neutral">
             <View
                 android:id="@+id/pill_dot"

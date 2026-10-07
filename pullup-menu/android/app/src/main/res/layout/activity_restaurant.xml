@@ -164,7 +164,7 @@
                 <!-- Keeps room for the tab bar, which floats above this scroll view (see updateSticky). -->
                 <View
                     android:id="@+id/sticky_spacer"
-                    android:layout_width="match_parent" android:layout_height="0dp"
+                    android:layout_width="match_parent" android:layout_height="60dp"
                     android:importantForAccessibility="no" />
 
                 <!-- Items tab -->
