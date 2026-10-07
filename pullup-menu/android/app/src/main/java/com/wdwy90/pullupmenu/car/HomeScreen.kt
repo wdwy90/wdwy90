@@ -28,14 +28,31 @@ import kotlinx.coroutines.launch
  */
 class HomeScreen(ctx: CarContext, private val session: MenuSession) : Screen(ctx) {
 
+    /** What the screen shows now: the host slows an app down that sends updates that change nothing. */
+    private var shown: Pair<CarModel.Home, String?>? = null
+
     init {
-        lifecycleScope.launch { MenuRepository.state.collect { invalidate() } }
+        lifecycleScope.launch {
+            MenuRepository.state.collect { if (shown != null && model() != shown) invalidate() }
+        }
+    }
+
+    fun refresh() {
+        if (model() != shown) invalidate()
+    }
+
+    private fun model(): Pair<CarModel.Home, String?> {
+        val state = MenuRepository.state.value
+        val home = CarModel.home(session.permissionMissing, Prefs.autoDetectFlow(carContext).value, lookup(state))
+        return home to (state as? State.Found)?.restaurant?.id
     }
 
     @Suppress("DEPRECATION")
     override fun onGetTemplate(): Template {
         val state = MenuRepository.state.value
-        val home = CarModel.home(session.permissionMissing, Prefs.autoDetectFlow(carContext).value, lookup(state))
+        val model = model()
+        shown = model
+        val home = model.first
         val row = Row.Builder().setTitle(home.title).setImage(mark(home.mark), Row.IMAGE_TYPE_ICON)
         home.lines.forEach { row.addText(it) }
 

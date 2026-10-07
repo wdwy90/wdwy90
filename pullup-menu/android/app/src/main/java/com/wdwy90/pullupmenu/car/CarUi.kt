@@ -66,7 +66,14 @@ internal object CarUi {
     ): Action = Action.Builder()
         .setTitle(title)
         .setIcon(icon(ctx, icon))
-        .apply { if (primary && level4(ctx)) setFlags(Action.FLAG_PRIMARY) }
+        .apply {
+            if (primary) {
+                // The accent fill is what makes it read as the main button; the host draws its label
+                // on the dark variant of the accent, or on its own colour if that lacks contrast.
+                setBackgroundColor(CarColor.PRIMARY)
+                if (level4(ctx)) setFlags(Action.FLAG_PRIMARY)
+            }
+        }
         .setOnClickListener(onClick)
         .build()
 

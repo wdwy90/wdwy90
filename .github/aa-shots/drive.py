@@ -56,8 +56,10 @@ def shot(name):
     open(os.path.join(OUT, name + ".png"), "wb").write(png[at:] if at >= 0 else png)
     note(f"shot {name}")
 
-def drive(cmd, arg="", wait=2.5):
-    """Sends a command to the debug-only DebugDriver in the car app."""
+def drive(cmd, arg="", wait=11):
+    """Sends a command to the debug-only DebugDriver in the car app. The templates host delays updates
+    that come faster than about one per 10 s ("too many refreshes in a short span of time"), so each
+    command waits long enough for its screen to be drawn before the next one."""
     sh("shell", "am", "broadcast", "-a", "com.wdwy90.pullupmenu.DRIVE", "-p", "com.wdwy90.pullupmenu",
        "--es", "cmd", cmd, "--es", "arg", "'" + arg.replace("'", "'\\''") + "'")
     note(f"drive {cmd} {arg!r}")
@@ -76,4 +78,4 @@ if __name__ == "__main__":
     elif cmd == "back":
         back()
     elif cmd == "drive":
-        drive(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else "", float(sys.argv[4]) if len(sys.argv) > 4 else 2.5)
+        drive(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else "", float(sys.argv[4]) if len(sys.argv) > 4 else 11)

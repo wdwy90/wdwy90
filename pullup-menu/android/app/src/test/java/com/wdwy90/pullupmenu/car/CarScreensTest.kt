@@ -1,6 +1,9 @@
 package com.wdwy90.pullupmenu.car
 
+import android.os.Looper
 import android.text.Spanned
+import androidx.car.app.CarContext
+import androidx.car.app.HandshakeInfo
 import androidx.car.app.OnDoneCallback
 import androidx.car.app.model.ForegroundCarColorSpan
 import androidx.car.app.model.ListTemplate
@@ -8,6 +11,7 @@ import androidx.car.app.model.PaneTemplate
 import androidx.car.app.model.Row
 import androidx.car.app.model.SearchTemplate
 import androidx.car.app.testing.TestCarContext
+import androidx.car.app.versioning.CarAppApiLevels
 import com.wdwy90.pullupmenu.core.CarMenu
 import com.wdwy90.pullupmenu.core.ChainPrices
 import com.wdwy90.pullupmenu.core.ItemGroup
@@ -27,7 +31,6 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
-import android.os.Looper
 
 /**
  * Builds every car screen's template in every state. The car library checks templates against
@@ -43,6 +46,7 @@ class CarScreensTest {
     @Before
     fun setUp() {
         car = TestCarContext.createCarContext(app)
+        host(CarAppApiLevels.LEVEL_7)
         setState(State.Idle)
     }
 
@@ -134,6 +138,31 @@ class CarScreensTest {
         val rows = t.singleList!!.items.map { it as Row }
         assertEquals(6, rows.size)
         assertEquals("Info from Google Maps", rows.last().title.toString())
+    }
+
+    @Test
+    fun theOldestHostsGetNoPrimaryButtonsOrPhoto() {
+        // API level 1 hosts have no primary flag and no pane image; the screens must still build.
+        host(CarAppApiLevels.LEVEL_1)
+        val bk = place("Burger King")
+        setState(State.Found(bk, emptyList(), System.currentTimeMillis(), auto = true))
+        HomeScreen(car, MenuSession()).onGetTemplate()
+        val card = RestaurantScreen(car, bk).onGetTemplate() as PaneTemplate
+        assertTrue(card.pane.actions.none { it.flags != 0 })
+        assertEquals(6, CarUi.listLimit(car))
+        MenuScreen(car, bk, bk.prices!!).onGetTemplate()
+    }
+
+    /** What the host tells the app when it connects: its car API level (set the way the library's service does). */
+    private fun host(level: Int) {
+        try {
+            CarContext::class.java.getDeclaredMethod("updateHandshakeInfo", HandshakeInfo::class.java)
+                .apply { isAccessible = true }
+                .invoke(car, HandshakeInfo("com.example.host", level))
+        } catch (e: NoSuchMethodException) {
+            CarContext::class.java.getDeclaredField("mCarAppApiLevel").apply { isAccessible = true }.setInt(car, level)
+        }
+        assertEquals(level, car.carAppApiLevel)
     }
 
     /** Builds a menu screen and every screen its rows open, like a driver tapping through all of it. */
