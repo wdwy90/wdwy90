@@ -48,7 +48,10 @@ object CarModel {
             else -> "Auto-detect is off"
         }
         if (permissionMissing) {
-            return Home(title, listOf("Open Pull Up Menu on your phone to allow location.", PHONE_WHEN_PARKED), Mark.PROBLEM, "Check now", false)
+            return Home(
+                title, listOf("Open Pull Up Menu on your phone to allow location.", PHONE_WHEN_PARKED),
+                Mark.PROBLEM, "Check now", showRestaurant = lookup is Lookup.Found,
+            )
         }
         return when (lookup) {
             Lookup.Searching -> Home(title, listOf("Finding restaurant…"), Mark.SEARCHING, "Check now", false)

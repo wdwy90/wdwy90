@@ -114,11 +114,10 @@ class RestaurantScreen(ctx: CarContext, restaurant: Restaurant) : Screen(ctx), S
             pane.addAction(CarUi.action(carContext, "View menu", R.drawable.ic_menu_book, primary = true) { openMenu(prices) })
         }
         pane.addAction(
-            Action.Builder().setTitle("Open on phone")
-                .setIcon(CarUi.icon(carContext, R.drawable.ic_open_in_new))
-                .apply { if (prices == null && CarUi.level4(carContext)) setFlags(Action.FLAG_PRIMARY) }
-                .setOnClickListener(ParkedOnlyOnClickListener.create { openOnPhone() })
-                .build()
+            CarUi.action(
+                carContext, "Open on phone", R.drawable.ic_open_in_new, primary = prices == null,
+                onClick = ParkedOnlyOnClickListener.create { openOnPhone() },
+            )
         )
 
         val template = PaneTemplate.Builder(pane.build())

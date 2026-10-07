@@ -94,7 +94,7 @@ class MenuSession : Session() {
             DriveWatcher.release(DriveWatcher.OWNER_CAR)
             permissionMissing = false
         }
-        home?.invalidate()
+        home?.refresh()
     }
 
     private fun openCard(r: Restaurant) {

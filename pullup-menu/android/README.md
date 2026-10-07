@@ -1,7 +1,8 @@
 # Pull Up Menu (Android + Android Auto)
 
-Get in line at a fast-food drive-thru. The car screen shows a restaurant card (name, rating,
-address, one photo); **Items** lists that chain's menu items by section, names only (no prices).
+Get in line at a fast-food drive-thru. The car screen shows a restaurant card (name, address,
+open or closed, rating, one photo); **View menu** lists that chain's menu categories, then a
+category's item names (no prices).
 The official menu page and photos are on your phone. See `../README.md` for the iPhone/CarPlay
 version.
 
@@ -9,7 +10,7 @@ version.
 
 | Where | What it shows |
 |---|---|
-| Car screen (Android Auto) | Restaurant card: name, rating and category, address, at most one Google photo with its credit. **Items** (known chains) opens the item names by menu section. The lists take the card's place and go at most three deep, as Android Auto allows; Back on the first list brings the card back. **Menu on phone** works only while parked. **Not here?** picks a neighbor (strip malls). No food-photo grid. |
+| Car screen (Android Auto) | Home: whether auto-detect is watching, what the last check found, **Check now**. Restaurant card: name, address, open or closed (only while Google's answer is fresh), distance when other places are close, rating and category with the Google credit, at most one Google photo with its credit, and whether the menu is here. **View menu** (known chains) opens the categories with icons and item counts, then a category's item names; the search icon finds an item by name. The lists take the card's place and go at most three deep, as Android Auto allows; Back on the categories brings the card back. **Open on phone** works only while parked. **Not here?** picks a neighbor (strip malls). Pull Up Menu's orange accent on icons and the main button, in day and night. No food photos. |
 | Phone | Header: photo, name, rating and category, open or closed (when Google says), distance from where the car stopped, address. **Items** tab: item names for known chains (no prices) under collapsed category rows, one open at a time; a search opens every matching category. **Menu** tab: the chain's official menu page shown inside the app (links to other sites open in the browser), plus Maps, website and search buttons. **Photos** tab: up to 4 Google photos, each with the photographer's name. **Not here?** next to Navigate picks another place Google found nearby. |
 
 ## Auto-detect drive-thrus (Settings on the phone, default off)
@@ -75,7 +76,7 @@ sideloaded APK will not appear in the car.
 
 - **Release bundle for Play:** GitHub → **Actions → Build Pull Up Menu release bundle → Run workflow**
   (also runs on every push to this branch). Download the `pullup-menu-play-bundle` artifact, a zip
-  holding `PullUpMenu-<versionName>-<versionCode>.aab` (`PullUpMenu-1.9-…` for this version). It
+  holding `PullUpMenu-<versionName>-<versionCode>.aab` (`PullUpMenu-2.0-…` for this version). It
   needs the repository secrets `UPLOAD_KEY_ZIP_BASE64` (base64 of the upload-key backup zip: keystore
   + `keystore.properties`) and `PLACES_API_KEY`; without the key zip it skips. versionCode is the run
   number + 3, so every upload is higher than the last. The job fails if the bundle would be signed
@@ -105,7 +106,8 @@ sideloaded APK will not appear in the car.
 - `core/PlacesClient.kt`, `core/PlacesParser.kt` – Places API calls/parsing, photo credits (unit tested)
 - `core/AppIdentity.kt` – package name and signing SHA-1 headers for key restriction
 - `core/ChainMenus.kt`, `core/ChainPrices.kt` – official menu links and item lists from `../shared/`
-- `core/ItemGroups.kt` – groups items by menu section and pages them for the car lists (unit tested)
+- `core/ItemGroups.kt` – groups items by menu section (unit tested)
+- `core/CarMenu.kt`, `core/CarModel.kt` – what the car lists and screens show, worked out from plain data (unit tested)
 - `core/VisitCheck.kt` – whether a re-check while stopped still points at the place on screen (unit tested)
 - `core/MenuRepository.kt` – shared state between car screen and phone, demo mode
 - `core/Prefs.kt`, `core/Notifier.kt` – settings, arrival and watching notifications
