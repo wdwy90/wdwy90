@@ -158,7 +158,6 @@
                         android:id="@+id/attribution"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:layout_marginStart="28dp"
-                        android:layout_marginTop="-4dp"
                         android:text="@string/google_maps"
                         android:textSize="12sp" android:fontFamily="sans-serif" android:textStyle="normal"
                         android:textColor="@color/gmp_attribution"
@@ -220,7 +219,8 @@
                         <ImageView
                             android:layout_width="20dp" android:layout_height="20dp"
                             android:src="@drawable/ic_search"
-                            android:tint="@color/text_secondary"
+                            android:tint="@color/search_icon"
+                            android:duplicateParentState="true"
                             android:importantForAccessibility="no" />
                         <EditText
                             android:id="@+id/search"
@@ -393,7 +393,7 @@
             android:layout_width="match_parent" android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@color/bg"
-            android:paddingTop="8dp" android:paddingBottom="4dp">
+            android:paddingTop="4dp" android:paddingBottom="0dp">
             <include
                 android:id="@+id/tabs"
                 layout="@layout/view_tabs"
@@ -413,6 +413,14 @@
                     android:orientation="horizontal"
                     android:paddingStart="@dimen/gutter" android:paddingEnd="12dp" />
             </HorizontalScrollView>
+            <!-- Marks the bar's edge once it is pinned and content scrolls under it (dark has no shadows). -->
+            <View
+                android:id="@+id/sticky_hairline"
+                android:layout_width="match_parent" android:layout_height="1dp"
+                android:layout_marginTop="4dp"
+                android:background="@color/divider"
+                android:alpha="0"
+                android:importantForAccessibility="no" />
         </com.wdwy90.pullupmenu.phone.ScrollForwardingLayout>
 
         <!-- Nothing detected yet (e.g. opened from a stale notification after the app restarted). -->

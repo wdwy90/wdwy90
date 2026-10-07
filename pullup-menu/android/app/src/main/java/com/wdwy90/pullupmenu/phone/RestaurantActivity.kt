@@ -92,9 +92,10 @@ class RestaurantActivity : ThemedActivity() {
     private val chipFor = HashMap<String, TextView>()
     private var currentSection: String? = null
     private var scrollAnimator: ValueAnimator? = null
+    private var pinned = false
 
     /** A category card on the Items tab: its header row, the item list under it and the chevron. */
-    private class Section(val card: View, val header: View, val body: View, val chevron: View)
+    private class Section(val card: View, val header: View, val body: View, val chevron: ImageView, val badge: TextView)
     private var searchJob: Job? = null
     private var settingSearchText = false
 
@@ -459,16 +460,26 @@ class RestaurantActivity : ThemedActivity() {
     private fun updateSticky() {
         if (tab == Tab.MENU || mainScroll.visibility != View.VISIBLE) {
             sticky.translationY = 0f
-            sticky.elevation = dp(3).toFloat()
+            setPinned(true)
             setTopTitleAlpha(if (shown != null) 1f else 0f)
             return
         }
         val y = mainScroll.scrollY
         val offset = (stickySpacer.top - y).coerceAtLeast(0)
         sticky.translationY = offset.toFloat()
-        sticky.elevation = if (offset == 0 && y > 0) dp(3).toFloat() else 0f
+        setPinned(offset == 0 && y > 0)
         val nameBottom = nameView.topIn(mainContent) + nameView.height
         setTopTitleAlpha(((y - nameBottom + dp(16)) / dp(24).toFloat()).coerceIn(0f, 1f))
+    }
+
+    /** A pinned bar gets a shadow (light theme) and a hairline (both themes) along its bottom edge. */
+    private fun setPinned(pinned: Boolean) {
+        if (pinned == this.pinned) return
+        this.pinned = pinned
+        val hairline = findViewById<View>(R.id.sticky_hairline)
+        val ms = if (motionEnabled()) 150L else 0L
+        hairline.animate().alpha(if (pinned) 1f else 0f).setDuration(ms).start()
+        sticky.animate().z(if (pinned) dp(3).toFloat() else 0f).setDuration(ms).start()
     }
 
     /**
@@ -499,7 +510,14 @@ class RestaurantActivity : ThemedActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
             override fun afterTextChanged(s: Editable?) {
-                clear.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
+                val show = !s.isNullOrEmpty()
+                if (show && clear.visibility != View.VISIBLE && motionEnabled()) {
+                    clear.alpha = 0f
+                    clear.scaleX = 0.8f
+                    clear.scaleY = 0.8f
+                    clear.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(120).setInterpolator(EASE).start()
+                }
+                clear.visibility = if (show) View.VISIBLE else View.GONE
                 if (settingSearchText) return
                 searchJob?.cancel()
                 searchJob = lifecycleScope.launch {
@@ -563,6 +581,7 @@ class RestaurantActivity : ThemedActivity() {
         }
         val searching = !ItemSearch.isBlank(query)
         val visible = ItemSearch.filter(groups, query)
+        if (!searching && groups.size == 1) expanded = groups[0].title
         val total = groups.sumOf { it.items.size }
         val count = visible.sumOf { it.items.size }
         searchSummary.text = when {
@@ -614,22 +633,22 @@ class RestaurantActivity : ThemedActivity() {
             textSize = 16f
             layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
         })
-        header.addView(styled(R.style.Text_Label, g.items.size.toString()).apply {
-            setBackgroundResource(R.drawable.bg_count)
+        val badge = styled(R.style.Text_Label, g.items.size.toString()).apply {
             setPadding(dp(10), dp(3), dp(10), dp(3))
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
             ).apply { marginStart = dp(12) }
-        })
+        }
+        header.addView(badge)
         val chevron = ImageView(this).apply {
             setImageResource(R.drawable.ic_chevron_down)
-            imageTintList = ColorStateList.valueOf(getColor(R.color.text_secondary))
             scaleType = ImageView.ScaleType.CENTER
             rotation = if (open) 180f else 0f
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
             layoutParams = LinearLayout.LayoutParams(dp(40), dp(40)).apply { marginStart = dp(2) }
         }
         header.addView(chevron)
+        markOpen(badge, chevron, open)
 
         // The rows keep their size while the body animates open or closed (RevealLayout clips them).
         val rows = LinearLayout(this).apply {
@@ -657,7 +676,14 @@ class RestaurantActivity : ThemedActivity() {
         ViewCompat.setAccessibilityHeading(header, true)
         ViewCompat.setStateDescription(header, if (open) "Expanded" else "Collapsed")
         header.setOnClickListener { toggle(g.title, reveal = true) }
-        return Section(card, header, body, chevron)
+        return Section(card, header, body, chevron, badge)
+    }
+
+    /** The open category's count and chevron take the accent; the others stay quiet. */
+    private fun markOpen(badge: TextView, chevron: ImageView, open: Boolean) {
+        badge.setBackgroundResource(if (open) R.drawable.bg_count_active else R.drawable.bg_count)
+        badge.setTextColor(getColor(if (open) R.color.accent_text else R.color.text_secondary))
+        chevron.imageTintList = ColorStateList.valueOf(getColor(if (open) R.color.accent_text else R.color.text_secondary))
     }
 
     /**
@@ -679,18 +705,21 @@ class RestaurantActivity : ThemedActivity() {
         }
         val bodyHeight = setOpen(s, open)
         if (open && reveal) {
-            // Scroll only when the card's header is under the bar or its items would run off the screen.
-            val top = s.card.topIn(mainContent)
-            val visibleTop = mainScroll.scrollY + sticky.height
-            val visibleBottom = mainScroll.scrollY + mainScroll.height
-            val bottom = top + s.header.height + bodyHeight + dp(16)
-            if (top < visibleTop + dp(4) || bottom > visibleBottom) scrollToSection(s)
+            // Scroll just enough: a header under the bar comes down to it, a long category scrolls
+            // until its items fit (never past its header), a short one near the top stays put.
+            val viewport = mainScroll.height
+            val cardHeight = s.header.height + bodyHeight + dp(8)
+            scrollToSection(s) { top, from ->
+                val alignTop = top - sticky.height - dp(8)
+                if (alignTop < from) alignTop else minOf(maxOf(from, top + cardHeight - viewport), alignTop)
+            }
         }
     }
 
     /** Animates the body open or closed and returns the body's full height. */
     private fun setOpen(s: Section, open: Boolean): Int {
         ViewCompat.setStateDescription(s.header, if (open) "Expanded" else "Collapsed")
+        markOpen(s.badge, s.chevron, open)
         s.chevron.animate().rotation(if (open) 180f else 0f)
             .setDuration(if (motionEnabled()) 260 else 0).setInterpolator(EASE).start()
         s.card.animate().translationZ(if (open) dp(1).toFloat() else 0f)
@@ -710,6 +739,7 @@ class RestaurantActivity : ThemedActivity() {
             contentDescription = listOfNotNull(item.name, item.note).joinToString(". ")
         }
         row.addView(styled(R.style.Text_Body, item.name).apply {
+            if (!ItemSearch.isBlank(query)) text = highlighted(item.name)
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
         })
         // Seasonal, limited-time or location-specific items are flagged in the data.
@@ -722,6 +752,20 @@ class RestaurantActivity : ThemedActivity() {
             })
         }
         return row
+    }
+
+    /** The item's name with the search words it contains in bold (words matched through its note or category get no mark). */
+    private fun highlighted(name: String): CharSequence {
+        val out = SpannableStringBuilder(name)
+        val lower = name.lowercase()
+        for (word in query.lowercase().split(' ').filter { it.isNotBlank() }) {
+            var at = lower.indexOf(word)
+            while (at >= 0) {
+                out.setSpan(StyleSpan(Typeface.BOLD), at, at + word.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                at = lower.indexOf(word, at + word.length)
+            }
+        }
+        return out
     }
 
     private fun noItemsCard(): View {
@@ -779,34 +823,45 @@ class RestaurantActivity : ThemedActivity() {
         val s = sections[title] ?: return
         hideKeyboard()
         if (s.body.visibility != View.VISIBLE) toggle(title, reveal = false)
-        scrollToSection(s)
+        scrollToSection(s) { top, _ -> top - sticky.height - dp(8) }
         markChip(title)
     }
 
     /**
-     * Scrolls the section's header to just under the tab bar. The target is re-read every frame:
-     * a category closing above it moves the section up while the scroll is under way.
+     * Scrolls to the section: [target] maps the card's top (in content coordinates) and the scroll
+     * position the scroll started from to the wanted position. It is re-read every frame, because a
+     * category closing above the section moves the section up while the scroll is under way.
      */
-    private fun scrollToSection(s: Section) {
+    private fun scrollToSection(s: Section, target: (top: Int, from: Int) -> Int) {
         scrollAnimator?.cancel()
-        fun target() = (s.card.topIn(mainContent) - sticky.height - dp(8)).coerceAtLeast(0)
+        val from = mainScroll.scrollY
+        fun wanted() = target(s.card.topIn(mainContent), from).coerceAtLeast(0)
         if (!motionEnabled()) {
-            mainScroll.post { mainScroll.scrollTo(0, target()) }
+            mainScroll.post { mainScroll.scrollTo(0, wanted()) }
             return
         }
-        val from = mainScroll.scrollY
         scrollAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
             duration = 320
             interpolator = EASE
-            addUpdateListener { a -> mainScroll.scrollTo(0, (from + (target() - from) * a.animatedFraction).roundToInt()) }
+            addUpdateListener { a -> mainScroll.scrollTo(0, (from + (wanted() - from) * a.animatedFraction).roundToInt()) }
             start()
         }
     }
 
-    /** Highlights the chip of the section at the top of the screen. */
+    /** Highlights the chip of the open category while it is on screen, else of the one at the top. */
     private fun trackSection() {
         if (tab != Tab.ITEMS || sections.isEmpty() || chipFor.isEmpty()) return
-        val line = mainScroll.scrollY + sticky.height + dp(24)
+        val top = mainScroll.scrollY + sticky.height
+        val bottom = mainScroll.scrollY + mainScroll.height
+        val open = expanded?.let { title -> sections[title]?.let { title to it } }
+        if (open != null && ItemSearch.isBlank(query)) {
+            val cardTop = open.second.card.topIn(mainContent)
+            if (cardTop < bottom && cardTop + open.second.card.height > top) {
+                markChip(open.first)
+                return
+            }
+        }
+        val line = top + dp(24)
         var current = sections.keys.first()
         for ((title, s) in sections) {
             if (s.card.topIn(mainContent) <= line) current = title else break
