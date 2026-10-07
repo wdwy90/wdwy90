@@ -115,7 +115,7 @@
                 <TextView style="@style/Text.Secondary"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="In the car, open Pull Up Menu from the Android Auto launcher. The car screen shows the restaurant and its item list; the full menu page and photos stay on the phone, for when you're parked." />
+                    android:text="In the car, open Pull Up Menu from the Android Auto launcher. The car screen shows the restaurant and its item list; the full menu page and photos stay on the phone, for when you’re parked." />
             </LinearLayout>
 
             <!-- Places API -->
@@ -220,7 +220,7 @@
                 <TextView style="@style/Text.Secondary"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="Not showing on the car screen? Install from Google Play (not a downloaded APK), then open Android Auto on the phone and check that Pull Up Menu is listed under Customize launcher.\n\nNo restaurant found? Detection needs location on and looks within the radius above. Try Detect My Restaurant once you're in the lane." />
+                    android:text="Not showing on the car screen? Install from Google Play (not a downloaded APK), then open Android Auto on the phone and check that Pull Up Menu is listed under Customize launcher.\n\nNo restaurant found? Detection needs location on and looks within the radius above. Try Detect My Restaurant once you’re in the lane." />
                 <Button
                     android:id="@+id/demo"
                     style="@style/Button.Tonal"

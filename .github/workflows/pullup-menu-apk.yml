@@ -30,7 +30,7 @@ jobs:
             [ -n "$msg" ] && echo "::error title=$1::$msg"
             true
           }
-          grep -E "^e: |^w: .*(error|Unresolved)|What went wrong|FAILED|Execution failed" build.log | head -80 | annotate "Compile and task errors" || true
+          grep -E "^e: |^w: .*(error|Unresolved)|error:|ERROR:|AAPT|What went wrong|FAILED|Execution failed" build.log | head -80 | annotate "Compile and task errors" || true
           if [ -f app/build/reports/lint-results-debug.xml ]; then
             python3 -c '
           import sys, xml.etree.ElementTree as ET
