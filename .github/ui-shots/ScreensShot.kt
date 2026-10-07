@@ -110,7 +110,21 @@ class ScreensShot {
             capture(a.window, "09-restaurant-photos")
             a.findViewById<View>(R.id.tab_menu).performClick()
             idle(Duration.ofMillis(800))
+            val web = a.findViewById<android.widget.FrameLayout>(R.id.web_container).getChildAt(0) as android.webkit.WebView
+            shadowOf(web).webChromeClient.onProgressChanged(web, 40)
+            idle(Duration.ofMillis(400))
             capture(a.window, "10-restaurant-menu")
+            val req = object : android.webkit.WebResourceRequest {
+                override fun getUrl(): android.net.Uri = android.net.Uri.parse("https://www.bk.com/menu")
+                override fun isForMainFrame() = true
+                override fun isRedirect() = false
+                override fun hasGesture() = false
+                override fun getMethod() = "GET"
+                override fun getRequestHeaders(): Map<String, String> = emptyMap()
+            }
+            shadowOf(web).webViewClient.onReceivedError(web, req, null)
+            idle(Duration.ofMillis(400))
+            capture(a.window, "10b-restaurant-menu-failed")
             a.findViewById<View>(R.id.tab_items).performClick()
             idle(Duration.ofMillis(800))
             scroll.scrollTo(0, 0)
