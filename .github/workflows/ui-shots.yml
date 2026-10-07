@@ -25,6 +25,9 @@ jobs:
         run: |
           mkdir -p app/src/test/java/com/wdwy90/pullupmenu/shots
           cp ../../.github/ui-shots/ScreensShot.kt app/src/test/java/com/wdwy90/pullupmenu/shots/
+          # The layout check, until the app's own tests have it.
+          [ -f app/src/test/java/com/wdwy90/pullupmenu/phone/LayoutAudit.kt ] ||
+            cp ../../.github/ui-shots/LayoutAudit.kt app/src/test/java/com/wdwy90/pullupmenu/phone/
           cat >> app/build.gradle.kts <<'KTS'
 
           android.testOptions.unitTests.isIncludeAndroidResources = true

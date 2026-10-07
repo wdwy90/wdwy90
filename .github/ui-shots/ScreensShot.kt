@@ -53,13 +53,28 @@ class ScreensShot {
     private val out = File(System.getProperty("shots.dir") ?: "build/shots").apply { mkdirs() }
     private var suffix = ""
 
-    @Test fun dark() = run(Prefs.THEME_DARK, "dark")
-
-    @Test fun light() = run(Prefs.THEME_LIGHT, "light")
-
-    @Test fun largeText() {
+    // Small phones and large text, each screen also checked with LayoutAudit (audit-<size>.txt).
+    @Test fun big130() {
         RuntimeEnvironment.setFontScale(1.3f)
-        run(Prefs.THEME_DARK, "dark-large-text", short = true)
+        run(Prefs.THEME_DARK, "411dp-130")
+    }
+
+    @Test @Config(qualifiers = "w360dp-h740dp-xxhdpi")
+    fun small130() {
+        RuntimeEnvironment.setFontScale(1.3f)
+        run(Prefs.THEME_DARK, "360dp-130")
+    }
+
+    @Test @Config(qualifiers = "w320dp-h640dp-xhdpi")
+    fun smallest130() {
+        RuntimeEnvironment.setFontScale(1.3f)
+        run(Prefs.THEME_DARK, "320dp-130")
+    }
+
+    @Test @Config(qualifiers = "w360dp-h740dp-xxhdpi")
+    fun small200() {
+        RuntimeEnvironment.setFontScale(2.0f)
+        run(Prefs.THEME_LIGHT, "360dp-200")
     }
 
     private fun run(theme: Int, suffix: String, short: Boolean = false) {
@@ -89,10 +104,22 @@ class ScreensShot {
             val a = Robolectric.buildActivity(MainActivity::class.java).setup().get()
             capture(a.window, it)
         }
+        step("03b-home-error") {
+            setState(MenuRepository.State.Error("Couldn't get your location. Try again in a moment."))
+            val a = Robolectric.buildActivity(MainActivity::class.java).setup().get()
+            capture(a.window, it)
+            setState(MenuRepository.State.Found(r, emptyList(), System.currentTimeMillis(), auto = true))
+        }
         step("04-settings") {
             val a = Robolectric.buildActivity(SettingsActivity::class.java).setup().get()
             capture(a.window, it)
             captureFull(a, R.id.scroll, "05-settings-full")
+            a.findViewById<View>(R.id.change_key).performClick()
+            a.findViewById<EditText>(R.id.api_key).setText("not a key")
+            a.findViewById<View>(R.id.save_key).performClick()
+            idle()
+            captureFull(a, R.id.scroll, "05b-settings-key-editor")
+            capture(a.window, "05c-settings-key-editor-window")
         }
         if (short) return
         step("06-restaurant") {
@@ -135,6 +162,15 @@ class ScreensShot {
             val dialog: Dialog? = ShadowDialog.getLatestDialog()
             if (dialog?.window != null) capture(dialog.window!!, "11-photo-viewer")
         }
+        step("13-restaurant-no-list") {
+            val other = sample().copy(id = "other-place", name = "Joe's Diner and Drive-In", prices = null, menuUrl = null, photos = emptyList())
+            setState(MenuRepository.State.Found(other, emptyList(), System.currentTimeMillis(), auto = false))
+            val a = Robolectric.buildActivity(RestaurantActivity::class.java).setup().get()
+            capture(a.window, it)
+            a.findViewById<View>(R.id.tab_menu).performClick()
+            idle(Duration.ofMillis(800))
+            capture(a.window, "14-restaurant-no-list-menu")
+        }
         step("12-demo") {
             MenuRepository.showDemo(app)
             val a = Robolectric.buildActivity(RestaurantActivity::class.java).setup().get()
@@ -160,7 +196,7 @@ class ScreensShot {
         photos.forEachIndexed { i, ph -> putPhoto("${ph.name}@$width", fakePhoto(width, if (i % 2 == 0) width * 3 / 4 else width * 4 / 3, colors[i], i + 1)) }
         return Restaurant(
             id = "sample-place",
-            name = "Burger King",
+            name = "Burger King - 1200 North Main Street",
             address = "1200 Main St, Springfield, IL 62701",
             lat = 39.8,
             lng = -89.6,
@@ -210,6 +246,16 @@ class ScreensShot {
 
     private fun capture(window: Window, name: String) {
         idle(Duration.ofMillis(300))
+        val problems = try {
+            com.wdwy90.pullupmenu.phone.LayoutAudit.problems(window.decorView)
+        } catch (t: Throwable) {
+            listOf("audit failed: $t")
+        }
+        File(out, "audit-$suffix.txt").appendText(
+            "== $name (${window.decorView.width}x${window.decorView.height} px, density " +
+                "${window.decorView.resources.displayMetrics.density}, font ${window.decorView.resources.configuration.fontScale})\n" +
+                problems.joinToString("") { "- $it\n" }
+        )
         val view = window.decorView
         val bmp = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
         var ok = false
