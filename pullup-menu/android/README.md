@@ -109,6 +109,6 @@ sideloaded APK will not appear in the car.
 - `core/VisitCheck.kt` – whether a re-check while stopped still points at the place on screen (unit tested)
 - `core/MenuRepository.kt` – shared state between car screen and phone, demo mode
 - `core/Prefs.kt`, `core/Notifier.kt` – settings, arrival and watching notifications
-- `car/` – Android Auto screens: `HomeScreen`, `RestaurantScreen` (card), `ItemListScreen` (full item list by menu section), `ChooserScreen`
+- `car/` – Android Auto screens: `HomeScreen`, `RestaurantScreen` (card), `MenuScreen` (categories, then a category's items; planned by `core/CarMenu`), `MenuSearchScreen`, `ChooserScreen`
 - `phone/` – home screen (`MainActivity`), `SettingsActivity`, items/menu/photos (`RestaurantActivity`), phone watching
   (`ArrivalService`), home-screen widget (`DriveWidget`, `StartWatchingActivity`)

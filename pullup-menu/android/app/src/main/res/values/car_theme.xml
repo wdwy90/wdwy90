@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Android Auto accent, read by the host from the androidx.car.app.theme meta-data. The host
+        draws the templates and picks the variant by where the colour goes, in day and in night:
+        the light one for text and icons on a dark background (#FF6B35 is 6.6:1 on #121212), the
+        dark one behind light text such as a primary button's label (white on #C2410C is 5.2:1).
+        Fixed values, not the phone's day/night colours. Secondary isn't used but is declared too,
+        as the host wants both pairs.
+    -->
+    <style name="CarAppTheme">
+        <item name="carColorPrimary">#FF6B35</item>
+        <item name="carColorPrimaryDark">#C2410C</item>
+        <item name="carColorSecondary">#FF6B35</item>
+        <item name="carColorSecondaryDark">#C2410C</item>
+    </style>
+</resources>

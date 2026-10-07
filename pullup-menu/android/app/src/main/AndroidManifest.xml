@@ -89,5 +89,9 @@
         <meta-data
             android:name="androidx.car.app.minCarApiLevel"
             android:value="1" />
+        <!-- The car screen's accent (buttons, row icons): see car_theme.xml. -->
+        <meta-data
+            android:name="androidx.car.app.theme"
+            android:resource="@style/CarAppTheme" />
     </application>
 </manifest>
