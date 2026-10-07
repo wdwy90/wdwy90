@@ -211,7 +211,12 @@ class MainActivity : ThemedActivity() {
         statusAttribution.visibility =
             if (found != null && !found.restaurant.isDemo) View.VISIBLE else View.GONE
 
-        setAction(actionMenu, found?.restaurant?.name ?: "Nothing detected yet", enabled = found != null)
+        // The app's own chain name, not the Google Maps place name: the tiles are outside the status
+        // card, which is where the Google Maps attribution is.
+        val menuFor = found?.restaurant?.let { r ->
+            if (r.isDemo) r.name else r.prices?.chain ?: "Restaurant found"
+        }
+        setAction(actionMenu, menuFor ?: "Nothing detected yet", enabled = found != null)
         setAction(actionDrive, if (driveMode) "On · tap to stop" else "Watch on this phone", enabled = true)
         actionDrive.isSelected = driveMode
     }

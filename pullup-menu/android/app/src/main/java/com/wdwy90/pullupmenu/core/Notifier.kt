@@ -74,7 +74,8 @@ object Notifier {
                 builder.extend(
                     CarAppExtender.Builder()
                         .setContentTitle("You're at ${r.name}")
-                        .setContentText("Tap for the restaurant card")
+                        // The car screen shows only this title and text (no sub text), so the credit goes here.
+                        .setContentText("Tap for the restaurant card · ${ctx.getString(R.string.google_maps)}")
                         .setSmallIcon(R.drawable.ic_menu)
                         .setContentIntent(carTap)
                         .setImportance(NotificationManagerCompat.IMPORTANCE_HIGH)

@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <solid android:color="@color/tab_indicator" />
-    <corners android:radius="999dp" />
-</shape>
+<!-- The selected tab's pill, with an accent mark under the label. The pill alone is too faint against
+     the track (WCAG 1.4.11 asks 3:1); the mark is 5.2:1 on the light pill and 4.5:1 on the dark one. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/tab_indicator" />
+            <corners android:radius="999dp" />
+        </shape>
+    </item>
+    <item
+        android:width="24dp" android:height="3dp"
+        android:gravity="bottom|center_horizontal"
+        android:bottom="5dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/accent_text" />
+            <corners android:radius="2dp" />
+        </shape>
+    </item>
+</layer-list>

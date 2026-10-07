@@ -2,7 +2,11 @@ package com.wdwy90.pullupmenu.phone
 
 import android.Manifest
 import android.app.Activity
+import android.app.Notification
+import android.app.NotificationManager
+import android.app.UiModeManager
 import android.content.res.Configuration
+import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Looper
 import android.text.InputType
@@ -10,18 +14,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
+import android.widget.CompoundButton
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.car.app.notification.CarAppExtender
 import com.wdwy90.pullupmenu.R
 import com.wdwy90.pullupmenu.core.ChainMenus
 import com.wdwy90.pullupmenu.core.ChainPrices
 import com.wdwy90.pullupmenu.core.MenuRepository
+import com.wdwy90.pullupmenu.core.Notifier
 import com.wdwy90.pullupmenu.core.Prefs
 import com.wdwy90.pullupmenu.core.Restaurant
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNotSame
+import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -34,11 +44,13 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import java.time.Duration
 import kotlin.math.abs
+import kotlin.math.pow
 
 /**
  * The phone screens with their real layouts, themes and activities (Robolectric): sizes that only
- * show up once laid out, the API key never on screen in full, Google attribution, touch targets
- * and the Menu tab's failed-load state. Sample data only: a made-up Burger King location.
+ * show up once laid out, theme changes, the API key never on screen in full, Google attribution,
+ * touch targets, the Drive Mode switch and the Menu tab's failed-load state. Sample data only: a
+ * made-up Burger King location.
  */
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
@@ -86,6 +98,50 @@ class PhoneScreensTest {
     }
 
     @Test
+    @Config(qualifiers = "+night")
+    fun matchSystemWaitsForTheSystemInsteadOfRecreatingTwice() {
+        // Android 12+ after an earlier run handed Dark to the system, which now draws it: nothing forced.
+        Prefs.setTheme(app, Prefs.THEME_DARK)
+        Prefs.setSystemNightMode(app, UiModeManager.MODE_NIGHT_YES)
+        val screen = Robolectric.buildActivity(SettingsActivity::class.java).setup()
+        val dark = screen.get()
+        dark.findViewById<View>(R.id.theme_system).performClick()
+        idle()
+        assertEquals(UiModeManager.MODE_NIGHT_AUTO, shadowOf(uiModeManager()).applicationNightMode)
+        // Recreating here would race the system's own change and recreate the screen twice.
+        assertSame(dark, screen.get())
+
+        // The system's change arrives (the phone is in light mode): one recreate, in light.
+        RuntimeEnvironment.setQualifiers("+notnight")
+        screen.configurationChange()
+        idle()
+        val light = screen.get()
+        assertNotSame(dark, light)
+        assertFalse(isNight(light))
+        idle()
+        assertSame(light, screen.get())
+    }
+
+    @Test
+    @Config(qualifiers = "+night")
+    fun forcedThemeChangeRecreatesOnceInTheNewTheme() {
+        // First run: nothing handed to the system yet, so the screen forces Dark itself.
+        Prefs.setTheme(app, Prefs.THEME_DARK)
+        val screen = Robolectric.buildActivity(SettingsActivity::class.java).setup()
+        val dark = screen.get()
+        assertTrue(isNight(dark))
+        dark.findViewById<View>(R.id.theme_light).performClick()
+        idle()
+        // Light at once, although the system still draws night (its change hasn't arrived).
+        val light = screen.get()
+        assertNotSame(dark, light)
+        assertFalse(isNight(light))
+        assertEquals(UiModeManager.MODE_NIGHT_NO, shadowOf(uiModeManager()).applicationNightMode)
+        idle()
+        assertSame(light, screen.get())
+    }
+
+    @Test
     fun settingsNeverShowsTheWholeKey() {
         // Built at run time so no key-shaped literal sits in the source.
         val key = "AIza" + "A".repeat(31) + "WXYZ"
@@ -107,6 +163,29 @@ class PhoneScreensTest {
         assertEquals("", field.text.toString())
         assertTrue(screenText(a).none { it.contains(newKey.dropLast(4)) })
         assertTrue(screenText(a).any { it.endsWith("QRST") })
+    }
+
+    @Test
+    fun driveModeSwitchStaysOnWhileTheServiceStarts() {
+        Prefs.setAutoDetect(app, true)
+        try {
+            val a = launch(SettingsActivity::class.java)
+            val driveMode = a.findViewById<CompoundButton>(R.id.drive_mode)
+            assertFalse(driveMode.isChecked)
+            driveMode.performClick()
+            idle()
+            assertEquals(ArrivalService::class.java.name, shadowOf(app).nextStartedService?.component?.className)
+            // Robolectric never creates the service, so this is the switch before the service is up.
+            assertTrue("Drive Mode flicked back off", driveMode.isChecked)
+        } finally {
+            Prefs.setAutoDetect(app, false)
+            // ArrivalService.onDestroy would turn this off again; the service never ran here.
+            ArrivalService::class.java.getDeclaredField("_running").run {
+                isAccessible = true
+                @Suppress("UNCHECKED_CAST")
+                (get(null) as MutableStateFlow<Boolean>).value = false
+            }
+        }
     }
 
     @Test
@@ -165,6 +244,39 @@ class PhoneScreensTest {
     }
 
     @Test
+    fun selectedTabIsMarkedWithEnoughContrast() {
+        showSample()
+        for (theme in listOf(Prefs.THEME_DARK, Prefs.THEME_LIGHT)) {
+            Prefs.setTheme(app, theme)
+            val a = launch(RestaurantActivity::class.java)
+            // The pill is faint against the track; the accent mark under the label carries the state.
+            val indicator = a.findViewById<View>(R.id.tab_indicator).background as LayerDrawable
+            assertEquals(2, indicator.numberOfLayers)
+            val ratio = contrast(a.getColor(R.color.accent_text), a.getColor(R.color.tab_indicator))
+            assertTrue("theme $theme: mark contrast $ratio", ratio >= 3.0)
+        }
+    }
+
+    @Test
+    fun quickActionTileNamesTheChainNotTheGooglePlace() {
+        showSample("Burger King - 1200 Main St")
+        val a = launch(MainActivity::class.java)
+        val tile = a.findViewById<View>(R.id.action_menu)
+        assertEquals("Burger King", tile.findViewById<TextView>(R.id.action_subtitle).text.toString())
+        // The place name itself shows only in the status card, next to its Google Maps credit.
+        assertTrue(a.findViewById<View>(R.id.status_attribution).isShown)
+    }
+
+    @Test
+    fun carBannerCreditsGoogleMaps() {
+        Notifier.arrival(app, sample(), carBanner = true)
+        val n = shadowOf(app.getSystemService(NotificationManager::class.java)).allNotifications.single()
+        assertEquals("Google Maps", n.extras.getCharSequence(Notification.EXTRA_SUB_TEXT).toString())
+        val car = CarAppExtender(n).contentText.toString()
+        assertTrue(car, car.endsWith("Google Maps"))
+    }
+
+    @Test
     fun failedMenuPageShowsRetryInsteadOfTheBrowserError() {
         val url = showSample().menuUrl
         assertNotNull(url)
@@ -213,25 +325,27 @@ class PhoneScreensTest {
     }
 
     /** Shows a made-up Burger King (Google-sourced, not the demo) through the public chooser path. */
-    private fun showSample(): Restaurant {
+    private fun showSample(name: String = "Burger King"): Restaurant {
         MenuRepository.showDemo(app)
-        val r = Restaurant(
-            id = "test-place",
-            name = "Burger King",
-            address = "1200 Main St, Springfield, IL 62701",
-            lat = 39.8,
-            lng = -89.6,
-            rating = 4.1,
-            category = "Fast food restaurant",
-            photos = emptyList(),
-            websiteUri = null,
-            mapsUri = "https://maps.google.com/?cid=1",
-            menuUrl = ChainMenus.get(app).menuUrlFor("Burger King"),
-            prices = ChainPrices.get(app).forPlace("Burger King"),
-        )
+        val r = sample(name)
         MenuRepository.choose(app, r)
         return r
     }
+
+    private fun sample(name: String = "Burger King") = Restaurant(
+        id = "test-place",
+        name = name,
+        address = "1200 Main St, Springfield, IL 62701",
+        lat = 39.8,
+        lng = -89.6,
+        rating = 4.1,
+        category = "Fast food restaurant",
+        photos = emptyList(),
+        websiteUri = null,
+        mapsUri = "https://maps.google.com/?cid=1",
+        menuUrl = ChainMenus.get(app).menuUrlFor(name),
+        prices = ChainPrices.get(app).forPlace(name),
+    )
 
     private fun <T : Activity> launch(screen: Class<T>): T {
         val a = Robolectric.buildActivity(screen).setup().get()
@@ -245,6 +359,23 @@ class PhoneScreensTest {
     }
 
     private fun dp(a: Activity, v: Int) = (v * a.resources.displayMetrics.density).toInt()
+
+    private fun isNight(a: Activity) =
+        (a.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+
+    private fun uiModeManager() = app.getSystemService(UiModeManager::class.java)
+
+    /** WCAG contrast ratio of two opaque colors. */
+    private fun contrast(a: Int, b: Int): Double {
+        fun channel(v: Int): Double {
+            val s = v / 255.0
+            return if (s <= 0.03928) s / 12.92 else ((s + 0.055) / 1.055).pow(2.4)
+        }
+        fun luminance(c: Int) =
+            0.2126 * channel(c shr 16 and 0xFF) + 0.7152 * channel(c shr 8 and 0xFF) + 0.0722 * channel(c and 0xFF)
+        val (hi, lo) = listOf(luminance(a), luminance(b)).sortedDescending()
+        return (hi + 0.05) / (lo + 0.05)
+    }
 
     private fun descendants(v: View): List<View> =
         listOf(v) + ((v as? ViewGroup)?.let { g -> (0 until g.childCount).flatMap { descendants(g.getChildAt(it)) } }

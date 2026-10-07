@@ -121,9 +121,10 @@ class SettingsActivity : ThemedActivity() {
         carBanner.setOnCheckedChangeListener { _, on -> Prefs.setCarBanner(this, on) }
         driveMode.setOnCheckedChangeListener { _, on ->
             if (on == ArrivalService.running.value) return@setOnCheckedChangeListener
+            // No renderSwitches() here: the service starts and stops asynchronously, so the switch would
+            // flick back until it had. The running collector moves it if the start fails or the service
+            // stops, and the permission result does if location is refused.
             if (on) requestOrStartWatching() else ArrivalService.stop(this)
-            // Shows the real state: stays off if permission is still missing or the start failed.
-            renderSwitches()
         }
 
         lifecycleScope.launch { Prefs.autoDetectFlow(this@SettingsActivity).collect { renderSwitches() } }
@@ -158,6 +159,7 @@ class SettingsActivity : ThemedActivity() {
             ArrivalService.start(this)
         } catch (e: Exception) {
             Toast.makeText(this, "Couldn't start watching. Try again.", Toast.LENGTH_SHORT).show()
+            renderSwitches() // Drive Mode back off; the running collector may have missed its brief "on"
         }
     }
 
@@ -298,7 +300,7 @@ class SettingsActivity : ThemedActivity() {
             if (theme == Prefs.theme(this)) return@setOnCheckedChangeListener
             Prefs.setTheme(this, theme)
             syncSystemNightMode(this)
-            recreateOnce()
+            followTheme()
         }
     }
 

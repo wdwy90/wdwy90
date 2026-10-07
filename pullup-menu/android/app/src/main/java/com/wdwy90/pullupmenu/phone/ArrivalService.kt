@@ -108,11 +108,24 @@ class ArrivalService : LifecycleService() {
         private const val TICK_MS = 60_000L
 
         private val _running = MutableStateFlow(false)
+
+        /**
+         * Drive Mode is on. True from the moment [start] is called, so switches don't flick back off
+         * while the service starts, until the service is destroyed, which also ends a start that
+         * failed in [onCreate].
+         */
         val running: StateFlow<Boolean> = _running
 
         /** Call only while an activity of ours is visible (or from a widget/notification tap). */
         fun start(ctx: Context) {
-            ContextCompat.startForegroundService(ctx, Intent(ctx, ArrivalService::class.java))
+            val wasRunning = _running.value
+            _running.value = true
+            try {
+                ContextCompat.startForegroundService(ctx, Intent(ctx, ArrivalService::class.java))
+            } catch (e: RuntimeException) {
+                _running.value = wasRunning
+                throw e
+            }
         }
 
         fun stop(ctx: Context) {
