@@ -39,8 +39,6 @@ class FlowRow @JvmOverloads constructor(
     private val gap: Int
     private val lineGap: Int
     private val spread: Boolean
-    /** The shown children, line by line, as last measured. */
-    private var lines: List<List<View>> = emptyList()
 
     init {
         val default = (8 * resources.displayMetrics.density).roundToInt()
@@ -52,30 +50,25 @@ class FlowRow @JvmOverloads constructor(
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        for (i in 0 until childCount) {
+            val child = getChildAt(i)
+            // A wrap_content child is measured at most as wide as the row: longer text wraps inside it.
+            if (child.visibility != GONE) measureChild(child, widthMeasureSpec, heightMeasureSpec)
+        }
         val room = if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.UNSPECIFIED) {
             Int.MAX_VALUE
         } else {
             MeasureSpec.getSize(widthMeasureSpec) - paddingLeft - paddingRight
         }
-        val lines = ArrayList<MutableList<View>>()
-        var used = 0
-        for (i in 0 until childCount) {
-            val child = getChildAt(i)
-            if (child.visibility == GONE) continue
-            // A wrap_content child is measured at most as wide as the row: longer text wraps inside it.
-            measureChild(child, widthMeasureSpec, heightMeasureSpec)
-            val line = lines.lastOrNull()
-            if (line == null || used + gap + child.measuredWidth > room) {
-                lines += mutableListOf(child)
-                used = child.measuredWidth
-            } else {
-                line += child
-                used += gap + child.measuredWidth
-            }
+        var widest = 0
+        var height = 0
+        var lines = 0
+        forEachLine(room) { _, _, _, lineWidth, tallest ->
+            widest = maxOf(widest, lineWidth)
+            height += tallest
+            lines++
         }
-        this.lines = lines
-        val widest = lines.maxOfOrNull { lineWidth(it) } ?: 0
-        val height = lines.sumOf { line -> line.maxOf { it.measuredHeight } } + lineGap * (lines.size - 1).coerceAtLeast(0)
+        height += lineGap * (lines - 1).coerceAtLeast(0)
         setMeasuredDimension(
             resolveSize(widest + paddingLeft + paddingRight, widthMeasureSpec),
             resolveSize(height + paddingTop + paddingBottom, heightMeasureSpec),
@@ -83,16 +76,20 @@ class FlowRow @JvmOverloads constructor(
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        // The same lines as measured: this width holds the widest of them.
         val room = width - paddingLeft - paddingRight
         val rtl = layoutDirection == LAYOUT_DIRECTION_RTL
         var y = paddingTop
-        for (line in lines) {
-            val tallest = line.maxOf { it.measuredHeight }
-            val extra = if (spread && line.size > 1) (room - lineWidth(line)).coerceAtLeast(0) / (line.size - 1) else 0
+        forEachLine(room) { start, end, count, lineWidth, tallest ->
+            val extra = if (spread && count > 1) (room - lineWidth).coerceAtLeast(0) / (count - 1) else 0
             var x = 0
-            line.forEachIndexed { i, child ->
+            var placed = 0
+            for (i in start until end) {
+                val child = getChildAt(i)
+                if (child.visibility == GONE) continue
+                placed++
                 // On a spread line the last child ends right at the end (no rounding left over).
-                if (extra > 0 && i == line.size - 1) x = room - child.measuredWidth
+                if (extra > 0 && placed == count) x = room - child.measuredWidth
                 val left = if (rtl) paddingLeft + room - x - child.measuredWidth else paddingLeft + x
                 val top = y + (tallest - child.measuredHeight) / 2
                 child.layout(left, top, left + child.measuredWidth, top + child.measuredHeight)
@@ -102,7 +99,39 @@ class FlowRow @JvmOverloads constructor(
         }
     }
 
-    private fun lineWidth(line: List<View>) = line.sumOf { it.measuredWidth } + gap * (line.size - 1)
+    /**
+     * Breaks the shown children, as measured, into lines at most [room] px wide (at least one child
+     * on each) and calls [action] for each line with its children's indexes ([start] up to [end],
+     * gone ones included), how many of them are shown, and its width and height. Inline and without
+     * collections, so measuring and laying out allocate nothing.
+     */
+    private inline fun forEachLine(
+        room: Int,
+        action: (start: Int, end: Int, count: Int, lineWidth: Int, tallest: Int) -> Unit,
+    ) {
+        var start = 0
+        var count = 0
+        var used = 0
+        var tallest = 0
+        for (i in 0 until childCount) {
+            val child = getChildAt(i)
+            if (child.visibility == GONE) continue
+            if (count > 0 && used + gap + child.measuredWidth > room) {
+                action(start, i, count, used, tallest)
+                count = 0
+            }
+            if (count == 0) {
+                start = i
+                used = child.measuredWidth
+                tallest = child.measuredHeight
+            } else {
+                used += gap + child.measuredWidth
+                tallest = maxOf(tallest, child.measuredHeight)
+            }
+            count++
+        }
+        if (count > 0) action(start, childCount, count, used, tallest)
+    }
 }
 
 /**
@@ -132,20 +161,28 @@ class ColumnGrid @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val available = MeasureSpec.getSize(widthMeasureSpec)
         val room = (available - paddingLeft - paddingRight).coerceAtLeast(0)
-        val cells = shown()
-        columnsShown = if (columns > 1 && cells.any { breaksAWordAt(it, columnWidth(room, columns)) }) 1 else columns
+        columnsShown = if (columns > 1 && aWordBreaksAt(columnWidth(room, columns))) 1 else columns
         val cellSpec = MeasureSpec.makeMeasureSpec(columnWidth(room, columnsShown), MeasureSpec.EXACTLY)
         var height = paddingTop + paddingBottom
-        cells.chunked(columnsShown).forEachIndexed { i, row ->
-            row.forEach { it.measure(cellSpec, ANY_HEIGHT) }
-            val tallest = row.maxOf { it.measuredHeight }
-            for (cell in row) {
-                if (cell.measuredHeight != tallest) {
+        var rows = 0
+        forEachRow { start, end ->
+            var tallest = 0
+            for (i in start until end) {
+                val cell = getChildAt(i)
+                if (cell.visibility == GONE) continue
+                cell.measure(cellSpec, ANY_HEIGHT)
+                tallest = maxOf(tallest, cell.measuredHeight)
+            }
+            for (i in start until end) {
+                val cell = getChildAt(i)
+                if (cell.visibility != GONE && cell.measuredHeight != tallest) {
                     cell.measure(cellSpec, MeasureSpec.makeMeasureSpec(tallest, MeasureSpec.EXACTLY))
                 }
             }
-            height += tallest + if (i > 0) gap else 0
+            height += tallest
+            rows++
         }
+        height += gap * (rows - 1).coerceAtLeast(0)
         setMeasuredDimension(resolveSize(available, widthMeasureSpec), resolveSize(height, heightMeasureSpec))
     }
 
@@ -153,41 +190,66 @@ class ColumnGrid @JvmOverloads constructor(
         val cellWidth = columnWidth(width - paddingLeft - paddingRight, columnsShown)
         val rtl = layoutDirection == LAYOUT_DIRECTION_RTL
         var y = paddingTop
-        for (row in shown().chunked(columnsShown)) {
-            row.forEachIndexed { i, cell ->
-                val x = i * (cellWidth + gap)
+        forEachRow { start, end ->
+            var column = 0
+            var tallest = 0
+            for (i in start until end) {
+                val cell = getChildAt(i)
+                if (cell.visibility == GONE) continue
+                val x = column++ * (cellWidth + gap)
                 val left = if (rtl) width - paddingRight - x - cellWidth else paddingLeft + x
                 cell.layout(left, y, left + cell.measuredWidth, y + cell.measuredHeight)
+                tallest = maxOf(tallest, cell.measuredHeight)
             }
-            y += row.maxOf { it.measuredHeight } + gap
+            y += tallest + gap
         }
     }
 
-    private fun shown() = (0 until childCount).map { getChildAt(it) }.filter { it.visibility != GONE }
+    /** Calls [action] for each row of [columnsShown] shown cells with their indexes, [start] up to [end] (gone ones included). */
+    private inline fun forEachRow(action: (start: Int, end: Int) -> Unit) {
+        var start = 0
+        var count = 0
+        for (i in 0 until childCount) {
+            if (getChildAt(i).visibility == GONE) continue
+            if (count == 0) start = i
+            if (++count == columnsShown) {
+                action(start, i + 1)
+                count = 0
+            }
+        }
+        if (count > 0) action(start, childCount)
+    }
 
     private fun columnWidth(room: Int, n: Int) = ((room - gap * (n - 1)) / n).coerceAtLeast(0)
 
-    private fun breaksAWordAt(cell: View, cellWidth: Int): Boolean {
-        cell.measure(MeasureSpec.makeMeasureSpec(cellWidth, MeasureSpec.EXACTLY), ANY_HEIGHT)
-        return cell.breaksAWord()
+    /** True if a shown cell, [cellWidth] px wide, would break a word across lines. */
+    private fun aWordBreaksAt(cellWidth: Int): Boolean {
+        val spec = MeasureSpec.makeMeasureSpec(cellWidth, MeasureSpec.EXACTLY)
+        for (i in 0 until childCount) {
+            val cell = getChildAt(i)
+            if (cell.visibility == GONE) continue
+            cell.measure(spec, ANY_HEIGHT)
+            if (cell.breaksAWord()) return true
+        }
+        return false
     }
 }
 
 private val ANY_HEIGHT = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
 
 /** True if this view's text (or text inside it), as last measured, breaks a word across two lines. */
-fun View.breaksAWord(): Boolean = when {
-    visibility == View.GONE -> false
-    this is TextView -> {
-        val text = this.text
-        val layout = this.layout
-        layout != null && (0 until layout.lineCount - 1).any { line ->
+fun View.breaksAWord(): Boolean {
+    if (visibility == View.GONE) return false
+    if (this is TextView) {
+        val layout = layout ?: return false
+        for (line in 0 until layout.lineCount - 1) {
             val end = layout.getLineEnd(line)
-            end in 1 until text.length && text[end - 1].isLetterOrDigit() && text[end].isLetterOrDigit()
+            if (end in 1 until text.length && text[end - 1].isLetterOrDigit() && text[end].isLetterOrDigit()) return true
         }
+    } else if (this is ViewGroup) {
+        for (i in 0 until childCount) if (getChildAt(i).breaksAWord()) return true
     }
-    this is ViewGroup -> (0 until childCount).any { getChildAt(it).breaksAWord() }
-    else -> false
+    return false
 }
 
 /**
