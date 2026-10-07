@@ -140,6 +140,13 @@ class ScreensShot {
             val scroll = a.findViewById<ScrollView>(R.id.main_scroll)
             scroll.scrollTo(0, dp(a, 560))
             capture(a.window, "07-restaurant-scrolled")
+            // Every category starts collapsed; tapping one opens it (and closes the open one).
+            header(a, 0).performClick()
+            idle(Duration.ofMillis(800))
+            capture(a.window, "07b-restaurant-expanded")
+            a.findViewById<android.widget.LinearLayout>(R.id.chips).getChildAt(3).performClick()
+            idle(Duration.ofMillis(800))
+            capture(a.window, "07c-restaurant-chip-jump")
             a.findViewById<EditText>(R.id.search).setText("chicken")
             idle(Duration.ofMillis(400))
             capture(a.window, "08-restaurant-search")
@@ -172,6 +179,47 @@ class ScreensShot {
             idle(Duration.ofMillis(800))
             val dialog: Dialog? = ShadowDialog.getLatestDialog()
             if (dialog?.window != null) capture(dialog.window!!, "11-photo-viewer")
+        }
+        step("15-restaurant-many-categories") {
+            // A long menu (10 categories, 81 items), no photo, no rating, closed: the list stays short.
+            val many = chain("McDonald's", "McDonald's", id = "many").copy(rating = null, photos = emptyList(), openNow = false)
+            setState(MenuRepository.State.Found(many, emptyList(), System.currentTimeMillis(), auto = true))
+            val a = Robolectric.buildActivity(RestaurantActivity::class.java).setup().get()
+            capture(a.window, it)
+            val scroll = a.findViewById<ScrollView>(R.id.main_scroll)
+            scroll.scrollTo(0, dp(a, 400))
+            capture(a.window, "15b-restaurant-many-categories-list")
+            header(a, 5).performClick() // Breakfast, 20 items
+            idle(Duration.ofMillis(800))
+            capture(a.window, "15c-restaurant-many-categories-open")
+        }
+        step("16-restaurant-long-names") {
+            // Long item and category names, in a long place name, at every size.
+            val dq = chain("Dairy Queen Grill & Chill - Springfield Plaza Shopping Center", "Dairy Queen", id = "long")
+            setState(MenuRepository.State.Found(dq, emptyList(), System.currentTimeMillis(), auto = true))
+            val a = Robolectric.buildActivity(RestaurantActivity::class.java).setup().get()
+            capture(a.window, it)
+            a.findViewById<android.widget.LinearLayout>(R.id.chips).getChildAt(2).performClick() // Chicken Baskets
+            idle(Duration.ofMillis(800))
+            capture(a.window, "16b-restaurant-long-names-open")
+        }
+        step("17-restaurant-notes") {
+            // Seasonal notes on items (Starbucks), 12 categories.
+            val sb = chain("Starbucks", "Starbucks", id = "notes")
+            setState(MenuRepository.State.Found(sb, emptyList(), System.currentTimeMillis(), auto = true))
+            val a = Robolectric.buildActivity(RestaurantActivity::class.java).setup().get()
+            a.findViewById<android.widget.LinearLayout>(R.id.chips).getChildAt(11).performClick() // Seasonal
+            idle(Duration.ofMillis(800))
+            capture(a.window, it)
+        }
+        step("18-restaurant-long-words") {
+            // The longest single category word in the data ("ButterBurgers"), open, at every size.
+            val cv = chain("Culver's", "Culver's", id = "words")
+            setState(MenuRepository.State.Found(cv, emptyList(), System.currentTimeMillis(), auto = true))
+            val a = Robolectric.buildActivity(RestaurantActivity::class.java).setup().get()
+            header(a, 0).performClick() // ButterBurgers
+            idle(Duration.ofMillis(800))
+            capture(a.window, it)
         }
         step("06c-restaurant-not-here") {
             // Another place found close by: "Not here?" shows in the header and opens the chooser.
@@ -236,7 +284,24 @@ class ScreensShot {
             mapsUri = "https://maps.google.com/?cid=1",
             menuUrl = ChainMenus.get(app).menuUrlFor("Burger King"),
             prices = ChainPrices.get(app).forPlace("Burger King"),
+            distanceMeters = 24.0,
+            openNow = true,
+            businessStatus = "OPERATIONAL",
         )
+    }
+
+    /** The sample place as another chain (its item list and menu page), with the sample photos. */
+    private fun chain(name: String, chain: String, id: String) = sample().copy(
+        id = id,
+        name = name,
+        menuUrl = ChainMenus.get(app).menuUrlFor(chain),
+        prices = ChainPrices.get(app).forPlace(chain),
+    )
+
+    /** The header row of the n-th category card on the Items tab. */
+    private fun header(a: Activity, n: Int): View {
+        val list = a.findViewById<android.widget.LinearLayout>(R.id.items_list)
+        return (list.getChildAt(n) as android.view.ViewGroup).getChildAt(0)
     }
 
     private fun fakePhoto(w: Int, h: Int, color: Int, n: Int): Bitmap {

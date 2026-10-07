@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generic category icon (see CategoryIcons.kt). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="20dp" android:height="20dp"
+    android:viewportWidth="24" android:viewportHeight="24">
+    <path android:strokeColor="#FFFFFFFF" android:strokeWidth="2" android:strokeLineCap="round" android:strokeLineJoin="round" android:fillColor="#00000000" android:pathData="M5,13 C5,8 8,4.5 12.5,4.5 C17,4.5 20,8 20,12.5 C20,16.5 16.5,19.5 12,19.5 C7.5,19.5 5,17 5,13 Z" />
+    <path android:fillColor="#FFFFFFFF" android:pathData="M12,12 m-3,0 a3,3 0 1 0 6,0 a3,3 0 1 0 -6,0" />
+</vector>

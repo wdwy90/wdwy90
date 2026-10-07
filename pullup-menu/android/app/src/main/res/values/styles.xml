@@ -70,6 +70,21 @@
         <item name="android:background">@drawable/bg_button_tonal</item>
         <item name="android:textColor">@color/text_primary</item>
     </style>
+    <!-- Restaurant header: 40dp pills (the touch target stays 48dp). -->
+    <style name="Button.Primary.Compact">
+        <item name="android:background">@drawable/bg_button_primary_compact</item>
+        <item name="android:paddingStart">18dp</item>
+        <item name="android:paddingEnd">20dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
+    <style name="Button.Tonal.Compact">
+        <item name="android:background">@drawable/bg_button_tonal_compact</item>
+        <item name="android:paddingStart">18dp</item>
+        <item name="android:paddingEnd">20dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
     <style name="Button.Text">
         <item name="android:background">@drawable/bg_ripple_pill</item>
         <item name="android:textColor">@color/accent_text</item>
@@ -131,6 +146,7 @@
 
     <style name="Chip">
         <item name="android:minHeight">@dimen/touch_target</item>
+        <item name="android:minWidth">@dimen/touch_target</item>
         <item name="android:paddingStart">16dp</item>
         <item name="android:paddingEnd">16dp</item>
         <item name="android:gravity">center</item>

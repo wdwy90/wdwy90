@@ -28,4 +28,23 @@ data class Restaurant(
     val prices: PriceList? = null,
     /** True for the built-in demo card (not a real place). */
     val isDemo: Boolean = false,
-)
+    /** Google's "open now" at lookup time; null when the place has no hours. */
+    val openNow: Boolean? = null,
+    /** Google's businessStatus ("OPERATIONAL", "CLOSED_TEMPORARILY", "CLOSED_PERMANENTLY"); null when not given. */
+    val businessStatus: String? = null,
+) {
+    /**
+     * Short status for the header: "Open now", "Closed now", "Temporarily closed", "Permanently closed",
+     * or null when Google gave no hours. Never guessed.
+     */
+    val openStatus: String?
+        get() = when (businessStatus) {
+            "CLOSED_TEMPORARILY" -> "Temporarily closed"
+            "CLOSED_PERMANENTLY" -> "Permanently closed"
+            else -> when (openNow) {
+                true -> "Open now"
+                false -> "Closed now"
+                null -> null
+            }
+        }
+}
