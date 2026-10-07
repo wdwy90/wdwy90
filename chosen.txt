@@ -1,0 +1,2 @@
+IMG=system-images;android-34-ext9;android-automotive;x86_64
+DEV=automotive_1024p_landscape

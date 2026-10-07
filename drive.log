@@ -1,0 +1,50 @@
+drive dump ''
+drive auto 'on'
+drive idle ''
+shot 01-home-ready
+drive error 'No internet connection. Try again.'
+shot 02-home-error
+drive found 'Burger King|1|1|2|4.1|1200 N Main St, Springfield'
+shot 03-card
+drive tap 'View menu'
+shot 04-menu
+drive tap 'Burgers'
+shot 05-burgers
+drive found 'Taco Bell|1|0|0|4.0|2500 Wabash Ave, Springfield|Christopher Montgomery-Alexander Photography'
+shot 06-card-long-credit
+drive found 'Whataburger|0|1|0|4.5|3700 S 6th St, Springfield'
+shot 07-card-whataburger
+drive tap 'View menu'
+shot 08-menu-whataburger
+drive found 'Starbucks|1|1|0|4.3|1 Old State Capitol Plaza, Springfield'
+drive tap 'View menu'
+shot 09-menu-starbucks
+drive tap 'search'
+drive search 'pumpkin'
+shot 10-search-notes
+drive found "Joe's Burger Shack|0|1|0|4.6|88 Route 66, Springfield"
+shot 11-card-no-menu
+drive limit '6'
+drive found "McDonald's|0|1|0|3.8|2700 S 6th St, Springfield"
+drive tap 'View menu'
+shot 12-limit6-menu-mcd
+drive found 'Burger King|0|1|0|4.1|1200 N Main St, Springfield'
+drive tap 'View menu'
+shot 13-limit6-menu-bk
+drive limit '0'
+drive home ''
+drive idle ''
+drive tap 'Demo'
+shot 14-demo-card
+drive tap 'View menu'
+shot 15-demo-menu
+drive home ''
+drive found 'Burger King|1|1|2|4.1|1200 N Main St, Springfield'
+shot 41-small-card
+drive tap 'View menu'
+shot 41-small-menu
+drive home ''
+drive found 'Burger King|1|1|2|4.1|1200 N Main St, Springfield'
+shot 40-wide-card
+drive tap 'View menu'
+shot 40-wide-menu
