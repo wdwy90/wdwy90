@@ -65,6 +65,8 @@ class ScreensShot {
     private fun run(theme: Int, suffix: String, short: Boolean = false) {
         this.suffix = suffix
         Prefs.setTheme(app, theme)
+        // Like the Play build, which has a key built in; made up at run time, never a real key.
+        Prefs.setApiKey(app, "AIza" + "A".repeat(31) + "WXYZ")
         setState(MenuRepository.State.Idle)
 
         step("01-home-permission") {
