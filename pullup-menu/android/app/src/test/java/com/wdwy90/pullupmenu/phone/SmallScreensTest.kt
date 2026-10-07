@@ -142,6 +142,16 @@ class SmallScreensTest {
         idle(Duration.ofMillis(500))
         checkScreen("Restaurant, long names open", long)
 
+        // The longest single word in any category name ("ButterBurgers", Culver's), opened.
+        showSample(sample().copy(
+            id = "long-words", name = "Culver's",
+            menuUrl = ChainMenus.get(app).menuUrlFor("Culver's"), prices = ChainPrices.get(app).forPlace("Culver's"),
+        ))
+        val words = launch(RestaurantActivity::class.java)
+        sectionHeader(words, 0).performClick() // ButterBurgers
+        idle(Duration.ofMillis(500))
+        checkScreen("Restaurant, long words open", words)
+
         showSample(sample().copy(id = "other-place", name = "Joe's Diner and Drive-In", menuUrl = null, prices = null))
         val other = launch(RestaurantActivity::class.java)
         checkScreen("Restaurant without an item list", other)
