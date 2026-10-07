@@ -24,6 +24,14 @@ class KeyMaskTest {
         assertEquals("Not set", KeyMask.mask(null))
     }
 
+    @Test fun spokenFormRevealsNoMoreThanTheMask() {
+        assertEquals("hidden, ends in X Y Z 9", KeyMask.spoken(key))
+        // A short key shows only dots, so nothing of it is read out either.
+        assertEquals("hidden", KeyMask.spoken("abc123"))
+        assertEquals("not set", KeyMask.spoken("  "))
+        assertEquals("not set", KeyMask.spoken(null))
+    }
+
     @Test fun validatesPlacesKeyShape() {
         assertEquals(39, key.length)
         assertTrue(KeyMask.looksValid(key))

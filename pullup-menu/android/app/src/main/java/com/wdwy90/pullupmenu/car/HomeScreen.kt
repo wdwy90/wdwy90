@@ -60,7 +60,11 @@ class HomeScreen(ctx: CarContext, private val session: MenuSession) : Screen(ctx
         }
         val row = Row.Builder().setTitle(title)
             .setImage(icon(statusIcon), Row.IMAGE_TYPE_ICON)
-            .apply { if (detail.isNotBlank()) addText(detail) }
+            .apply {
+                if (detail.isNotBlank()) addText(detail)
+                // The place name is Google data (the demo is the app's own sample).
+                if (state is State.Found && !state.restaurant.isDemo) addText("Info from Google Maps")
+            }
             .build()
 
         val pane = Pane.Builder()

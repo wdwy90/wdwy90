@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- accent_text, not accent: #FF6B35 is under 3:1 on the light theme's white cards. -->
+<!-- Radio buttons: accent when selected, gray otherwise. accent_text keeps 3:1 contrast on light surfaces. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_checked="true" android:color="@color/accent_text" />
     <item android:color="@color/text_secondary" />

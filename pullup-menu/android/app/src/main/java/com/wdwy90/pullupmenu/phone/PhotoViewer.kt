@@ -18,18 +18,17 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.wdwy90.pullupmenu.R
-import com.wdwy90.pullupmenu.core.MenuRepository
 import com.wdwy90.pullupmenu.core.PlacePhoto
 import com.wdwy90.pullupmenu.core.Restaurant
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 /**
  * Full-screen photo viewer: swipe or use the arrows to move between photos. Each photo shows its
- * photographer credit and a link to the photo on Google Maps, as Google requires.
- * Photos come from [MenuRepository.photo] at the same size as the grid, so they are usually cached.
+ * photographer credit, the Google Maps attribution and a link to the photo on Google Maps, as Google
+ * requires; tapping the photo hides only the buttons, never the credits.
+ * [load] shares the restaurant screen's downloads, so each photo is fetched (and billed) once.
  */
 @SuppressLint("ClickableViewAccessibility") // performClick is called; TalkBack uses the arrows and actions
 class PhotoViewer(
@@ -37,7 +36,7 @@ class PhotoViewer(
     private val scope: LifecycleCoroutineScope,
     private val restaurant: Restaurant,
     private val photos: List<PlacePhoto>,
-    private val widthPx: Int,
+    private val load: suspend (PlacePhoto) -> Bitmap?,
     private val open: (String) -> Unit,
 ) {
     private val dialog = Dialog(activity, R.style.Theme_PullUp_Viewer).apply { setContentView(R.layout.dialog_photo) }
@@ -49,12 +48,11 @@ class PhotoViewer(
     private val maps: TextView = root.findViewById(R.id.viewer_maps)
     private val prev: View = root.findViewById(R.id.viewer_prev)
     private val next: View = root.findViewById(R.id.viewer_next)
-    private val chrome: List<View> = listOf(
-        root.findViewById(R.id.viewer_top), root.findViewById(R.id.viewer_bottom), prev, next,
-    )
+    /** Hidden by a tap on the photo. The credits (bottom bar) always stay. */
+    private val chrome: List<View> = listOf(root.findViewById(R.id.viewer_top), prev, next)
 
     private var index = 0
-    private var load: Job? = null
+    private var loading: Job? = null
     private var chromeVisible = true
 
     init {
@@ -107,7 +105,7 @@ class PhotoViewer(
             go(-1)
             true
         }
-        dialog.setOnDismissListener { load?.cancel() }
+        dialog.setOnDismissListener { loading?.cancel() }
     }
 
     fun show(start: Int) {
@@ -151,29 +149,21 @@ class PhotoViewer(
         image.contentDescription =
             "Photo ${index + 1} of ${photos.size} of ${restaurant.name}" + (author?.let { ", by $it" } ?: "")
 
-        load?.cancel()
+        loading?.cancel()
         val shownIndex = index
-        load = scope.launch {
-            val cached = loadBitmap(ph)
+        loading = scope.launch {
+            val bitmap = load(ph)
             if (shownIndex != index) return@launch
             progress.visibility = View.GONE
-            if (cached == null) {
+            if (bitmap == null) {
                 image.setImageDrawable(null)
                 counter.text = "${index + 1} of ${photos.size} · couldn't load this photo"
                 return@launch
             }
-            slideIn(cached, direction)
+            slideIn(bitmap, direction)
         }
         // Only show the spinner if the photo isn't instantly available.
-        if (load?.isCompleted == false) progress.visibility = View.VISIBLE
-    }
-
-    private suspend fun loadBitmap(ph: PlacePhoto) = try {
-        MenuRepository.photo(activity, ph.name, widthPx)
-    } catch (e: CancellationException) {
-        throw e
-    } catch (e: Exception) {
-        null
+        if (loading?.isCompleted == false) progress.visibility = View.VISIBLE
     }
 
     private fun slideIn(bitmap: Bitmap, direction: Int) {

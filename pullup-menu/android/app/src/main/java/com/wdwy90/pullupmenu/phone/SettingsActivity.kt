@@ -57,6 +57,7 @@ class SettingsActivity : ThemedActivity() {
     private lateinit var keyError: TextView
     private lateinit var changeKey: Button
     private lateinit var removeKey: Button
+    private var removeKeyDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,6 +95,11 @@ class SettingsActivity : ThemedActivity() {
         // Never keep a typed key around once the screen is hidden.
         closeKeyEditor()
         super.onStop()
+    }
+
+    override fun onDestroy() {
+        removeKeyDialog?.dismiss()
+        super.onDestroy()
     }
 
     // ---- Detection ----
@@ -216,10 +222,9 @@ class SettingsActivity : ThemedActivity() {
                 else -> "Not set"
             }
         )
-        // Only the last four characters, never the whole key.
+        // At most the last four characters, never the whole key; TalkBack reads no more than is shown.
         setFact(R.id.fact_key, KeyMask.mask(key))
-        findViewById<View>(R.id.fact_key).contentDescription =
-            if (key.isBlank()) "Key: not set" else "Key: hidden, ends in ${key.takeLast(4).toCharArray().joinToString(" ")}"
+        findViewById<View>(R.id.fact_key).contentDescription = "Key: ${KeyMask.spoken(key)}"
         changeKey.text = if (key.isBlank()) "Add key" else "Change key"
         removeKey.visibility = if (userKey) View.VISIBLE else View.GONE
     }
@@ -261,7 +266,8 @@ class SettingsActivity : ThemedActivity() {
         } else {
             "Detection stops working until you add a key again."
         }
-        AlertDialog.Builder(this)
+        removeKeyDialog?.dismiss()
+        removeKeyDialog = AlertDialog.Builder(this)
             .setTitle("Remove your key?")
             .setMessage(message)
             .setPositiveButton("Remove") { _, _ ->
@@ -291,7 +297,8 @@ class SettingsActivity : ThemedActivity() {
             }
             if (theme == Prefs.theme(this)) return@setOnCheckedChangeListener
             Prefs.setTheme(this, theme)
-            recreate()
+            syncSystemNightMode(this)
+            recreateOnce()
         }
     }
 

@@ -55,6 +55,7 @@ class MainActivity : ThemedActivity() {
     private lateinit var statusTitle: TextView
     private lateinit var statusBody: TextView
     private lateinit var statusAction: Button
+    private lateinit var statusAttribution: View
     private lateinit var actionMenu: View
     private lateinit var actionDrive: View
 
@@ -71,6 +72,7 @@ class MainActivity : ThemedActivity() {
         statusTitle = findViewById(R.id.status_title)
         statusBody = findViewById(R.id.status_body)
         statusAction = findViewById(R.id.status_action)
+        statusAttribution = findViewById(R.id.status_attribution)
 
         fact(R.id.fact_car, R.drawable.ic_car, "Android Auto")
         fact(R.id.fact_auto, R.drawable.ic_bolt, "Auto-detect")
@@ -158,7 +160,7 @@ class MainActivity : ThemedActivity() {
 
         val (soft, strong) = when (status.tone) {
             Tone.NEUTRAL -> R.drawable.bg_pill_neutral to R.color.text_secondary
-            Tone.ACTIVE -> R.drawable.bg_pill_accent to R.color.accent
+            Tone.ACTIVE -> R.drawable.bg_pill_accent to R.color.accent_text
             Tone.SUCCESS -> R.drawable.bg_pill_success to R.color.success
             Tone.WARNING -> R.drawable.bg_pill_warning to R.color.warning
         }
@@ -198,12 +200,16 @@ class MainActivity : ThemedActivity() {
                 else -> "On"
             }
         )
-        setFact(R.id.fact_current, found?.restaurant?.name ?: "None yet")
+        setFact(R.id.fact_current, found?.restaurant?.name ?: "None")
         setFact(
             R.id.fact_last,
-            Prefs.lastDetected(this)?.let { (name, at) -> "$name · ${StatusModel.ago(at, System.currentTimeMillis())}" }
-                ?: "None yet"
+            Prefs.lastDetected(this)?.let { last ->
+                "${last.chain ?: "A restaurant"} · ${StatusModel.ago(last.atMs, System.currentTimeMillis())}"
+            } ?: "None yet"
         )
+        // A real place's name and details come from Google Maps; the demo is the app's own sample.
+        statusAttribution.visibility =
+            if (found != null && !found.restaurant.isDemo) View.VISIBLE else View.GONE
 
         setAction(actionMenu, found?.restaurant?.name ?: "Nothing detected yet", enabled = found != null)
         setAction(actionDrive, if (driveMode) "On · tap to stop" else "Watch on this phone", enabled = true)

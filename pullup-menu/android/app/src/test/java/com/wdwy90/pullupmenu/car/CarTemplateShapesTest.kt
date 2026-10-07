@@ -40,6 +40,21 @@ class CarTemplateShapesTest {
         PaneTemplate.Builder(pane).setTitle("Pull Up Menu").setHeaderAction(Action.APP_ICON).build()
     }
 
+    @Test fun homePaneAfterDetection() {
+        // Two lines of text is the most a pane row may have: the last stop and its Google credit.
+        val row = Row.Builder().setTitle("Watching for drive-thrus")
+            .setImage(icon(), Row.IMAGE_TYPE_ICON)
+            .addText("Last stop: Burger King")
+            .addText("Info from Google Maps")
+            .build()
+        val pane = Pane.Builder()
+            .addRow(row)
+            .addAction(action("Check now", primary = true))
+            .addAction(action("Show details"))
+            .build()
+        PaneTemplate.Builder(pane).setTitle("Pull Up Menu").setHeaderAction(Action.APP_ICON).build()
+    }
+
     @Test fun restaurantPane() {
         val info = Row.Builder().setTitle("★ 4.2 · Fast food restaurant")
             .setImage(icon(), Row.IMAGE_TYPE_ICON)

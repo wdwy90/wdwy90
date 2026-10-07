@@ -15,8 +15,10 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.PullUp">
 
+        <!-- configChanges="uiMode": ThemedActivity recreates these screens itself, only when light/dark changes. -->
         <activity
             android:name=".phone.MainActivity"
+            android:configChanges="uiMode"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,11 +28,13 @@
 
         <activity
             android:name=".phone.RestaurantActivity"
+            android:configChanges="uiMode"
             android:exported="false"
             android:launchMode="singleTop" />
 
         <activity
             android:name=".phone.SettingsActivity"
+            android:configChanges="uiMode"
             android:exported="false"
             android:label="@string/settings"
             android:parentActivityName=".phone.MainActivity"

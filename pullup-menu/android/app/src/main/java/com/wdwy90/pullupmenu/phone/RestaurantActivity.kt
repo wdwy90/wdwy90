@@ -1,11 +1,11 @@
 package com.wdwy90.pullupmenu.phone
 
 import android.animation.LayoutTransition
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
 import android.graphics.Paint
 import android.net.Uri
 import android.os.Bundle
@@ -35,6 +35,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.withStarted
 import com.wdwy90.pullupmenu.R
 import com.wdwy90.pullupmenu.core.ChainPrices
 import com.wdwy90.pullupmenu.core.ItemGroup
@@ -78,8 +79,13 @@ class RestaurantActivity : ThemedActivity() {
     private var settingSearchText = false
 
     private var heroJob: Job? = null
-    private var heroPulse: ValueAnimator? = null
+    private val photoJobs = ArrayList<Job>()
     private var viewer: PhotoViewer? = null
+    /**
+     * Photos of the shown restaurant downloaded so far. Each load is billed, so the header, grid and
+     * viewer reuse these rather than asking again (the app-wide cache may have dropped them).
+     */
+    private val bitmaps = HashMap<String, Bitmap>()
 
     /**
      * Photo download width. One size for the header, grid and viewer, so each photo is fetched (and
@@ -93,9 +99,10 @@ class RestaurantActivity : ThemedActivity() {
     private lateinit var tabBar: TabBar
     private lateinit var mainScroll: ScrollView
     private lateinit var mainContent: View
-    private lateinit var sticky: View
+    private lateinit var sticky: ScrollForwardingLayout
     private lateinit var stickySpacer: View
     private lateinit var topTitle: TextView
+    private lateinit var topAttribution: TextView
     private lateinit var nameView: TextView
     private lateinit var itemsContent: LinearLayout
     private lateinit var itemsList: LinearLayout
@@ -126,6 +133,7 @@ class RestaurantActivity : ThemedActivity() {
         sticky = findViewById(R.id.sticky)
         stickySpacer = findViewById(R.id.sticky_spacer)
         topTitle = findViewById(R.id.top_title)
+        topAttribution = findViewById(R.id.top_attribution)
         nameView = findViewById(R.id.name)
         itemsContent = findViewById(R.id.items_content)
         itemsList = findViewById(R.id.items_list)
@@ -143,8 +151,8 @@ class RestaurantActivity : ThemedActivity() {
         tabBar = TabBar(findViewById(R.id.tabs)) { i -> selectTab(Tab.entries[i], animate = true) }
 
         // The tab bar floats above the scroll view; the spacer keeps its place in the content.
-        // Taps on the bar's empty space must not reach the content hidden underneath it.
-        swallowTouches(sticky)
+        // Drags that start on the bar scroll the content; taps never reach the content underneath.
+        sticky.scrollTarget = mainScroll
         sticky.addOnLayoutChangeListener { _, _, top, _, bottom, _, oldTop, _, oldBottom ->
             if (bottom - top != oldBottom - oldTop) sticky.post { syncStickyHeight() }
         }
@@ -190,7 +198,6 @@ class RestaurantActivity : ThemedActivity() {
 
     override fun onDestroy() {
         viewer?.dismiss()
-        heroPulse?.cancel()
         destroyWebView()
         super.onDestroy()
     }
@@ -202,7 +209,7 @@ class RestaurantActivity : ThemedActivity() {
         mainScroll.visibility = View.GONE
         menuPanel.visibility = View.GONE
         sticky.visibility = View.GONE
-        topTitle.alpha = 0f
+        setTopTitleAlpha(0f)
     }
 
     private fun show(r: Restaurant) {
@@ -210,6 +217,8 @@ class RestaurantActivity : ThemedActivity() {
         shown = r
         viewer?.dismiss()
         viewer = null
+        cancelPhotoLoads()
+        bitmaps.clear()
         findViewById<View>(R.id.empty_state).visibility = View.GONE
         sticky.visibility = View.VISIBLE
 
@@ -236,6 +245,7 @@ class RestaurantActivity : ThemedActivity() {
             if (navigate.visibility == View.GONE && maps.visibility == View.GONE) View.GONE else View.VISIBLE
         // The demo is sample data, not Google data: no Google Maps attribution for it.
         findViewById<View>(R.id.attribution).visibility = if (r.isDemo) View.GONE else View.VISIBLE
+        topAttribution.visibility = if (r.isDemo) View.GONE else View.VISIBLE
 
         showHero(r)
         setUpItems(r)
@@ -269,7 +279,6 @@ class RestaurantActivity : ThemedActivity() {
 
     private fun showHero(r: Restaurant) {
         heroJob?.cancel()
-        heroPulse?.cancel()
         val hero = findViewById<View>(R.id.hero)
         val image = findViewById<ImageView>(R.id.hero_image)
         val placeholder = findViewById<View>(R.id.hero_placeholder)
@@ -285,13 +294,17 @@ class RestaurantActivity : ThemedActivity() {
         hero.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
 
         val ph = r.photos.firstOrNull() ?: return
-        heroPulse = hero.loadingPulse()
         heroJob = lifecycleScope.launch {
-            val bmp = loadPhoto(ph)
-            if (shown?.id != r.id) return@launch
-            heroPulse?.cancel()
-            hero.alpha = 1f
-            if (bmp == null) return@launch
+            // Photo loads are billed: one found while this screen is in the background waits until it's seen.
+            lifecycle.withStarted {}
+            val pulse = hero.loadingPulse()
+            val bmp = try {
+                loadPhoto(ph)
+            } finally {
+                pulse?.cancel()
+                hero.alpha = 1f
+            }
+            if (bmp == null || shown?.id != r.id) return@launch
             image.setImageBitmap(bmp)
             image.fadeIn()
             placeholder.visibility = View.GONE
@@ -349,7 +362,7 @@ class RestaurantActivity : ThemedActivity() {
         if (tab == Tab.MENU || mainScroll.visibility != View.VISIBLE) {
             sticky.translationY = 0f
             sticky.elevation = dp(3).toFloat()
-            topTitle.alpha = if (shown != null) 1f else 0f
+            setTopTitleAlpha(if (shown != null) 1f else 0f)
             return
         }
         val y = mainScroll.scrollY
@@ -357,7 +370,23 @@ class RestaurantActivity : ThemedActivity() {
         sticky.translationY = offset.toFloat()
         sticky.elevation = if (offset == 0 && y > 0) dp(3).toFloat() else 0f
         val nameBottom = nameView.topIn(mainContent) + nameView.height
-        topTitle.alpha = ((y - nameBottom + dp(16)) / dp(24).toFloat()).coerceIn(0f, 1f)
+        setTopTitleAlpha(((y - nameBottom + dp(16)) / dp(24).toFloat()).coerceIn(0f, 1f))
+    }
+
+    /**
+     * The top bar's name is Google data too, so its Google Maps attribution shows with it. Screen
+     * readers get the name from the header, except on the Menu tab, which hides the header.
+     */
+    private fun setTopTitleAlpha(alpha: Float) {
+        topTitle.alpha = alpha
+        topAttribution.alpha = alpha
+        val important = if (tab == Tab.MENU && alpha > 0f) {
+            View.IMPORTANT_FOR_ACCESSIBILITY_YES
+        } else {
+            View.IMPORTANT_FOR_ACCESSIBILITY_NO
+        }
+        topTitle.importantForAccessibility = important
+        topAttribution.importantForAccessibility = important
     }
 
     private fun updateBack() {
@@ -750,6 +779,7 @@ class RestaurantActivity : ThemedActivity() {
 
     private fun showPhotos(r: Restaurant) {
         photosLoadedFor = r.id
+        cancelPhotoLoads()
         val grid = findViewById<GridLayout>(R.id.photo_grid)
         val message = findViewById<TextView>(R.id.photos_message)
         grid.removeAllViews()
@@ -794,7 +824,7 @@ class RestaurantActivity : ThemedActivity() {
             ))
             val credit = styled(R.style.Text_Secondary, "").apply {
                 textSize = 12f
-                minHeight = dp(32)
+                minHeight = dp(48) // often a link to the photographer's profile
                 gravity = android.view.Gravity.CENTER_VERTICAL
                 maxLines = 2
             }
@@ -804,11 +834,14 @@ class RestaurantActivity : ThemedActivity() {
             grid.addView(cell)
 
             val pulse = tile.loadingPulse()
-            lifecycleScope.launch {
-                val bmp = loadPhoto(ph)
+            photoJobs += lifecycleScope.launch {
+                val bmp = try {
+                    loadPhoto(ph)
+                } finally {
+                    pulse?.cancel()
+                    tile.alpha = 1f
+                }
                 if (shown?.id != r.id) return@launch
-                pulse?.cancel()
-                tile.alpha = 1f
                 if (bmp != null) {
                     image.setImageBitmap(bmp)
                     image.fadeIn()
@@ -820,11 +853,17 @@ class RestaurantActivity : ThemedActivity() {
         }
     }
 
+    private fun cancelPhotoLoads() {
+        photoJobs.forEach { it.cancel() }
+        photoJobs.clear()
+    }
+
     private fun openViewer(r: Restaurant, index: Int) {
         val photos = r.photos.take(MAX_PHOTOS)
         if (photos.isEmpty()) return
         viewer?.dismiss()
-        viewer = PhotoViewer(this, lifecycleScope, r, photos, photoWidth) { open(it) }.also { it.show(index) }
+        viewer = PhotoViewer(this, lifecycleScope, r, photos, load = ::loadPhoto, open = ::open)
+            .also { it.show(index) }
     }
 
     /** Google requires the photographer's name (and profile link) with each photo. */
@@ -842,18 +881,22 @@ class RestaurantActivity : ThemedActivity() {
         }
     }
 
-    private suspend fun loadPhoto(ph: PlacePhoto) = try {
-        MenuRepository.photo(this, ph.name, photoWidth)
-    } catch (e: CancellationException) {
-        throw e
-    } catch (e: Exception) {
-        null
+    /** A photo of the shown restaurant, downloaded at most once while it's shown; null if it can't load. */
+    private suspend fun loadPhoto(ph: PlacePhoto): Bitmap? {
+        bitmaps[ph.name]?.let { return it }
+        val forId = shown?.id
+        val bmp = try {
+            MenuRepository.photo(this, ph.name, photoWidth)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            null
+        }
+        if (bmp != null && shown?.id == forId) bitmaps[ph.name] = bmp
+        return bmp
     }
 
     // ---- Helpers ----
-
-    @SuppressLint("ClickableViewAccessibility") // consumes leftover touches only; nothing to click
-    private fun swallowTouches(view: View) = view.setOnTouchListener { _, _ -> true }
 
     private fun styled(style: Int, s: String) = TextView(this, null, 0, style).apply { text = s }
 

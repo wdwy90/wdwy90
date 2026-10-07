@@ -58,6 +58,8 @@ object Notifier {
             .setSmallIcon(R.drawable.ic_menu)
             .setContentTitle("You're at ${r.name}")
             .setContentText(if (r.menuUrl != null) "Tap for the full menu" else "Tap to see the menu and photos")
+            // The place name comes from Google Maps, which must be credited wherever it's shown.
+            .setSubText(ctx.getString(R.string.google_maps))
             .setContentIntent(tap)
             .setAutoCancel(true)
         if (carBanner) {

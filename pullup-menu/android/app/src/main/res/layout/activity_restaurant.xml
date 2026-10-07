@@ -4,7 +4,7 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!-- Top bar; the title fades in once the restaurant name scrolls away. -->
+    <!-- Top bar; the title (with its Google Maps attribution) fades in once the restaurant name scrolls away. -->
     <LinearLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent" android:layout_height="56dp"
@@ -22,6 +22,17 @@
             android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
             android:layout_marginStart="4dp"
             android:singleLine="true" android:ellipsize="end"
+            android:alpha="0"
+            android:importantForAccessibility="no" />
+        <!-- Google Maps Platform attribution for the name: exact text, allowed colors only, never wrapped. -->
+        <TextView
+            android:id="@+id/top_attribution"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="@string/google_maps"
+            android:textSize="12sp" android:fontFamily="sans-serif" android:textStyle="normal"
+            android:textColor="@color/gmp_attribution"
+            android:maxLines="1" android:singleLine="true"
             android:alpha="0"
             android:importantForAccessibility="no" />
     </LinearLayout>
@@ -72,7 +83,7 @@
                         android:id="@+id/hero_credit"
                         style="@style/Text.Secondary"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:minHeight="32dp"
+                        android:minHeight="@dimen/touch_target"
                         android:gravity="center_vertical"
                         android:textSize="12sp"
                         android:visibility="gone" />
@@ -321,8 +332,9 @@
             </HorizontalScrollView>
         </LinearLayout>
 
-        <!-- Tab bar (and category chips on the Items tab). Scrolls with the header, then pins to the top. -->
-        <LinearLayout
+        <!-- Tab bar (and category chips on the Items tab). Scrolls with the header, then pins to the top.
+             Vertical drags that start on it scroll the content (ScrollForwardingLayout). -->
+        <com.wdwy90.pullupmenu.phone.ScrollForwardingLayout
             android:id="@+id/sticky"
             android:layout_width="match_parent" android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -345,7 +357,7 @@
                     android:orientation="horizontal"
                     android:paddingStart="@dimen/gutter" android:paddingEnd="12dp" />
             </HorizontalScrollView>
-        </LinearLayout>
+        </com.wdwy90.pullupmenu.phone.ScrollForwardingLayout>
 
         <!-- Nothing detected yet (e.g. opened from a stale notification after the app restarted). -->
         <LinearLayout

@@ -117,6 +117,19 @@
             <include android:id="@+id/fact_auto" layout="@layout/item_fact" />
             <include android:id="@+id/fact_current" layout="@layout/item_fact" />
             <include android:id="@+id/fact_last" layout="@layout/item_fact" />
+
+            <!-- Google Maps Platform attribution while the card names a place from Google:
+                 exact text, allowed colors only, never wrapped. -->
+            <TextView
+                android:id="@+id/status_attribution"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="4dp"
+                android:text="@string/google_maps"
+                android:textSize="12sp" android:fontFamily="sans-serif" android:textStyle="normal"
+                android:textColor="@color/gmp_attribution"
+                android:maxLines="1" android:singleLine="true"
+                android:visibility="gone" />
         </LinearLayout>
 
         <TextView

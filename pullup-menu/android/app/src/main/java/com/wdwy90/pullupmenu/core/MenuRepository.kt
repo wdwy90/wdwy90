@@ -56,8 +56,11 @@ object MenuRepository {
 
     private val photosInFlight = ConcurrentHashMap<String, Deferred<Bitmap?>>()
 
-    private val photoCache = object : LruCache<String, Bitmap>(24 * 1024 * 1024) {
-        override fun sizeOf(key: String, value: Bitmap) = value.byteCount
+    /** Room for a restaurant's photos at screen width (up to about 7 MB each): an eighth of the heap, 24 MB at least. */
+    private val photoCache = object : LruCache<String, Bitmap>(
+        maxOf(24L * 1024 * 1024, Runtime.getRuntime().maxMemory() / 8).coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
+    ) {
+        override fun sizeOf(key: String, value: Bitmap) = value.allocationByteCount
     }
 
     fun lookup(ctx: Context, lat: Double, lng: Double, auto: Boolean = false) {
@@ -95,7 +98,7 @@ object MenuRepository {
             }
             _state.value = result
             if (result is State.Found) {
-                Prefs.setLastDetected(appCtx, result.restaurant.name, result.atMs)
+                Prefs.setLastDetected(appCtx, result.restaurant.prices?.chain, result.atMs)
                 try {
                     Notifier.arrival(appCtx, result.restaurant, carBanner = auto && Prefs.carBanner(appCtx))
                 } catch (e: Exception) {
@@ -108,7 +111,7 @@ object MenuRepository {
     /** User picked a different place from the nearby list. */
     fun choose(ctx: Context, restaurant: Restaurant) {
         val current = _state.value as? State.Found ?: return
-        if (!restaurant.isDemo) Prefs.setLastDetected(ctx.applicationContext, restaurant.name, current.atMs)
+        if (!restaurant.isDemo) Prefs.setLastDetected(ctx.applicationContext, restaurant.prices?.chain, current.atMs)
         val all = listOf(current.restaurant) + current.others
         _state.value = current.copy(restaurant = restaurant, others = all.filter { it.id != restaurant.id })
     }

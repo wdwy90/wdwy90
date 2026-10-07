@@ -87,20 +87,25 @@
     </style>
 
     <!-- No parent: the theme's default switch style still applies underneath (DeviceDefault switch styles are private). -->
+    <!-- Switches and radio buttons show live state (preferences, whether Drive Mode runs), set in code.
+         They don't save their own state: restoring a stale one after the screen is recreated would fire
+         their listeners and act on it (for example start Drive Mode). -->
     <style name="Switch">
         <item name="android:minHeight">@dimen/touch_target</item>
         <item name="android:textColor">@color/text_primary</item>
         <item name="android:textSize">16sp</item>
         <item name="android:thumbTint">@color/switch_thumb</item>
         <item name="android:trackTint">@color/switch_track</item>
+        <item name="android:saveEnabled">false</item>
     </style>
 
     <style name="Radio">
         <item name="android:minHeight">@dimen/touch_target</item>
         <item name="android:textColor">@color/text_primary</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:buttonTint">@color/accent</item>
+        <item name="android:buttonTint">@color/control_tint</item>
         <item name="android:paddingStart">8dp</item>
+        <item name="android:saveEnabled">false</item>
     </style>
 
     <style name="Tab">

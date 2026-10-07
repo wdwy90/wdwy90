@@ -13,8 +13,11 @@ object Prefs {
     private const val KEY_AUTO_DETECT = "auto_detect"
     private const val KEY_CAR_BANNER = "car_banner"
     private const val KEY_THEME = "theme"
-    private const val KEY_LAST_NAME = "last_detected_name"
+    private const val KEY_SYSTEM_NIGHT = "system_night_mode"
+    private const val KEY_LAST_CHAIN = "last_detected_chain"
     private const val KEY_LAST_AT = "last_detected_at"
+    /** Held a Google place name in early 1.8 builds; Google's terms don't allow storing those. */
+    private const val KEY_LAST_NAME_REMOVED = "last_detected_name"
 
     const val THEME_SYSTEM = 0
     const val THEME_DARK = 1
@@ -68,13 +71,26 @@ object Prefs {
 
     fun setTheme(ctx: Context, theme: Int) = prefs(ctx).edit().putInt(KEY_THEME, theme).apply()
 
-    /** Last real (not demo) restaurant detected, for the dashboard. */
-    fun lastDetected(ctx: Context): Pair<String, Long>? {
+    /** The UiModeManager night mode last handed to Android 12+ for this app, or -1. */
+    fun systemNightMode(ctx: Context): Int = prefs(ctx).getInt(KEY_SYSTEM_NIGHT, -1)
+
+    fun setSystemNightMode(ctx: Context, mode: Int) =
+        prefs(ctx).edit().putInt(KEY_SYSTEM_NIGHT, mode).apply()
+
+    /** The last real (not demo) detection: its chain, when it's one with an item list, and the time. */
+    data class LastDetected(val chain: String?, val atMs: Long)
+
+    /**
+     * Only the chain name from the app's own data and the time are kept. Google's terms don't allow
+     * storing place details such as names, so a place outside the chain list stays anonymous.
+     */
+    fun lastDetected(ctx: Context): LastDetected? {
         val p = prefs(ctx)
-        val name = p.getString(KEY_LAST_NAME, null) ?: return null
-        return name to p.getLong(KEY_LAST_AT, 0L)
+        if (p.contains(KEY_LAST_NAME_REMOVED)) p.edit().remove(KEY_LAST_NAME_REMOVED).apply()
+        if (!p.contains(KEY_LAST_AT)) return null
+        return LastDetected(p.getString(KEY_LAST_CHAIN, null)?.ifBlank { null }, p.getLong(KEY_LAST_AT, 0L))
     }
 
-    fun setLastDetected(ctx: Context, name: String, atMs: Long) =
-        prefs(ctx).edit().putString(KEY_LAST_NAME, name).putLong(KEY_LAST_AT, atMs).apply()
+    fun setLastDetected(ctx: Context, chain: String?, atMs: Long) =
+        prefs(ctx).edit().putString(KEY_LAST_CHAIN, chain.orEmpty()).putLong(KEY_LAST_AT, atMs).apply()
 }
