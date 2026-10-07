@@ -15,6 +15,7 @@ jobs:
     timeout-minutes: 75
     env:
       OUT: ${{ github.workspace }}/shots
+      ANDROID_AVD_HOME: /home/runner/.android/avd
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-java@v5
@@ -46,7 +47,7 @@ jobs:
           $SDKM --list 2>/dev/null | grep -i automotive | sort -u > "$OUT/images.txt" || true
           cat "$OUT/images.txt"
           IMG=""
-          for want in "android-33;android-automotive-playstore;x86_64" "android-34;android-automotive-playstore;x86_64" "android-32;android-automotive-playstore;x86_64" "android-34-ext9;android-automotive-playstore;x86_64" "android-33;android-automotive;x86_64" "android-34;android-automotive;x86_64"; do
+          for want in "android-34-ext9;android-automotive;x86_64" "android-33;android-automotive;x86_64" "android-35-ext15;android-automotive;x86_64" "android-34-ext9;android-automotive-playstore;x86_64"; do
             if grep -q "system-images;$want" "$OUT/images.txt"; then IMG="system-images;$want"; break; fi
           done
           [ -n "$IMG" ] || IMG=$(grep -o "system-images;[^ |]*automotive[^ |]*x86_64" "$OUT/images.txt" | tail -1)
@@ -58,13 +59,20 @@ jobs:
           DEV=$(grep -i automotive "$OUT/devices.txt" | grep -i 1024 | head -1)
           [ -n "$DEV" ] || DEV=$(grep -i automotive "$OUT/devices.txt" | head -1)
           echo "DEV=$DEV" | tee -a "$OUT/chosen.txt"
-          echo no | $AVDM create avd -n aa -k "$IMG" ${DEV:+-d "$DEV"} --force > "$OUT/avd.txt" 2>&1
-          cat "$OUT/avd.txt" | tail -3
+          mkdir -p "$ANDROID_AVD_HOME"
+          echo no | $AVDM create avd -n aa -k "$IMG" ${DEV:+-d "$DEV"} --force > "$OUT/avd.txt" 2>&1 || echo "avdmanager exit $?" >> "$OUT/avd.txt"
+          if [ ! -f "$ANDROID_AVD_HOME/aa.ini" ]; then
+            echo "retry without a device profile" >> "$OUT/avd.txt"
+            echo no | $AVDM create avd -n aa -k "$IMG" --force >> "$OUT/avd.txt" 2>&1 || echo "avdmanager exit $?" >> "$OUT/avd.txt"
+          fi
+          ls -la "$ANDROID_AVD_HOME" >> "$OUT/avd.txt" 2>&1
+          $ANDROID_HOME/emulator/emulator -list-avds >> "$OUT/avd.txt" 2>&1 || true
+          tr '\r' '\n' < "$OUT/avd.txt" | grep -v "^\s*$" | tail -20
       - name: Boot
         run: |
           export PATH=$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PATH
           nohup emulator -avd aa -no-window -no-audio -no-boot-anim -no-snapshot -gpu swiftshader_indirect -camera-back none -camera-front none > "$OUT/emulator.txt" 2>&1 &
-          adb wait-for-device
+          timeout 300 adb wait-for-device || { echo "no device"; tail -50 "$OUT/emulator.txt"; exit 1; }
           for i in $(seq 1 120); do
             [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ] && break
             sleep 5
