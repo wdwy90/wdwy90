@@ -195,7 +195,13 @@ object MenuRepository {
         lookupJob?.cancel()
         if (!restaurant.isDemo) Prefs.setLastDetected(ctx.applicationContext, restaurant.prices?.chain, current.atMs)
         val all = listOf(current.restaurant) + current.others
-        val chosen = current.copy(restaurant = restaurant, others = all.filter { it.id != restaurant.id }, chosen = true)
+        val chosen = current.copy(
+            restaurant = restaurant,
+            others = all.filter { it.id != restaurant.id },
+            chosen = true,
+            // A background check only refreshes the visit's own place: another one's open/closed is as old as the lookup.
+            checkedMs = if (restaurant.id == current.restaurant.id) current.checkedMs else current.atMs,
+        )
         _state.value = chosen
         // The place picked is the one this visit is at.
         if (!restaurant.isDemo) visit = chosen

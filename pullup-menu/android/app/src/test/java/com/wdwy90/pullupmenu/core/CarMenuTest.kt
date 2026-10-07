@@ -10,9 +10,13 @@ class CarMenuTest {
 
     private data class Walk(val reached: List<String>, val left: Int, val depth: Int, val screens: Int)
 
-    /** Opens every row like a driver would, [CarMenu.LEVELS] list screens deep at most. */
-    private fun walk(groups: List<ItemGroup>, rows: Int, level: Int = 1): Walk =
-        when (val page = CarMenu.page(groups, rows, CarMenu.LEVELS - level + 1)) {
+    /**
+     * Opens every row like a driver would, [CarMenu.LEVELS] list screens deep at most, on a host
+     * that allows [limit] rows per list (each screen plans with [CarMenu.rowsFor], as MenuScreen does).
+     */
+    private fun walk(groups: List<ItemGroup>, limit: Int, level: Int = 1): Walk {
+        val rows = CarMenu.rowsFor(limit, level)
+        return when (val page = CarMenu.page(groups, rows, CarMenu.LEVELS - level + 1)) {
             is CarMenu.Page.Items -> {
                 val rowCount = page.items.size + if (page.more > 0) 1 else 0
                 assertTrue("$rowCount rows > $rows", rowCount <= rows)
@@ -21,10 +25,11 @@ class CarMenuTest {
             is CarMenu.Page.Rows -> {
                 assertTrue("${page.entries.size} rows > $rows", page.entries.size <= rows)
                 assertTrue("a level-$level screen opens rows past the last level", level < CarMenu.LEVELS)
-                val below = page.entries.map { walk(it.groups, rows, level + 1) }
+                val below = page.entries.map { walk(it.groups, limit, level + 1) }
                 Walk(below.flatMap { it.reached }, below.sumOf { it.left }, below.maxOf { it.depth }, 1 + below.sumOf { it.screens })
             }
         }
+    }
 
     private fun chains(): List<Pair<String, List<ItemGroup>>> {
         val prices = ChainPrices(File("../../shared/chain_prices.json").readText())
@@ -87,6 +92,12 @@ class CarMenuTest {
         assertTrue(page is CarMenu.Page.Items)
     }
 
+    @Test fun theCategoriesKeepARowForTheSource() {
+        assertEquals(5, CarMenu.rowsFor(6, 1))
+        assertEquals(6, CarMenu.rowsFor(6, 2))
+        assertEquals(99, CarMenu.rowsFor(100, 1))
+    }
+
     @Test fun everyChainShowsEachCategoryOnceAndEveryItemOnAnyHost() {
         for ((name, groups) in chains()) {
             for (rows in listOf(6, 7, 8, 10, 12, 20, 25, 100)) {
@@ -95,8 +106,8 @@ class CarMenuTest {
                 assertEquals("$name at $rows rows: items left off", 0, w.left)
                 assertEquals("$name at $rows rows", expected, w.reached)
                 assertTrue("$name at $rows rows needs ${w.depth} screens", w.depth <= CarMenu.LEVELS)
-                val top = CarMenu.page(groups, rows, CarMenu.LEVELS)
-                if (groups.size > 1 && rows >= groups.size) {
+                val top = CarMenu.page(groups, CarMenu.rowsFor(rows, 1), CarMenu.LEVELS)
+                if (groups.size > 1 && CarMenu.rowsFor(rows, 1) >= groups.size) {
                     // Room for every category: one row each, in the chain's order.
                     top as CarMenu.Page.Rows
                     assertEquals("$name at $rows rows", groups.map { it.title }, top.entries.map { it.title })

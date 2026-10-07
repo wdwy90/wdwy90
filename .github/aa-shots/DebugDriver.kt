@@ -102,7 +102,7 @@ object DebugDriver {
     }
 
     /**
-     * arg: "name|photo|open|others|rating|address", e.g. "Burger King|1|1|2|4.1|1200 N Main St, Springfield".
+     * arg: "name|photo|open|others|rating|address|photo author", e.g. "Burger King|1|1|2|4.1|1200 N Main St, Springfield".
      * photo 1 = a made-up placeholder image in the photo cache; open 1/0/- = Google's open now / closed now / no hours.
      */
     private fun found(ctx: Context, arg: String) {
@@ -113,8 +113,9 @@ object DebugDriver {
         val others = p.getOrNull(3)?.toIntOrNull() ?: 0
         val rating = p.getOrNull(4)?.toDoubleOrNull()
         val address = p.getOrNull(5) ?: "1200 N Main St, Springfield"
+        val author = p.getOrNull(6)?.ifBlank { null } ?: "Jordan Lee"
         serial++
-        val photos = if (withPhoto) listOf(PlacePhoto("places/dbg$serial/photos/1", "Jordan Lee", null, null)) else emptyList()
+        val photos = if (withPhoto) listOf(PlacePhoto("places/dbg$serial/photos/1", author, null, null)) else emptyList()
         if (withPhoto) photoCache().put("places/dbg$serial/photos/1@480", placeholder())
         val r = place(ctx, "dbg$serial", name, address, rating, open, photos, 40.0)
         val near = listOf("Taco Bell" to 75.0, "Starbucks" to 120.0, "Wendy's" to 190.0, "Chick-fil-A" to 260.0)

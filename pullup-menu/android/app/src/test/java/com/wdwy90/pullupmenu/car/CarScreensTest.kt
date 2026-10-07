@@ -82,6 +82,7 @@ class CarScreensTest {
         val status = t.pane.rows[0].texts[0].toCharSequence() as Spanned
         assertEquals("Open now · 260 ft away", status.toString())
         assertEquals(1, status.getSpans(0, status.length, ForegroundCarColorSpan::class.java).size)
+        assertEquals("Info from Google Maps", t.pane.rows[0].texts[1].toString())
         assertEquals("View menu", t.pane.actions[0].title.toString())
         assertEquals("Not here?", t.actionStrip!!.actions.single().title.toString())
     }
@@ -112,9 +113,13 @@ class CarScreensTest {
         val r = place("Burger King")
         val t = MenuScreen(car, r, r.prices!!).onGetTemplate() as ListTemplate
         val rows = t.singleList!!.items.map { it as Row }
-        assertEquals(ItemGroups.byCategory(r.prices!!.items).map { it.title }, rows.map { it.title.toString() })
-        assertTrue(rows.all { it.isBrowsable && it.image != null })
+        val categories = rows.dropLast(1)
+        assertEquals(ItemGroups.byCategory(r.prices!!.items).map { it.title }, categories.map { it.title.toString() })
+        assertTrue(categories.all { it.isBrowsable && it.image != null })
         assertEquals("9 items", rows[0].texts[0].toString())
+        // The last row says where the list comes from, as on the phone.
+        assertEquals("Source: ${r.prices!!.sourceName}", rows.last().title.toString())
+        assertTrue(!rows.last().isBrowsable)
         assertEquals(1, t.actionStrip!!.actions.size) // search
     }
 
@@ -168,7 +173,7 @@ class CarScreensTest {
     /** Builds a menu screen and every screen its rows open, like a driver tapping through all of it. */
     private fun walk(r: Restaurant, groups: List<ItemGroup>, title: String, level: Int) {
         val t = MenuScreen(car, r, r.prices!!, groups, title, level).onGetTemplate() as ListTemplate
-        val page = CarMenu.page(groups, CarUi.listLimit(car), CarMenu.LEVELS - level + 1)
+        val page = CarMenu.page(groups, CarMenu.rowsFor(CarUi.listLimit(car), level), CarMenu.LEVELS - level + 1)
         assertTrue(t.singleList!!.items.size <= CarUi.listLimit(car))
         if (page is CarMenu.Page.Rows) page.entries.forEach { walk(r, it.groups, it.title, level + 1) }
     }

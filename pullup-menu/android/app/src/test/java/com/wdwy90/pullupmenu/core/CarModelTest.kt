@@ -82,22 +82,22 @@ class CarModelTest {
     @Test fun cardSaysWhereWhatAndWhetherTheMenuIsHere() {
         val rows = CarModel.card(place(), now - 1000, now, showDistance = false, photoShown = false, photoAuthor = null)
         assertEquals(listOf("1200 Main St", "4.3 · Fast food restaurant", "Menu ready"), rows.map { it.title })
-        assertEquals("Open now", rows[0].lines.single().text)
-        assertEquals(CarModel.Tone.GOOD, rows[0].lines.single().parts[0].tone)
-        assertEquals(listOf("Info from Google Maps"), rows[1].lines.map { it.text })
+        assertEquals(listOf("Open now", "Info from Google Maps"), rows[0].lines.map { it.text })
+        assertEquals(CarModel.Tone.GOOD, rows[0].lines[0].parts[0].tone)
+        assertTrue(rows[1].lines.isEmpty())
         assertEquals(listOf("2 categories · 5 items", "Availability varies by location"), rows[2].lines.map { it.text })
     }
 
     @Test fun openStatusIsOnlyShownWhileGooglesAnswerIsFresh() {
         val stale = CarModel.card(place(), now - CarModel.STATUS_FRESH_MS - 1, now, false, false, null)
-        assertTrue(stale[0].lines.isEmpty())
+        assertEquals(listOf("Info from Google Maps"), stale[0].lines.map { it.text })
         val unknown = CarModel.card(place(openNow = null), now, now, false, false, null)
-        assertTrue(unknown[0].lines.isEmpty())
+        assertEquals(listOf("Info from Google Maps"), unknown[0].lines.map { it.text })
         val closed = CarModel.card(place(openNow = false), now, now, false, false, null)
-        assertEquals(CarModel.Tone.BAD, closed[0].lines.single().parts[0].tone)
-        assertEquals("Closed now", closed[0].lines.single().text)
+        assertEquals(CarModel.Tone.BAD, closed[0].lines[0].parts[0].tone)
+        assertEquals("Closed now", closed[0].lines[0].text)
         val gone = CarModel.card(place(businessStatus = "CLOSED_TEMPORARILY"), now, now, false, false, null)
-        assertEquals("Temporarily closed", gone[0].lines.single().text)
+        assertEquals("Temporarily closed", gone[0].lines[0].text)
     }
 
     @Test fun rowTitlesDoNotMoveWhenTheStatusOrPhotoChanges() {
@@ -108,14 +108,19 @@ class CarModelTest {
 
     @Test fun distanceOnlyWhenOtherPlacesAreClose() {
         val rows = CarModel.card(place(), now, now, showDistance = true, photoShown = false, photoAuthor = null)
-        assertEquals("Open now · 150 ft away", rows[0].lines.single().text)
+        assertEquals("Open now · 150 ft away", rows[0].lines[0].text)
     }
 
-    @Test fun photoCreditIsItsOwnLine() {
-        val rows = CarModel.card(place(), now, now, false, photoShown = true, photoAuthor = "Jordan Lee")
-        assertEquals(listOf("Info from Google Maps", "Photo: Jordan Lee"), rows[1].lines.map { it.text })
+    @Test fun photoCreditIsTheOnlyTextOfItsRowSoItWrapsInsteadOfBeingCut() {
+        // The host cuts a row's texts to one line each when there are two; a lone text may wrap.
+        val long = "Christopher Montgomery-Alexander Photography"
+        val rows = CarModel.card(place(), now, now, true, photoShown = true, photoAuthor = long)
+        val credit = rows.single { row -> row.lines.any { it.text.startsWith("Photo") } }
+        assertEquals(listOf("Photo: $long"), credit.lines.map { it.text })
         val anonymous = CarModel.card(place(), now, now, false, photoShown = true, photoAuthor = null)
-        assertEquals("Photo from Google Maps", anonymous[1].lines[1].text)
+        assertEquals(listOf("Photo from Google Maps"), anonymous[1].lines.map { it.text })
+        // The Google credit stays on the card either way.
+        assertTrue(rows[0].lines.any { it.text == "Info from Google Maps" })
     }
 
     @Test fun noRatingNoMenuNoInventedData() {
@@ -128,7 +133,7 @@ class CarModelTest {
     @Test fun theDemoIsLabelledAsSample() {
         val rows = CarModel.card(place(isDemo = true, rating = null, openNow = null), now, now, true, false, null)
         assertEquals("Sample restaurant for the demo", rows[1].lines.single().text)
-        assertTrue(rows[0].lines.isEmpty()) // no distance for the demo
+        assertTrue(rows[0].lines.isEmpty()) // no distance and no Google credit for the demo
     }
 
     @Test fun distances() {
@@ -149,6 +154,13 @@ class CarModelTest {
         assertEquals("4 items · Burgers 1 to Burgers 4", CarModel.entryText(part))
         val combined = CarMenu.Entry("Sides, Drinks", listOf(ItemGroup("Sides", items("Sides", 2)), ItemGroup("Drinks", items("Drinks", 3))), CarMenu.Kind.COMBINED)
         assertEquals("2 categories · 5 items", CarModel.entryText(combined))
+    }
+
+    @Test fun theMenuSaysWhereItsListComesFrom() {
+        val own = PriceList("Whataburger", items("Burgers", 2), "Oct 6, 2026", "Pull Up Menu list (not verified)", "")
+        assertEquals("Source: Pull Up Menu list (not verified)" to "Checked Oct 6, 2026", CarModel.source(own))
+        val site = PriceList("Wendy's", items("Burgers", 2), "", "order.wendys.com", "")
+        assertEquals("Source: order.wendys.com" to null, CarModel.source(site))
     }
 
     @Test fun searchFindsItemsInMenuOrderWithinTheRowLimit() {

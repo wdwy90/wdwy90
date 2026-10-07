@@ -38,6 +38,11 @@ jobs:
           cp .github/aa-shots/probe-before.sh .github/aa-shots/probe.sh
           echo "OUTBRANCH=aa-shots-out-before" >> "$GITHUB_ENV"
           grep -n "versionName" pullup-menu/android/app/build.gradle.kts
+      - name: Use the short probe (review-fix render only)
+        if: hashFiles('.github/aa-shots/mode-quick') != ''
+        run: |
+          cp .github/aa-shots/probe-quick.sh .github/aa-shots/probe.sh
+          echo "OUTBRANCH=aa-shots-out-quick" >> "$GITHUB_ENV"
       - name: Build the debug APK with the automotive activity (this run only)
         working-directory: pullup-menu/android
         run: |

@@ -22,10 +22,11 @@ import com.wdwy90.pullupmenu.phone.CategoryIcons
 
 /**
  * The menu on the car screen, categories first: the first list has one row per category (with how
- * many items it has), and a category opens onto its own items. [CarMenu] plans each screen within
- * the host's row limit and three lists in a row; on a host with a small limit a long category opens
- * into parts and neighbouring categories may share a row. These lists take the restaurant card's
- * place (see [RestaurantScreen.openMenu]), so Back from the categories brings the card back.
+ * many items it has) and a last row saying where the list comes from; a category opens onto its own
+ * items. [CarMenu] plans each screen within the host's row limit and three lists in a row; on a host
+ * with a small limit a long category opens into parts and neighbouring categories may share a row.
+ * These lists take the restaurant card's place (see [RestaurantScreen.openMenu]), so Back from the
+ * categories brings the card back.
  */
 class MenuScreen(
     ctx: CarContext,
@@ -42,7 +43,7 @@ class MenuScreen(
 
     /** Worked out once: the screen never changes while it's up. */
     private val page: CarMenu.Page by lazy {
-        CarMenu.page(groups, CarUi.listLimit(carContext), CarMenu.LEVELS - level + 1)
+        CarMenu.page(groups, CarMenu.rowsFor(CarUi.listLimit(carContext), level), CarMenu.LEVELS - level + 1)
     }
 
     init {
@@ -72,6 +73,11 @@ class MenuScreen(
                 }
                 if (p.items.isEmpty()) list.setNoItemsMessage("No items on this menu")
             }
+        }
+        if (isTop && groups.any { it.items.isNotEmpty() }) {
+            // As on the phone: where the list comes from, so the app's own unverified lists say so.
+            val (source, checked) = CarModel.source(prices)
+            list.addItem(Row.Builder().setTitle(source).apply { checked?.let { addText(it) } }.build())
         }
         val template = ListTemplate.Builder()
             .setTitle(title)

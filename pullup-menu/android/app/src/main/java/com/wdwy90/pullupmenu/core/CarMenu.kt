@@ -12,12 +12,19 @@ import kotlin.math.ceil
  * limit allows, the menu shows every category on one screen and each category shows all its items.
  * With a small limit, a long category opens into parts ("Burgers 1 of 3") and, when a chain has
  * more categories than rows, neighbouring categories share a row ("Hot Coffee, Cold Coffee").
- * At the limit of 6 every chain still fits with nothing left off (CarMenuTest).
+ * At the limit of 6 (5 rows for the categories, see [rowsFor]) every chain still fits with nothing
+ * left off (CarMenuTest).
  */
 object CarMenu {
 
     /** List screens the menu may stack: categories, a category, a part of one. */
     const val LEVELS = 3
+
+    /**
+     * Rows the menu screen at [level] (1 = the categories) plans with, out of the host's [limit]:
+     * the categories keep their last row for where the item list comes from ([CarModel.source]).
+     */
+    fun rowsFor(limit: Int, level: Int): Int = if (level == 1) limit - 1 else limit
 
     /** What one car screen shows. */
     sealed interface Page {
