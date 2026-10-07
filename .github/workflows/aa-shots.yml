@@ -12,7 +12,7 @@ permissions:
 jobs:
   shots:
     runs-on: ubuntu-latest
-    timeout-minutes: 75
+    timeout-minutes: 100
     env:
       OUT: ${{ github.workspace }}/shots
       ANDROID_AVD_HOME: /home/runner/.android/avd
@@ -36,8 +36,12 @@ jobs:
 
           dependencies { debugImplementation("androidx.car.app:app-automotive:1.7.0") }
           KTS
-          mkdir -p app/src/debug
+          mkdir -p app/src/debug/java/com/wdwy90/pullupmenu/car
           cp ../../.github/aa-shots/AndroidManifest.xml app/src/debug/AndroidManifest.xml
+          cp ../../.github/aa-shots/DebugDriver.kt app/src/debug/java/com/wdwy90/pullupmenu/car/
+          # Lets the screenshot run set states and tap rows (this run's debug build only).
+          sed -i 's/^    override fun onCreateScreen(intent: Intent): Screen {$/&\n        DebugDriver.attach(this)/' app/src/main/java/com/wdwy90/pullupmenu/car/MenuSession.kt
+          grep -n "DebugDriver.attach" app/src/main/java/com/wdwy90/pullupmenu/car/MenuSession.kt
           ./gradlew --no-daemon assembleDebug 2>&1 | tee "$OUT/build.log" | tail -5
           cp app/build/outputs/apk/debug/app-debug.apk "$OUT/../app-debug.apk"
       - name: Install an automotive system image

@@ -52,9 +52,16 @@ def tap_text(label, exact=False, wait=4):
 
 def shot(name):
     png = subprocess.run(["adb", "exec-out", "screencap", "-p"], capture_output=True).stdout
-    open(os.path.join(OUT, name + ".png"), "wb").write(png)
-    xml = dump(name)
-    note(f"shot {name}: {texts(xml)[:30]}")
+    at = png.find(b"\x89PNG")  # screencap may print a multi-display warning first
+    open(os.path.join(OUT, name + ".png"), "wb").write(png[at:] if at >= 0 else png)
+    note(f"shot {name}")
+
+def drive(cmd, arg="", wait=2.5):
+    """Sends a command to the debug-only DebugDriver in the car app."""
+    sh("shell", "am", "broadcast", "-a", "com.wdwy90.pullupmenu.DRIVE", "-p", "com.wdwy90.pullupmenu",
+       "--es", "cmd", cmd, "--es", "arg", "'" + arg.replace("'", "'\\''") + "'")
+    note(f"drive {cmd} {arg!r}")
+    time.sleep(wait)
 
 def back(wait=3):
     sh("shell", "input", "keyevent", "KEYCODE_BACK")
@@ -68,3 +75,5 @@ if __name__ == "__main__":
         sys.exit(0 if tap_text(sys.argv[2]) else 1)
     elif cmd == "back":
         back()
+    elif cmd == "drive":
+        drive(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else "", float(sys.argv[4]) if len(sys.argv) > 4 else 2.5)
