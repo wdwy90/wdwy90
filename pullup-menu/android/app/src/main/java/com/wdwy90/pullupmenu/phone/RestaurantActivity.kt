@@ -18,7 +18,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.webkit.JsPromptResult
+import android.webkit.JsResult
 import android.webkit.RenderProcessGoneDetail
+import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -29,6 +33,7 @@ import android.widget.GridLayout
 import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
@@ -67,6 +72,8 @@ class RestaurantActivity : ThemedActivity() {
     private var photosLoadedFor: String? = null
     /** Restaurant whose menu page crashed the WebView renderer; not reloaded until another one is shown. */
     private var renderGoneFor: String? = null
+    /** The menu page (or the page it navigated to) failed to load; the WebView is hidden behind a retry card. */
+    private var menuLoadFailed = false
 
     // Items tab
     private var groups: List<ItemGroup> = emptyList()
@@ -110,6 +117,8 @@ class RestaurantActivity : ThemedActivity() {
     private lateinit var menuPanel: View
     private lateinit var menuMessageCard: View
     private lateinit var menuMessage: TextView
+    private lateinit var menuRetry: Button
+    private lateinit var menuProgress: ProgressBar
     private lateinit var chipsScroll: HorizontalScrollView
     private lateinit var chips: LinearLayout
     private lateinit var search: EditText
@@ -118,6 +127,7 @@ class RestaurantActivity : ThemedActivity() {
     /** Back walks the menu page's history while the Menu tab is shown. */
     private val webBack = object : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
+            if (menuLoadFailed) startMenuLoad()
             web?.goBack()
         }
     }
@@ -141,12 +151,18 @@ class RestaurantActivity : ThemedActivity() {
         menuPanel = findViewById(R.id.menu_panel)
         menuMessageCard = findViewById(R.id.menu_message_card)
         menuMessage = findViewById(R.id.menu_message)
+        menuRetry = findViewById(R.id.menu_retry)
+        menuProgress = findViewById(R.id.menu_progress)
         chipsScroll = findViewById(R.id.chips_scroll)
         chips = findViewById(R.id.chips)
         search = findViewById(R.id.search)
         searchSummary = findViewById(R.id.search_summary)
 
         findViewById<View>(R.id.back).setOnClickListener { finish() }
+        menuRetry.setOnClickListener {
+            startMenuLoad()
+            web?.reload()
+        }
         findViewById<View>(R.id.hero).clipToOutline = true
         tabBar = TabBar(findViewById(R.id.tabs)) { i -> selectTab(Tab.entries[i], animate = true) }
 
@@ -683,6 +699,8 @@ class RestaurantActivity : ThemedActivity() {
         val website = findViewById<Button>(R.id.open_website)
         val searchButton = findViewById<Button>(R.id.search_menu)
 
+        menuLoadFailed = false
+        menuRetry.visibility = View.GONE
         menuMessage.text = "No in-app menu for this restaurant yet. Try these:"
         menuMessageCard.visibility = if (menuUrl == null) View.VISIBLE else View.GONE
         browser.visibility = if (menuUrl != null) View.VISIBLE else View.GONE
@@ -721,7 +739,28 @@ class RestaurantActivity : ThemedActivity() {
             w, 0, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         )
         web = w
+        startMenuLoad()
         w.loadUrl(url)
+    }
+
+    /** Before a (re)load: progress shows; the WebView stays hidden if the last load failed, until a page loads. */
+    private fun startMenuLoad() {
+        menuLoadFailed = false
+        menuRetry.visibility = View.GONE
+        if (web != null) menuMessageCard.visibility = View.GONE
+        menuProgress.progress = 0
+        menuProgress.visibility = View.VISIBLE
+    }
+
+    private fun showMenuFailed() {
+        menuLoadFailed = true
+        web?.visibility = View.INVISIBLE // not the browser's error page
+        menuProgress.visibility = View.GONE
+        val itemsHint = if (shown?.prices != null) " The Items tab works offline." else ""
+        menuMessage.text = "The menu page didn't load. Check your connection and try again, or open it in your " +
+            "browser.$itemsHint"
+        menuRetry.visibility = View.VISIBLE
+        menuMessageCard.visibility = View.VISIBLE
     }
 
     @SuppressLint("SetJavaScriptEnabled") // chain menu pages need JS; no JavascriptInterface is exposed
@@ -753,14 +792,56 @@ class RestaurantActivity : ThemedActivity() {
                 updateBack()
             }
 
+            override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError?) {
+                if (view === web && request.isForMainFrame) showMenuFailed()
+            }
+
+            override fun onPageFinished(view: WebView, url: String?) {
+                if (view !== web) return
+                menuProgress.visibility = View.GONE
+                if (!menuLoadFailed) view.visibility = View.VISIBLE
+            }
+
             // The default (false) kills our whole process, taking the car screen and watching with it.
             override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
                 if (view === web) {
                     renderGoneFor = shown?.id
                     destroyWebView()
+                    menuLoadFailed = false
+                    menuRetry.visibility = View.GONE
                     menuMessage.text = "The menu can't load inside the app right now. Open it in your browser."
                     menuMessageCard.visibility = View.VISIBLE
                 }
+                return true
+            }
+        }
+        w.webChromeClient = object : WebChromeClient() {
+            override fun onProgressChanged(view: WebView, newProgress: Int) {
+                if (view !== web || menuLoadFailed) return
+                menuProgress.setProgress(newProgress, motionEnabled())
+                menuProgress.visibility = if (newProgress < 100) View.VISIBLE else View.GONE
+            }
+
+            // Page dialogs stay suppressed, as they are without a WebChromeClient.
+            override fun onJsAlert(view: WebView, url: String?, message: String?, result: JsResult): Boolean {
+                result.cancel()
+                return true
+            }
+
+            override fun onJsConfirm(view: WebView, url: String?, message: String?, result: JsResult): Boolean {
+                result.cancel()
+                return true
+            }
+
+            override fun onJsPrompt(
+                view: WebView, url: String?, message: String?, defaultValue: String?, result: JsPromptResult,
+            ): Boolean {
+                result.cancel()
+                return true
+            }
+
+            override fun onJsBeforeUnload(view: WebView, url: String?, message: String?, result: JsResult): Boolean {
+                result.confirm()
                 return true
             }
         }
@@ -772,6 +853,7 @@ class RestaurantActivity : ThemedActivity() {
             it.destroy()
         }
         web = null
+        menuProgress.visibility = View.GONE
         updateBack()
     }
 

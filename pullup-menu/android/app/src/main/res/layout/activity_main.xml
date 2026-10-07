@@ -140,6 +140,8 @@
             android:accessibilityHeading="true"
             android:text="Quick actions" />
 
+        <!-- Tiles in a row share the taller one's height. LinearLayout only does that when every
+             child is match_parent, so the gap is a margin rather than a Space. -->
         <LinearLayout
             android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -147,9 +149,9 @@
             android:baselineAligned="false">
             <include android:id="@+id/action_detect" layout="@layout/item_action"
                 android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" />
-            <Space android:layout_width="12dp" android:layout_height="1dp" />
             <include android:id="@+id/action_menu" layout="@layout/item_action"
-                android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" />
+                android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
+                android:layout_marginStart="12dp" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -158,9 +160,9 @@
             android:baselineAligned="false">
             <include android:id="@+id/action_drive" layout="@layout/item_action"
                 android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" />
-            <Space android:layout_width="12dp" android:layout_height="1dp" />
             <include android:id="@+id/action_settings" layout="@layout/item_action"
-                android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" />
+                android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
+                android:layout_marginStart="12dp" />
         </LinearLayout>
 
         <TextView

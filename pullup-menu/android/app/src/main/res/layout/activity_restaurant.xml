@@ -291,8 +291,27 @@
                         style="@style/Text.Secondary"
                         android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
+                        android:accessibilityLiveRegion="polite"
                         android:text="No in-app menu for this restaurant yet. Try these:" />
+                    <Button
+                        android:id="@+id/menu_retry"
+                        style="@style/Button.Tonal"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_2"
+                        android:text="Try again"
+                        android:visibility="gone" />
                 </LinearLayout>
+                <!-- Page load progress, just under the tab bar. -->
+                <ProgressBar
+                    android:id="@+id/menu_progress"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent" android:layout_height="4dp"
+                    android:layout_gravity="top"
+                    android:max="100"
+                    android:progressTint="@color/accent"
+                    android:progressBackgroundTint="@android:color/transparent"
+                    android:contentDescription="Loading the menu page"
+                    android:visibility="gone" />
             </FrameLayout>
             <View
                 android:layout_width="match_parent" android:layout_height="1dp"
