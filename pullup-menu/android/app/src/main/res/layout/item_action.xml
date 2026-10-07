@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Quick action tile on the dashboard. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:minHeight="128dp"
+    android:orientation="vertical"
+    android:padding="@dimen/space_2"
+    android:background="@drawable/bg_action_tile"
+    android:elevation="@dimen/card_elevation"
+    android:clickable="true" android:focusable="true">
+    <ImageView
+        android:id="@+id/action_icon"
+        android:layout_width="44dp" android:layout_height="44dp"
+        android:padding="10dp"
+        android:background="@drawable/bg_icon_circle"
+        android:tint="@color/accent_text"
+        android:importantForAccessibility="no" />
+    <TextView
+        android:id="@+id/action_title"
+        style="@style/Text.Title"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginTop="12dp" />
+    <TextView
+        android:id="@+id/action_subtitle"
+        style="@style/Text.Secondary"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textSize="13sp" />
+</LinearLayout>

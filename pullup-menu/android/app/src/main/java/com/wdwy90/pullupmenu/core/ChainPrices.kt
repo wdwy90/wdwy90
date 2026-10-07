@@ -75,6 +75,12 @@ class ChainPrices(json: String) {
     /** First chain in the file, used for the demo card. */
     fun demoChainName(): String? = chains.firstOrNull()?.list?.chain
 
+    /** Number of chains with an item list. */
+    val chainCount: Int get() = chains.size
+
+    /** When the menu data was last checked (the file's date; chains don't override it today). */
+    val checked: String get() = chains.firstOrNull()?.list?.checked.orEmpty()
+
     companion object {
         private const val MAX_ITEMS = 150
 

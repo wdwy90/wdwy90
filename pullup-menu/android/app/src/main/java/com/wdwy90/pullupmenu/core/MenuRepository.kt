@@ -6,6 +6,7 @@ import android.util.Log
 import android.util.LruCache
 import com.wdwy90.pullupmenu.BuildConfig
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -13,9 +14,11 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.cancellation.CancellationException
 
 /** App-wide state shared by the car screen and the phone UI. In memory only. */
@@ -50,6 +53,8 @@ object MenuRepository {
 
     private var lookupJob: Job? = null
     private var lookupIsAuto = false
+
+    private val photosInFlight = ConcurrentHashMap<String, Deferred<Bitmap?>>()
 
     private val photoCache = object : LruCache<String, Bitmap>(24 * 1024 * 1024) {
         override fun sizeOf(key: String, value: Bitmap) = value.byteCount
@@ -90,6 +95,7 @@ object MenuRepository {
             }
             _state.value = result
             if (result is State.Found) {
+                Prefs.setLastDetected(appCtx, result.restaurant.name, result.atMs)
                 try {
                     Notifier.arrival(appCtx, result.restaurant, carBanner = auto && Prefs.carBanner(appCtx))
                 } catch (e: Exception) {
@@ -100,8 +106,9 @@ object MenuRepository {
     }
 
     /** User picked a different place from the nearby list. */
-    fun choose(restaurant: Restaurant) {
+    fun choose(ctx: Context, restaurant: Restaurant) {
         val current = _state.value as? State.Found ?: return
+        if (!restaurant.isDemo) Prefs.setLastDetected(ctx.applicationContext, restaurant.name, current.atMs)
         val all = listOf(current.restaurant) + current.others
         _state.value = current.copy(restaurant = restaurant, others = all.filter { it.id != restaurant.id })
     }
@@ -168,12 +175,22 @@ object MenuRepository {
         _state.value = State.Error(message)
     }
 
+    /**
+     * A place photo, cached in memory. Photo loads are billed one by one, so callers asking for the
+     * same photo at the same time (the restaurant header and the photo grid) share one download.
+     */
     suspend fun photo(ctx: Context, photoName: String, maxWidthPx: Int): Bitmap? {
         val cacheKey = "$photoName@$maxWidthPx"
         photoCache.get(cacheKey)?.let { return it }
         val appCtx = ctx.applicationContext
-        return PlacesClient(Prefs.apiKey(appCtx), AppIdentity.headers(appCtx)).photo(photoName, maxWidthPx)
-            ?.also { photoCache.put(cacheKey, it) }
+        val pending = photosInFlight[cacheKey] ?: scope.async {
+            PlacesClient(Prefs.apiKey(appCtx), AppIdentity.headers(appCtx)).photo(photoName, maxWidthPx)
+                ?.also { photoCache.put(cacheKey, it) }
+        }.also { deferred ->
+            photosInFlight[cacheKey] = deferred
+            deferred.invokeOnCompletion { photosInFlight.remove(cacheKey, deferred) }
+        }
+        return pending.await()
     }
 
     private const val DEMO_ID = "demo"

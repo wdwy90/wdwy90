@@ -27,7 +27,7 @@ class ChooserScreen(ctx: CarContext, private val places: List<Restaurant>) : Scr
                         // Open the card ourselves (the session only auto-opens new finds), then record the pick.
                         screenManager.popToRoot()
                         screenManager.push(RestaurantScreen(carContext, r))
-                        MenuRepository.choose(r)
+                        MenuRepository.choose(carContext, r)
                     }
                     .build()
             )

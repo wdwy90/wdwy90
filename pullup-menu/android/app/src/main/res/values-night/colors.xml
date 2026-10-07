@@ -1,4 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="gmp_attribution">#FFFFFF</color>
+
+    <color name="bg">#101114</color>
+    <color name="surface">#1C1D22</color>
+    <color name="surface_elevated">#25272D</color>
+    <color name="accent">#FF6B35</color>
+    <color name="accent_text">#FF6B35</color>
+    <color name="accent_soft">#29FF6B35</color>
+    <color name="on_accent">#101114</color>
+    <color name="text_primary">#F7F7F8</color>
+    <color name="text_secondary">#A1A5AE</color>
+    <color name="divider">#34363D</color>
+    <color name="success">#4ADE80</color>
+    <color name="success_soft">#244ADE80</color>
+    <color name="warning">#FBBF24</color>
+    <color name="warning_soft">#24FBBF24</color>
+    <color name="neutral_soft">#14FFFFFF</color>
+    <color name="ripple">#29FFFFFF</color>
+    <color name="tab_track">#1C1D22</color>
+    <color name="tab_indicator">#30323A</color>
+    <!-- Rating star -->
+    <color name="star">#FBBF24</color>
 </resources>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One label/value line in the status card. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:minHeight="40dp"
+    android:layout_marginTop="4dp"
+    android:orientation="horizontal" android:gravity="center_vertical"
+    android:focusable="true"
+    android:importantForAccessibility="yes">
+    <ImageView
+        android:id="@+id/fact_icon"
+        android:layout_width="20dp" android:layout_height="20dp"
+        android:tint="@color/text_secondary"
+        android:importantForAccessibility="no" />
+    <TextView
+        android:id="@+id/fact_label"
+        style="@style/Text.Secondary"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:importantForAccessibility="no" />
+    <TextView
+        android:id="@+id/fact_value"
+        style="@style/Text.Body"
+        android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+        android:layout_marginStart="@dimen/space_2"
+        android:gravity="end"
+        android:maxLines="2" android:ellipsize="end"
+        android:importantForAccessibility="no" />
+</LinearLayout>

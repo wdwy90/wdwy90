@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Platform DayNight theme (no extra UI libraries); colors come from the tokens in colors.xml. -->
+    <style name="Theme.PullUp" parent="@android:style/Theme.DeviceDefault.DayNight">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/bg</item>
+        <item name="android:colorBackground">@color/bg</item>
+        <item name="android:colorPrimary">@color/surface</item>
+        <item name="android:colorAccent">@color/accent</item>
+        <item name="android:colorControlActivated">@color/accent</item>
+        <item name="android:colorControlHighlight">@color/ripple</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/text_secondary</item>
+        <item name="android:textColorLink">@color/accent_text</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">@bool/light_bars</item>
+        <item name="android:windowLightNavigationBar">@bool/light_bars</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
+    </style>
+
+    <!-- Full-screen photo viewer. -->
+    <style name="Theme.PullUp.Viewer" parent="@android:style/Theme.DeviceDefault.NoActionBar">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>

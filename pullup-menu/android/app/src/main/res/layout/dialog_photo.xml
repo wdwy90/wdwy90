@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Full-screen photo viewer. Swipe (or the arrow buttons) to move between photos. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/viewer_root"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <ImageView
+        android:id="@+id/viewer_image"
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:scaleType="fitCenter" />
+
+    <ProgressBar
+        android:id="@+id/viewer_progress"
+        android:layout_width="40dp" android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:indeterminateTint="#FFFFFFFF"
+        android:visibility="gone" />
+
+    <ImageButton
+        android:id="@+id/viewer_prev"
+        android:layout_width="@dimen/touch_target" android:layout_height="@dimen/touch_target"
+        android:layout_gravity="start|center_vertical"
+        android:layout_marginStart="12dp"
+        android:padding="12dp"
+        android:scaleType="fitCenter"
+        android:background="@drawable/bg_viewer_button"
+        android:src="@drawable/ic_chevron_right"
+        android:rotation="180"
+        android:tint="#FFFFFFFF"
+        android:contentDescription="Previous photo" />
+
+    <ImageButton
+        android:id="@+id/viewer_next"
+        android:layout_width="@dimen/touch_target" android:layout_height="@dimen/touch_target"
+        android:layout_gravity="end|center_vertical"
+        android:layout_marginEnd="12dp"
+        android:padding="12dp"
+        android:scaleType="fitCenter"
+        android:background="@drawable/bg_viewer_button"
+        android:src="@drawable/ic_chevron_right"
+        android:tint="#FFFFFFFF"
+        android:contentDescription="Next photo" />
+
+    <!-- Top: close + counter. Padded for the status bar in code. -->
+    <LinearLayout
+        android:id="@+id/viewer_top"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:padding="8dp">
+        <ImageButton
+            android:id="@+id/viewer_close"
+            android:layout_width="@dimen/touch_target" android:layout_height="@dimen/touch_target"
+            android:padding="12dp"
+            android:scaleType="fitCenter"
+            android:background="@drawable/bg_viewer_button"
+            android:src="@drawable/ic_close"
+            android:tint="#FFFFFFFF"
+            android:contentDescription="Close" />
+        <TextView
+            android:id="@+id/viewer_counter"
+            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            android:textColor="#FFFFFFFF"
+            android:textSize="15sp"
+            android:fontFamily="sans-serif-medium"
+            android:accessibilityLiveRegion="polite" />
+    </LinearLayout>
+
+    <!-- Bottom: photographer credit (required by Google) and a link to the photo on Google Maps. -->
+    <LinearLayout
+        android:id="@+id/viewer_bottom"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:background="#99000000"
+        android:paddingStart="@dimen/gutter" android:paddingEnd="@dimen/gutter"
+        android:paddingTop="12dp" android:paddingBottom="12dp">
+        <TextView
+            android:id="@+id/viewer_credit"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:minHeight="@dimen/touch_target"
+            android:gravity="center_vertical"
+            android:textColor="#FFFFFFFF"
+            android:textSize="14sp" />
+        <TextView
+            android:id="@+id/viewer_maps"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:minHeight="@dimen/touch_target"
+            android:gravity="center_vertical"
+            android:drawableEnd="@drawable/ic_open_in_new"
+            android:drawablePadding="6dp"
+            android:drawableTint="#FFFFFFFF"
+            android:textColor="#FFFFFFFF"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif-medium"
+            android:text="View on Google Maps" />
+    </LinearLayout>
+</FrameLayout>

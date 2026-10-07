@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 8dp grid -->
+    <dimen name="space_1">8dp</dimen>
+    <dimen name="space_2">16dp</dimen>
+    <dimen name="space_3">24dp</dimen>
+    <dimen name="space_4">32dp</dimen>
+    <dimen name="gutter">20dp</dimen>
+    <dimen name="radius_card">20dp</dimen>
+    <dimen name="radius_small">16dp</dimen>
+    <dimen name="touch_target">48dp</dimen>
+    <dimen name="card_elevation">2dp</dimen>
+    <dimen name="hero_height">196dp</dimen>
+</resources>

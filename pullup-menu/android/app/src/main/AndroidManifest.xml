@@ -13,7 +13,7 @@
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.DeviceDefault.DayNight">
+        android:theme="@style/Theme.PullUp">
 
         <activity
             android:name=".phone.MainActivity"
@@ -28,6 +28,13 @@
             android:name=".phone.RestaurantActivity"
             android:exported="false"
             android:launchMode="singleTop" />
+
+        <activity
+            android:name=".phone.SettingsActivity"
+            android:exported="false"
+            android:label="@string/settings"
+            android:parentActivityName=".phone.MainActivity"
+            android:windowSoftInputMode="adjustResize" />
 
         <!-- Widget trampoline with no UI: starts or stops phone watching while it is the visible activity. -->
         <activity

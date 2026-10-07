@@ -16,7 +16,9 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * One GPS stream and one [ArrivalDetector] shared by the car app and the phone service, so the
@@ -38,6 +40,10 @@ object DriveWatcher {
     private val redLight = RedLightFilter()
 
     val isWatching: Boolean get() = owners.isNotEmpty()
+
+    private val _watching = MutableStateFlow(false)
+    /** True while GPS watching runs (for the car app, the phone service, or both). */
+    val watching: StateFlow<Boolean> = _watching
 
     @Volatile var lastLocation: Location? = null
         private set
@@ -69,10 +75,12 @@ object DriveWatcher {
         }
         appCtx = app
         owners += owner
+        _watching.value = true
     }
 
     fun release(owner: String) {
         if (!owners.remove(owner) || owners.isNotEmpty()) return
+        _watching.value = false
         client?.removeLocationUpdates(callback)
         client = null
         detector.reset()

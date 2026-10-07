@@ -1,66 +1,268 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Not a ScrollView: the menu WebView needs a parent with a fixed (match_parent) height. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical"
-    android:fitsSystemWindows="true">
+    android:background="@color/bg">
 
-    <!-- Header: name, details and the Google Maps attribution in one container. -->
+    <!-- Top bar; the title fades in once the restaurant name scrolls away. -->
     <LinearLayout
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingStart="16dp" android:paddingEnd="16dp" android:paddingTop="16dp">
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent" android:layout_height="56dp"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:paddingStart="4dp" android:paddingEnd="@dimen/space_2">
+        <ImageButton
+            android:id="@+id/back"
+            style="@style/IconButton"
+            android:layout_width="@dimen/touch_target" android:layout_height="@dimen/touch_target"
+            android:src="@drawable/ic_back"
+            android:contentDescription="@string/back" />
         <TextView
-            android:id="@+id/name"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:textSize="26sp" android:textStyle="bold" />
-        <TextView
-            android:id="@+id/details"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="4dp" />
-        <TextView
-            android:id="@+id/attribution"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="@string/google_maps"
-            android:textSize="12sp" android:fontFamily="sans-serif" android:textStyle="normal"
-            android:textColor="@color/gmp_attribution"
-            android:maxLines="1" android:singleLine="true" />
+            android:id="@+id/top_title"
+            style="@style/Text.Title"
+            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:singleLine="true" android:ellipsize="end"
+            android:alpha="0"
+            android:importantForAccessibility="no" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/tabs"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:paddingStart="12dp" android:paddingEnd="12dp"
-        android:orientation="horizontal">
-        <Button
-            android:id="@+id/tab_prices"
-            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-            android:text="Items" />
-        <Button
-            android:id="@+id/tab_menu"
-            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-            android:text="Menu" />
-        <Button
-            android:id="@+id/tab_photos"
-            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-            android:text="Photos" />
-    </LinearLayout>
-
+    <!-- Not a ScrollView: the Menu tab's WebView needs a parent with a fixed (match_parent) height. -->
     <FrameLayout
+        android:id="@+id/body"
         android:layout_width="match_parent" android:layout_height="0dp"
         android:layout_weight="1">
 
         <ScrollView
-            android:id="@+id/prices_panel"
-            android:layout_width="match_parent" android:layout_height="match_parent">
+            android:id="@+id/main_scroll"
+            android:layout_width="match_parent" android:layout_height="match_parent"
+            android:clipToPadding="false">
             <LinearLayout
-                android:id="@+id/prices_list"
+                android:id="@+id/main_content"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:padding="16dp" />
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/space_4">
+
+                <!-- Header: photo, name, rating, address, shortcuts, Google Maps attribution. -->
+                <LinearLayout
+                    android:id="@+id/header"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingStart="@dimen/gutter" android:paddingEnd="@dimen/gutter">
+
+                    <FrameLayout
+                        android:id="@+id/hero"
+                        android:layout_width="match_parent" android:layout_height="@dimen/hero_height"
+                        android:background="@drawable/bg_hero_placeholder">
+                        <ImageView
+                            android:id="@+id/hero_placeholder"
+                            android:layout_width="56dp" android:layout_height="56dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_restaurant"
+                            android:tint="@color/text_secondary"
+                            android:alpha="0.5"
+                            android:importantForAccessibility="no" />
+                        <ImageView
+                            android:id="@+id/hero_image"
+                            android:layout_width="match_parent" android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:importantForAccessibility="no"
+                            android:visibility="invisible" />
+                    </FrameLayout>
+                    <TextView
+                        android:id="@+id/hero_credit"
+                        style="@style/Text.Secondary"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:minHeight="32dp"
+                        android:gravity="center_vertical"
+                        android:textSize="12sp"
+                        android:visibility="gone" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_2"
+                        android:orientation="horizontal" android:gravity="center_vertical">
+                        <TextView
+                            android:id="@+id/monogram"
+                            android:layout_width="52dp" android:layout_height="52dp"
+                            android:background="@drawable/bg_icon_circle"
+                            android:gravity="center"
+                            android:textColor="@color/accent_text"
+                            android:textSize="22sp"
+                            android:fontFamily="sans-serif-medium"
+                            android:importantForAccessibility="no" />
+                        <LinearLayout
+                            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                            android:layout_marginStart="14dp"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/name"
+                                style="@style/Text.Display"
+                                android:layout_width="match_parent" android:layout_height="wrap_content"
+                                android:accessibilityHeading="true" />
+                            <TextView
+                                android:id="@+id/meta"
+                                style="@style/Text.Secondary"
+                                android:layout_width="match_parent" android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/address_row"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="horizontal" android:gravity="center_vertical">
+                        <ImageView
+                            android:layout_width="20dp" android:layout_height="20dp"
+                            android:src="@drawable/ic_place"
+                            android:tint="@color/text_secondary"
+                            android:importantForAccessibility="no" />
+                        <TextView
+                            android:id="@+id/address"
+                            style="@style/Text.Secondary"
+                            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                            android:layout_marginStart="8dp"
+                            android:textIsSelectable="true" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/header_actions"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_2"
+                        android:orientation="horizontal">
+                        <Button
+                            android:id="@+id/navigate"
+                            style="@style/Button.Primary"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/ic_directions"
+                            android:drawablePadding="8dp"
+                            android:drawableTint="@color/on_accent"
+                            android:text="Navigate" />
+                        <Button
+                            android:id="@+id/open_maps"
+                            style="@style/Button.Tonal"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:drawableStart="@drawable/ic_open_in_new"
+                            android:drawablePadding="8dp"
+                            android:drawableTint="@color/text_primary"
+                            android:text="Open in Maps" />
+                    </LinearLayout>
+
+                    <!-- Google Maps Platform attribution: exact text, allowed colors only, never wrapped. -->
+                    <TextView
+                        android:id="@+id/attribution"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="@string/google_maps"
+                        android:textSize="12sp" android:fontFamily="sans-serif" android:textStyle="normal"
+                        android:textColor="@color/gmp_attribution"
+                        android:maxLines="1" android:singleLine="true" />
+                </LinearLayout>
+
+                <!-- Keeps room for the tab bar, which floats above this scroll view (see updateSticky). -->
+                <View
+                    android:id="@+id/sticky_spacer"
+                    android:layout_width="match_parent" android:layout_height="0dp"
+                    android:importantForAccessibility="no" />
+
+                <!-- Items tab -->
+                <LinearLayout
+                    android:id="@+id/items_content"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:id="@+id/search_box"
+                        android:layout_width="match_parent" android:layout_height="52dp"
+                        android:layout_marginStart="@dimen/gutter" android:layout_marginEnd="@dimen/gutter"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_search"
+                        android:orientation="horizontal" android:gravity="center_vertical"
+                        android:paddingStart="@dimen/space_2" android:paddingEnd="4dp">
+                        <ImageView
+                            android:layout_width="20dp" android:layout_height="20dp"
+                            android:src="@drawable/ic_search"
+                            android:tint="@color/text_secondary"
+                            android:importantForAccessibility="no" />
+                        <EditText
+                            android:id="@+id/search"
+                            android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
+                            android:layout_marginStart="12dp"
+                            android:background="@null"
+                            android:hint="Search this menu"
+                            android:imeOptions="actionSearch"
+                            android:importantForAutofill="no"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            android:textColor="@color/text_primary"
+                            android:textColorHint="@color/text_secondary"
+                            android:textSize="15sp" />
+                        <ImageButton
+                            android:id="@+id/search_clear"
+                            style="@style/IconButton"
+                            android:layout_width="@dimen/touch_target" android:layout_height="@dimen/touch_target"
+                            android:src="@drawable/ic_close"
+                            android:tint="@color/text_secondary"
+                            android:contentDescription="Clear search"
+                            android:visibility="gone" />
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/search_summary"
+                        style="@style/Text.Secondary"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp" android:layout_marginEnd="@dimen/gutter"
+                        android:layout_marginTop="12dp"
+                        android:accessibilityLiveRegion="polite" />
+                    <LinearLayout
+                        android:id="@+id/items_list"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingStart="@dimen/gutter" android:paddingEnd="@dimen/gutter" />
+                    <LinearLayout
+                        android:id="@+id/items_footer"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_2"
+                        android:orientation="vertical"
+                        android:paddingStart="24dp" android:paddingEnd="24dp">
+                        <TextView
+                            android:id="@+id/disclaimer"
+                            style="@style/Text.Secondary"
+                            android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:textSize="13sp" />
+                        <Button
+                            android:id="@+id/source"
+                            style="@style/Button.Text"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:layout_marginStart="-12dp"
+                            android:gravity="start|center_vertical" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Photos tab -->
+                <LinearLayout
+                    android:id="@+id/photos_content"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingStart="@dimen/gutter" android:paddingEnd="@dimen/gutter"
+                    android:paddingTop="8dp"
+                    android:visibility="gone">
+                    <GridLayout
+                        android:id="@+id/photo_grid"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:columnCount="2"
+                        android:useDefaultMargins="false" />
+                    <TextView
+                        android:id="@+id/photos_message"
+                        style="@style/Text.Secondary"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_2"
+                        android:gravity="center" />
+                </LinearLayout>
+            </LinearLayout>
         </ScrollView>
 
+        <!-- Menu tab: the chain's menu page in a WebView, plus links out. -->
         <LinearLayout
             android:id="@+id/menu_panel"
             android:layout_width="match_parent" android:layout_height="match_parent"
@@ -71,43 +273,115 @@
                 android:id="@+id/web_container"
                 android:layout_width="match_parent" android:layout_height="0dp"
                 android:layout_weight="1">
-                <TextView
-                    android:id="@+id/menu_message"
+                <LinearLayout
+                    android:id="@+id/menu_message_card"
+                    style="@style/Card"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:text="No in-app menu for this restaurant yet. Try these:" />
+                    android:layout_margin="@dimen/gutter"
+                    android:orientation="vertical">
+                    <TextView
+                        style="@style/Text.Title"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:text="Menu page" />
+                    <TextView
+                        android:id="@+id/menu_message"
+                        style="@style/Text.Secondary"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="No in-app menu for this restaurant yet. Try these:" />
+                </LinearLayout>
             </FrameLayout>
-            <LinearLayout
+            <View
+                android:layout_width="match_parent" android:layout_height="1dp"
+                android:background="@color/divider" />
+            <HorizontalScrollView
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:paddingStart="12dp" android:paddingEnd="12dp"
-                android:orientation="horizontal">
-                <Button
-                    android:id="@+id/open_browser"
-                    android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-                    android:text="Open in browser" />
-                <Button
-                    android:id="@+id/open_maps_menu"
-                    android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-                    android:text="Menu (Maps)" />
-                <Button
-                    android:id="@+id/open_website"
-                    android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-                    android:text="Website" />
-                <Button
-                    android:id="@+id/search_menu"
-                    android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-                    android:text="Search menu" />
-            </LinearLayout>
+                android:scrollbars="none">
+                <LinearLayout
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/space_2" android:paddingEnd="@dimen/space_2"
+                    android:paddingTop="12dp" android:paddingBottom="12dp">
+                    <Button
+                        android:id="@+id/open_browser"
+                        style="@style/Button.Tonal"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text="Open in browser" />
+                    <Button
+                        android:id="@+id/open_maps_menu"
+                        style="@style/Button.Tonal"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text="Menu (Maps)" />
+                    <Button
+                        android:id="@+id/open_website"
+                        style="@style/Button.Tonal"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text="Website" />
+                    <Button
+                        android:id="@+id/search_menu"
+                        style="@style/Button.Tonal"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Search menu" />
+                </LinearLayout>
+            </HorizontalScrollView>
         </LinearLayout>
 
-        <ScrollView
-            android:id="@+id/photos_panel"
-            android:layout_width="match_parent" android:layout_height="match_parent"
-            android:visibility="gone">
-            <LinearLayout
-                android:id="@+id/photos_list"
+        <!-- Tab bar (and category chips on the Items tab). Scrolls with the header, then pins to the top. -->
+        <LinearLayout
+            android:id="@+id/sticky"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/bg"
+            android:paddingTop="8dp" android:paddingBottom="4dp">
+            <include
+                android:id="@+id/tabs"
+                layout="@layout/view_tabs"
+                android:layout_width="match_parent" android:layout_height="@dimen/touch_target"
+                android:layout_marginStart="@dimen/gutter" android:layout_marginEnd="@dimen/gutter" />
+            <HorizontalScrollView
+                android:id="@+id/chips_scroll"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:padding="16dp" />
-        </ScrollView>
+                android:layout_marginTop="4dp"
+                android:scrollbars="none"
+                android:visibility="gone">
+                <LinearLayout
+                    android:id="@+id/chips"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/gutter" android:paddingEnd="12dp" />
+            </HorizontalScrollView>
+        </LinearLayout>
+
+        <!-- Nothing detected yet (e.g. opened from a stale notification after the app restarted). -->
+        <LinearLayout
+            android:id="@+id/empty_state"
+            android:layout_width="match_parent" android:layout_height="match_parent"
+            android:orientation="vertical" android:gravity="center"
+            android:padding="@dimen/space_4"
+            android:visibility="gone">
+            <ImageView
+                android:layout_width="64dp" android:layout_height="64dp"
+                android:padding="16dp"
+                android:background="@drawable/bg_icon_circle"
+                android:src="@drawable/ic_restaurant"
+                android:tint="@color/accent_text"
+                android:importantForAccessibility="no" />
+            <TextView
+                android:id="@+id/empty_title"
+                style="@style/Text.Headline"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_2"
+                android:gravity="center"
+                android:text="No restaurant detected yet" />
+            <TextView
+                style="@style/Text.Secondary"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="In the drive-thru lane, tap Detect My Restaurant on the home screen." />
+        </LinearLayout>
     </FrameLayout>
 </LinearLayout>

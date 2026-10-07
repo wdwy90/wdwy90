@@ -10,6 +10,7 @@ import androidx.car.app.Screen
 import androidx.car.app.constraints.ConstraintManager
 import androidx.car.app.model.Action
 import androidx.car.app.model.ActionStrip
+import androidx.car.app.model.CarColor
 import androidx.car.app.model.CarIcon
 import androidx.car.app.model.Pane
 import androidx.car.app.model.PaneTemplate
@@ -19,6 +20,7 @@ import androidx.car.app.model.Template
 import androidx.car.app.versioning.CarAppApiLevels
 import androidx.core.graphics.drawable.IconCompat
 import androidx.lifecycle.lifecycleScope
+import com.wdwy90.pullupmenu.R
 import com.wdwy90.pullupmenu.core.MenuRepository
 import com.wdwy90.pullupmenu.core.Restaurant
 import com.wdwy90.pullupmenu.phone.RestaurantActivity
@@ -76,6 +78,7 @@ class RestaurantScreen(ctx: CarContext, private val restaurant: Restaurant) : Sc
         restaurant.prices?.let { prices ->
             pane.addAction(
                 Action.Builder().setTitle("Items")
+                    .setIcon(icon(R.drawable.ic_menu))
                     .apply { if (apiLevel >= CarAppApiLevels.LEVEL_4) setFlags(Action.FLAG_PRIMARY) }
                     .setOnClickListener { screenManager.push(ItemListScreen(carContext, prices)) }
                     .build()
@@ -83,6 +86,7 @@ class RestaurantScreen(ctx: CarContext, private val restaurant: Restaurant) : Sc
         }
         pane.addAction(
             Action.Builder().setTitle("Menu on phone")
+                .setIcon(icon(R.drawable.ic_open_in_new))
                 .setOnClickListener(ParkedOnlyOnClickListener.create { openMenuOnPhone() })
                 .build()
         )
@@ -112,6 +116,7 @@ class RestaurantScreen(ctx: CarContext, private val restaurant: Restaurant) : Sc
             if (restaurant.isDemo) "Demo" else null,
         ).joinToString(" · ")
         val info = Row.Builder().setTitle(detail)
+            .setImage(icon(if (restaurant.rating != null) R.drawable.ic_star else R.drawable.ic_restaurant), Row.IMAGE_TYPE_ICON)
             .apply { if (restaurant.address.isNotBlank()) addText(restaurant.address) }
             .build()
         val credit = Row.Builder().setTitle(if (restaurant.isDemo) "Sample data" else "Info from Google Maps").apply {
@@ -120,6 +125,10 @@ class RestaurantScreen(ctx: CarContext, private val restaurant: Restaurant) : Sc
         }.build()
         return listOf(info, credit)
     }
+
+    /** Monochrome icon; the host picks a color that contrasts with its day or night theme. */
+    private fun icon(res: Int): CarIcon =
+        CarIcon.Builder(IconCompat.createWithResource(carContext, res)).setTint(CarColor.DEFAULT).build()
 
     private suspend fun fetchPhoto(name: String): Bitmap? =
         try {

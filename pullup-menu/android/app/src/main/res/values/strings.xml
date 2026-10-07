@@ -2,6 +2,10 @@
 <resources>
     <string name="app_name">Pull Up Menu</string>
 
+    <string name="tagline">Your drive-thru menu, right on time.</string>
+    <string name="settings">Settings</string>
+    <string name="back">Back</string>
+
     <!-- Google Maps Platform attribution. Never translate, abbreviate or wrap it. -->
     <string name="google_maps" translatable="false">Google Maps</string>
 

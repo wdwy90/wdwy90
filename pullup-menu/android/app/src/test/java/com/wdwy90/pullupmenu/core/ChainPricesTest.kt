@@ -92,6 +92,12 @@ class ChainPricesTest {
         assertNull(list.items.first { it.name == "Caffe Latte" }.note)
     }
 
+    @Test fun settingsSummaryHasCountAndDate() {
+        val chains = JSONObject(json).getJSONArray("chains").length()
+        assertEquals(chains, prices.chainCount)
+        assertEquals(JSONObject(json).getString("checked"), prices.checked)
+    }
+
     @Test fun noPricesShownForAnyChain() {
         val chains = JSONObject(json).getJSONArray("chains")
         for (i in 0 until chains.length()) {
