@@ -86,7 +86,8 @@
         <item name="android:scaleType">fitCenter</item>
     </style>
 
-    <style name="Switch" parent="@android:style/Widget.DeviceDefault.CompoundButton.Switch">
+    <!-- No parent: the theme's default switch style still applies underneath (DeviceDefault switch styles are private). -->
+    <style name="Switch">
         <item name="android:minHeight">@dimen/touch_target</item>
         <item name="android:textColor">@color/text_primary</item>
         <item name="android:textSize">16sp</item>
@@ -94,7 +95,7 @@
         <item name="android:trackTint">@color/switch_track</item>
     </style>
 
-    <style name="Radio" parent="@android:style/Widget.DeviceDefault.CompoundButton.RadioButton">
+    <style name="Radio">
         <item name="android:minHeight">@dimen/touch_target</item>
         <item name="android:textColor">@color/text_primary</item>
         <item name="android:textSize">16sp</item>
