@@ -77,6 +77,12 @@ class ScreensShot {
         run(Prefs.THEME_LIGHT, "360dp-200")
     }
 
+    @Test @Config(qualifiers = "w320dp-h640dp-xhdpi")
+    fun smallest200() {
+        RuntimeEnvironment.setFontScale(2.0f)
+        run(Prefs.THEME_DARK, "320dp-200")
+    }
+
     private fun run(theme: Int, suffix: String, short: Boolean = false) {
         this.suffix = suffix
         Prefs.setTheme(app, theme)
@@ -247,7 +253,12 @@ class ScreensShot {
     private fun capture(window: Window, name: String) {
         idle(Duration.ofMillis(300))
         val problems = try {
-            com.wdwy90.pullupmenu.phone.LayoutAudit.problems(window.decorView)
+            // The same rules as the app's SmallScreensTest.
+            com.wdwy90.pullupmenu.phone.LayoutAudit.problems(
+                window.decorView,
+                wrappingButtons = window.decorView.resources.configuration.fontScale >= 2f,
+                mayShorten = setOf(R.id.top_title),
+            )
         } catch (t: Throwable) {
             listOf("audit failed: $t")
         }
