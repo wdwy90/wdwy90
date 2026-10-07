@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.StateFlow
  * two never double-bill Places lookups. GPS runs while at least one owner holds it.
  * Call from the main thread. Locations stay in memory only.
  */
+@SuppressLint("StaticFieldLeak") // holds the application context only, never an activity or service
 object DriveWatcher {
     const val OWNER_CAR = "car"
     const val OWNER_PHONE = "phone"
@@ -91,9 +92,11 @@ object DriveWatcher {
 
     /**
      * Manual "check now": look up wherever we are (fix < 30 s old, else a one-shot fix). Never throws;
-     * a missing permission becomes a [MenuRepository.State.Error].
+     * a missing permission becomes a [MenuRepository.State.Error]. Does nothing while a lookup is
+     * already on its way: each one is billed, and its answer is coming.
      */
     fun checkNow(ctx: Context) {
+        if (MenuRepository.state.value == MenuRepository.State.Searching && MenuRepository.lookupInFlight) return
         val app = ctx.applicationContext
         val onMissing = { MenuRepository.fail(PERMISSION_MESSAGE) }
         // Set once a one-shot fix is pending; -1 means the result came back right away.
@@ -105,9 +108,9 @@ object DriveWatcher {
                 MenuRepository.fail("Couldn't get your location. Try again in a moment.")
                 return@currentFix
             }
-            // Auto-detect shouldn't look up this same spot again.
-            detector.markLookedUp(loc.latitude, loc.longitude)
-            MenuRepository.lookup(app, loc.latitude, loc.longitude, auto = false)
+            // Auto-detect counts this lookup as its own: it won't look up this same spot again.
+            val id = detector.markLookedUp(loc.latitude, loc.longitude)
+            MenuRepository.lookup(app, loc.latitude, loc.longitude, auto = false) { report(id, it) }
         }
         gen = MenuRepository.generation
     }
@@ -124,10 +127,9 @@ object DriveWatcher {
             val lng = loc.longitude
             val stopped = !loc.hasSpeed() || loc.speed < STOPPED_SPEED_MPS
             if (!stopped || redLight.isIgnored(lat, lng) || detector.wasLookedUpNear(lat, lng)) return@currentFix
-            detector.markLookedUp(lat, lng)
+            val id = detector.markLookedUp(lat, lng)
             // Now, not the reused fix's time: the drive-off window starts when the card can appear.
-            redLight.onTrigger(lat, lng, SystemClock.elapsedRealtimeNanos() / 1_000_000)
-            MenuRepository.lookup(app, lat, lng, auto = true)
+            autoLookup(app, lat, lng, id, Prefs.radiusMeters(app), nowMs())
         }
     }
 
@@ -139,17 +141,45 @@ object DriveWatcher {
         val lng = loc.longitude
         val t = timeMs(loc)
         val speed = if (loc.hasSpeed()) loc.speed.toDouble() else null
-        if (redLight.onSample(lat, lng, t, speed)) MenuRepository.dismissFalseAlarm(ctx)
+        val accuracy = if (loc.hasAccuracy()) loc.accuracy.toDouble() else null
+        if (redLight.onSample(lat, lng, t, speed)) {
+            // A red light: what was looked up there says nothing about where the car stops next.
+            detector.forget()
+            MenuRepository.dismissFalseAlarm(ctx)
+        }
         MenuRepository.visit?.let { visit ->
             val r = visit.restaurant
-            val accuracy = if (loc.hasAccuracy()) loc.accuracy.toDouble() else null
             if (departure.onSample("${r.id}@${visit.atMs}", r.lat, r.lng, lat, lng, accuracy)) {
                 MenuRepository.visitOver(ctx, visit)
             }
         }
-        if (detector.onSample(ArrivalDetector.Sample(lat, lng, t, speed)) && !redLight.isIgnored(lat, lng)) {
-            redLight.onTrigger(lat, lng, t)
-            MenuRepository.lookup(ctx, lat, lng, auto = true)
+        if (detector.onSample(ArrivalDetector.Sample(lat, lng, t, speed, accuracy)) && !redLight.isIgnored(lat, lng)) {
+            autoLookup(ctx, lat, lng, detector.lookupId, detector.radiusM, t)
+        }
+    }
+
+    /**
+     * An automatic lookup at [lat], [lng], started at [triggerMs] (fix clock). A new card from it is
+     * withdrawn if the car drives off fast: a red light ([RedLightFilter]). While a visit is on screen
+     * the lookup runs in the background (see [MenuRepository.lookup]), and only a new place counts.
+     */
+    private fun autoLookup(ctx: Context, lat: Double, lng: Double, id: Int, radiusM: Double, triggerMs: Long) {
+        val background = MenuRepository.visitOnScreen
+        if (!background) redLight.onTrigger(lat, lng, triggerMs)
+        MenuRepository.lookup(ctx, lat, lng, auto = true, radiusM = radiusM) { outcome ->
+            report(id, outcome)
+            if (background && outcome is MenuRepository.Outcome.Found && outcome.isNew) {
+                redLight.onTrigger(lat, lng, triggerMs)
+            }
+        }
+    }
+
+    /** Tells the detector how lookup [id] went, so it knows which stops are answered and what to retry. */
+    private fun report(id: Int, outcome: MenuRepository.Outcome) {
+        when (outcome) {
+            is MenuRepository.Outcome.Found -> detector.found(id, outcome.place.lat, outcome.place.lng)
+            MenuRepository.Outcome.NothingNearby -> detector.nothingFound(id)
+            is MenuRepository.Outcome.Failed -> detector.failed(id, outcome.retryable, nowMs())
         }
     }
 
@@ -187,12 +217,16 @@ object DriveWatcher {
     /** Same clock for every fix: time since boot, unaffected by GPS/device clock differences. */
     private fun timeMs(loc: Location): Long = loc.elapsedRealtimeNanos / 1_000_000
 
-    private fun ageMs(loc: Location): Long =
-        SystemClock.elapsedRealtimeNanos() / 1_000_000 - timeMs(loc)
+    /** Now, on the fixes' clock. */
+    private fun nowMs(): Long = SystemClock.elapsedRealtimeNanos() / 1_000_000
 
+    private fun ageMs(loc: Location): Long = nowMs() - timeMs(loc)
+
+    /**
+     * Precise location only. An approximate fix is off by up to a few kilometers, so it can't tell
+     * which drive-thru the car is in; the car and phone then ask for precise location instead.
+     */
     private fun hasPermission(ctx: Context): Boolean =
         ContextCompat.checkSelfPermission(ctx, Manifest.permission.ACCESS_FINE_LOCATION) ==
-            PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(ctx, Manifest.permission.ACCESS_COARSE_LOCATION) ==
             PackageManager.PERMISSION_GRANTED
 }

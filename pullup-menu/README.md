@@ -6,8 +6,8 @@ the car display shows a restaurant card, and your phone shows the full menu (off
 | | Android | iPhone |
 |---|---|---|
 | Folder | [`android/`](android/README.md) | [`ios/`](ios/README.md) |
-| In-car display | **Android Auto app**: restaurant card (name, rating, address, one photo) + short list of typical prices | **CarPlay Dashboard Live Activity** (iOS 26+): restaurant name, rating, "Full menu on iPhone" |
-| Phone | Menu shown inside the app, typical prices ("vary by location"), photos with credits; auto-detect switch (off by default) and home-screen widget | Pops up the menu screen; Lock Screen / Dynamic Island Live Activity |
+| In-car display | **Android Auto app**: restaurant card (name, rating, address, one photo) + the chain's item names by menu section (no prices) | **CarPlay Dashboard Live Activity** (iOS 26+): restaurant name, rating, "Full menu on iPhone" |
+| Phone | Menu shown inside the app, item names for known chains (no prices), photos with credits; auto-detect switch (off by default) and home-screen widget | Pops up the menu screen; Lock Screen / Dynamic Island Live Activity |
 | Install | Google Play testing track (Internal testing). Sideloaded copies don't show in the car | Build in Xcode on a Mac (free Apple ID works, re-sign every 7 days; $99/yr account avoids that) |
 
 ## Shared behavior

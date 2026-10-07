@@ -7,9 +7,30 @@ data class ItemGroup(val title: String, val items: List<PriceItem>)
  * Splits a chain's item list into car-screen pages. Android Auto caps how many rows a list may
  * show ([limit]) and how many screens deep an app may go, so every screen gets at most [limit]
  * rows: either items (when they fit) or groups to drill into. With a limit of 6 (5 on the first
- * screen) the whole list, up to 150 items, is reachable within three screens. Pure logic.
+ * screen) every chain's list is reachable within three screens (ItemGroupsTest checks each one);
+ * [page] cuts a list short on the last screen allowed rather than going deeper. Pure logic.
  */
 object ItemGroups {
+    /** What one car screen shows: sections to open, or items. */
+    sealed interface Page {
+        data class Sections(val groups: List<ItemGroup>) : Page
+        /** [more] items didn't fit on the last screen allowed (they're on the phone). */
+        data class Items(val items: List<PriceItem>, val more: Int = 0) : Page
+    }
+
+    /**
+     * The screen for [groups] with room for [rows] rows. On the [last] screen the host allows there
+     * are no sections to open: items that don't fit are left off, one row saying how many.
+     */
+    fun page(groups: List<ItemGroup>, rows: Int, last: Boolean): Page {
+        val children = children(groups, rows)
+        if (children != null && !last) return Page.Sections(children)
+        val items = groups.flatMap { it.items }
+        if (items.size <= rows) return Page.Items(items)
+        val shown = items.take((rows - 1).coerceAtLeast(0))
+        return Page.Items(shown, more = items.size - shown.size)
+    }
+
     /** Items grouped by category, in the order each category first appears. */
     fun byCategory(items: List<PriceItem>): List<ItemGroup> =
         items.groupBy { it.category ?: "Menu" }.map { (title, list) -> ItemGroup(title, list) }

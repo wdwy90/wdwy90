@@ -64,7 +64,7 @@ class MenuSession : Session() {
         lifecycleScope.launch(Dispatchers.Main) {
             merge(MenuRepository.dismissed, MenuRepository.left).collect { id ->
                 val sm = screens()
-                if (sm.screenStack.any { it is RestaurantScreen && it.restaurantId == id }) sm.popToRoot()
+                if (sm.screenStack.any { showsRestaurant(it, id) }) sm.popToRoot()
             }
         }
         return first
@@ -104,6 +104,10 @@ class MenuSession : Session() {
         sm.popToRoot()
         sm.push(RestaurantScreen(carContext, r))
     }
+
+    /** The card, or the item lists that take its place (see [RestaurantScreen]). */
+    private fun showsRestaurant(screen: Screen, id: String) =
+        (screen as? RestaurantScreen)?.restaurantId == id || (screen as? ItemListScreen)?.restaurantId == id
 
     private fun screens(): ScreenManager = carContext.getCarService(ScreenManager::class.java)
     private fun isCardIntent(i: Intent) = i.data?.scheme == Notifier.CAR_INTENT_SCHEME

@@ -2,12 +2,14 @@ package com.wdwy90.pullupmenu.phone
 
 import android.animation.LayoutTransition
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Paint
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.SpannableStringBuilder
@@ -49,11 +51,13 @@ import com.wdwy90.pullupmenu.core.MenuRepository
 import com.wdwy90.pullupmenu.core.PlacePhoto
 import com.wdwy90.pullupmenu.core.PriceItem
 import com.wdwy90.pullupmenu.core.Restaurant
+import com.wdwy90.pullupmenu.core.WebLinks
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
+import kotlin.math.roundToInt
 
 /**
  * Phone screen for the detected restaurant: a header (photo, name, rating, address, shortcuts) and
@@ -87,6 +91,7 @@ class RestaurantActivity : ThemedActivity() {
     private var heroJob: Job? = null
     private val photoJobs = ArrayList<Job>()
     private var viewer: PhotoViewer? = null
+    private var chooser: AlertDialog? = null
     /**
      * Photos of the shown restaurant downloaded so far. Each load is billed, so the header, grid and
      * viewer reuse these rather than asking again (the app-wide cache may have dropped them).
@@ -158,6 +163,7 @@ class RestaurantActivity : ThemedActivity() {
         searchSummary = findViewById(R.id.search_summary)
 
         findViewById<View>(R.id.back).setOnClickListener { finish() }
+        findViewById<View>(R.id.not_here).setOnClickListener { chooseAnother() }
         menuRetry.setOnClickListener {
             startMenuLoad()
             web?.reload()
@@ -193,6 +199,7 @@ class RestaurantActivity : ThemedActivity() {
             MenuRepository.state.collect { s ->
                 if (s is MenuRepository.State.Found) show(s.restaurant)
                 else if (s !is MenuRepository.State.Searching && shown == null) showEmpty()
+                updateNotHere()
             }
         }
         // An auto-detected card withdrawn as a red light: close it here too (no replay, so only live withdrawals).
@@ -212,6 +219,7 @@ class RestaurantActivity : ThemedActivity() {
     }
 
     override fun onDestroy() {
+        chooser?.dismiss()
         viewer?.dismiss()
         destroyWebView()
         super.onDestroy()
@@ -256,8 +264,7 @@ class RestaurantActivity : ThemedActivity() {
         navigate.setOnClickListener { navigateTo(r) }
         maps.visibility = if (r.mapsUri != null) View.VISIBLE else View.GONE
         maps.setOnClickListener { r.mapsUri?.let { open(it) } }
-        findViewById<View>(R.id.header_actions).visibility =
-            if (navigate.visibility == View.GONE && maps.visibility == View.GONE) View.GONE else View.VISIBLE
+        updateNotHere()
         // The demo is sample data, not Google data: no Google Maps attribution for it.
         findViewById<View>(R.id.attribution).visibility = if (r.isDemo) View.GONE else View.VISIBLE
         topAttribution.visibility = if (r.isDemo) View.GONE else View.VISIBLE
@@ -269,6 +276,51 @@ class RestaurantActivity : ThemedActivity() {
         photosLoadedFor = null
         mainScroll.scrollTo(0, 0)
         selectTab(if (r.prices != null) Tab.ITEMS else Tab.MENU, animate = false)
+    }
+
+    /** The other places found around the car with the one shown (nearest first), while it's the current find. */
+    private fun otherNearby(): List<Restaurant> {
+        val s = MenuRepository.state.value as? MenuRepository.State.Found ?: return emptyList()
+        return if (s.restaurant.id == shown?.id) s.others else emptyList()
+    }
+
+    /** "Not here?" shows only when there's another place to pick. */
+    private fun updateNotHere() {
+        val notHere = findViewById<View>(R.id.not_here)
+        notHere.visibility = if (otherNearby().isEmpty()) View.GONE else View.VISIBLE
+        val actions = findViewById<ViewGroup>(R.id.header_actions)
+        actions.visibility =
+            if ((0 until actions.childCount).any { actions.getChildAt(it).visibility == View.VISIBLE }) View.VISIBLE
+            else View.GONE
+        if (notHere.visibility == View.GONE) chooser?.dismiss()
+    }
+
+    /** Strip mall case: pick which of the places found nearby the car is at, as on the car screen. */
+    private fun chooseAnother() {
+        val others = otherNearby()
+        if (others.isEmpty()) return
+        val labels = others.map { r -> "${r.name.ifBlank { "Restaurant" }} · ${(r.distanceMeters * 3.281).roundToInt()} ft" }
+        // The names are Google Maps data: credited under the title.
+        val title = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(24), dp(20), dp(24), dp(8))
+            addView(TextView(this@RestaurantActivity).apply {
+                setTextAppearance(R.style.Text_Title)
+                text = "Which one are you at?"
+            })
+            addView(TextView(this@RestaurantActivity).apply {
+                text = getString(R.string.google_maps)
+                textSize = 12f
+                setTextColor(getColor(R.color.gmp_attribution))
+                setSingleLine(true)
+            })
+        }
+        chooser?.dismiss()
+        chooser = AlertDialog.Builder(this)
+            .setCustomTitle(title)
+            .setItems(labels.toTypedArray()) { _, i -> MenuRepository.choose(this, others[i]) }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun showMeta(r: Restaurant) {
@@ -769,21 +821,25 @@ class RestaurantActivity : ThemedActivity() {
         w.settings.setGeolocationEnabled(false)
         w.settings.allowContentAccess = false
         w.settings.allowFileAccess = false
+        // In the dark theme, menu pages without a dark style of their own are darkened (Android 13+).
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) w.settings.isAlgorithmicDarkeningAllowed = true
         w.setBackgroundColor(getColor(R.color.bg))
         w.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                 val uri = request.url
                 when (uri.scheme?.lowercase()) {
-                    "http", "https" -> return false // stay in the WebView
-                }
-                // tel:, mailto:, market: etc. open outside; ignore odd schemes from ad iframes.
-                if (request.isForMainFrame) {
-                    try {
-                        startActivity(Intent(Intent.ACTION_VIEW, uri).addCategory(Intent.CATEGORY_BROWSABLE))
-                    } catch (e: ActivityNotFoundException) {
-                        // Nothing can handle it; stay on the page.
+                    "http", "https" -> {
+                        // A link the user taps to another website (an ad, a delivery service) opens in the
+                        // browser, so it never looks like this restaurant's menu. Redirects, page scripts
+                        // and the chain's own site stay here.
+                        val elsewhere = request.isForMainFrame && request.hasGesture() && !request.isRedirect &&
+                            !WebLinks.sameSite(uri.host, view.url?.let { Uri.parse(it).host }) &&
+                            !WebLinks.sameSite(uri.host, shown?.menuUrl?.let { Uri.parse(it).host })
+                        return elsewhere && openOutside(uri)
                     }
                 }
+                // tel:, mailto:, market: etc. open outside; ignore odd schemes from ad iframes.
+                if (request.isForMainFrame) openOutside(uri)
                 return true
             }
 
@@ -845,6 +901,15 @@ class RestaurantActivity : ThemedActivity() {
             }
         }
     }
+
+    /** Opens [uri] in another app (the browser, the dialer...). False when nothing can. */
+    private fun openOutside(uri: Uri): Boolean =
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, uri).addCategory(Intent.CATEGORY_BROWSABLE))
+            true
+        } catch (e: ActivityNotFoundException) {
+            false
+        }
 
     private fun destroyWebView() {
         web?.let {

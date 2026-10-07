@@ -85,7 +85,7 @@ jobs:
           fi
           grep -m1 "Owner:" <<<"$cert"
           grep -m1 "SHA1:" <<<"$cert" || true
-          name=$(grep -oP 'versionName = "\K[^"]+' app/build.gradle.kts || echo "1.3")
+          name=$(grep -oP 'versionName = "\K[^"]+' app/build.gradle.kts || echo "unknown")
           mkdir -p release-upload
           cp "$aab" "release-upload/PullUpMenu-$name-$VERSION_CODE.aab"
           ls -l release-upload

@@ -9,7 +9,6 @@ import org.json.JSONObject
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
-import java.net.URLEncoder
 
 /**
  * Thin client for Google Places API (New). [identityHeaders] (X-Android-Package, X-Android-Cert,
@@ -18,7 +17,14 @@ import java.net.URLEncoder
 class PlacesClient(
     private val apiKey: String,
     private val identityHeaders: Map<String, String> = emptyMap(),
+    /** Opens each request's connection (tests pass a fake one). */
+    private val open: (URL) -> HttpURLConnection = { it.openConnection() as HttpURLConnection },
 ) {
+    /** Google answered with an error status ([code]), e.g. a rejected key or too many requests. */
+    class HttpException(val code: Int, message: String) : IOException(message) {
+        /** Too many requests or a server error: the same request may work later. */
+        val retryable: Boolean get() = code == 429 || code >= 500
+    }
 
     suspend fun nearbyRestaurants(lat: Double, lng: Double, radiusM: Double): List<Restaurant> =
         withContext(Dispatchers.IO) {
@@ -33,7 +39,7 @@ class PlacesClient(
                             .put("radius", radiusM)
                     )
                 )
-            val conn = (URL("$BASE/places:searchNearby").openConnection() as HttpURLConnection).apply {
+            val conn = open(URL("$BASE/places:searchNearby")).apply {
                 requestMethod = "POST"
                 doOutput = true
                 connectTimeout = 10_000
@@ -48,7 +54,7 @@ class PlacesClient(
                 val code = conn.responseCode
                 if (code !in 200..299) {
                     val err = conn.errorStream?.bufferedReader()?.readText().orEmpty()
-                    throw IOException("Places API error $code: ${errorMessage(err)}")
+                    throw HttpException(code, "Places API error $code: ${errorMessage(err)}")
                 }
                 PlacesParser.parseNearby(conn.inputStream.bufferedReader().readText(), lat, lng)
             } finally {
@@ -57,12 +63,12 @@ class PlacesClient(
         }
 
     suspend fun photo(photoName: String, maxWidthPx: Int): Bitmap? = withContext(Dispatchers.IO) {
-        val url = "$BASE/$photoName/media?maxWidthPx=$maxWidthPx&key=" +
-            URLEncoder.encode(apiKey, "UTF-8")
-        val conn = (URL(url).openConnection() as HttpURLConnection).apply {
+        // The key goes in a header, as for the search: a URL can end up in logs and error messages.
+        val conn = open(URL("$BASE/$photoName/media?maxWidthPx=$maxWidthPx")).apply {
             connectTimeout = 10_000
             readTimeout = 15_000
             instanceFollowRedirects = true
+            setRequestProperty("X-Goog-Api-Key", apiKey)
             identityHeaders.forEach { (k, v) -> setRequestProperty(k, v) }
         }
         try {

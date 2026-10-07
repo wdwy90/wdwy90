@@ -27,6 +27,7 @@ object Notifier {
     /** Data URI scheme of the car-banner intent ("pullupmenu://restaurant/<id>"); MenuSession opens the card. */
     const val CAR_INTENT_SCHEME = "pullupmenu"
     private const val ID_ARRIVAL = 1001
+    private const val ARRIVAL_TIMEOUT_MS = 30 * 60_000L
     private const val REQ_PHONE_CARD = 0
     private const val REQ_CAR_CARD = 1
 
@@ -62,6 +63,8 @@ object Notifier {
             .setSubText(ctx.getString(R.string.google_maps))
             .setContentIntent(tap)
             .setAutoCancel(true)
+            // Gone once the stop is surely over, even if the car never drove away (the app stopped watching).
+            .setTimeoutAfter(ARRIVAL_TIMEOUT_MS)
         if (carBanner) {
             try {
                 // Only the car host can fire this; from the phone shade the normal content intent is used.

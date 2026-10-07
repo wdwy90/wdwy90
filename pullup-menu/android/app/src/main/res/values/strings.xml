@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="Typos">
+    <!-- "Drive-thru" is the intended spelling throughout. -->
     <string name="app_name">Pull Up Menu</string>
 
     <string name="tagline">Your drive-thru menu, right on time.</string>
