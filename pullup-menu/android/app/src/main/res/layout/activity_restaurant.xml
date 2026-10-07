@@ -82,7 +82,7 @@
                             android:visibility="invisible" />
                         <View
                             android:id="@+id/hero_scrim"
-                            android:layout_width="match_parent" android:layout_height="80dp"
+                            android:layout_width="match_parent" android:layout_height="96dp"
                             android:layout_gravity="bottom"
                             android:background="@drawable/bg_scrim_bottom"
                             android:importantForAccessibility="no"
@@ -97,6 +97,7 @@
                             android:paddingStart="14dp" android:paddingEnd="14dp"
                             android:textSize="12sp" android:fontFamily="sans-serif-medium"
                             android:textColor="@color/on_image"
+                            android:shadowColor="#99000000" android:shadowRadius="3" android:shadowDy="1"
                             android:visibility="gone" />
                     </FrameLayout>
 
@@ -414,7 +415,7 @@
                     android:id="@+id/chips"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingStart="@dimen/gutter" android:paddingEnd="12dp" />
+                    android:paddingStart="@dimen/gutter" android:paddingEnd="@dimen/gutter" />
             </HorizontalScrollView>
             <!-- Marks the bar's edge once it is pinned and content scrolls under it (dark has no shadows). -->
             <View

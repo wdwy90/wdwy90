@@ -1,6 +1,7 @@
 package com.wdwy90.pullupmenu.phone
 
 import android.animation.ObjectAnimator
+import android.animation.TimeInterpolator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
@@ -13,6 +14,9 @@ import android.view.animation.PathInterpolator
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.AccessibilityDelegateCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.wdwy90.pullupmenu.R
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -368,8 +372,24 @@ class ScrollForwardingLayout @JvmOverloads constructor(
     }
 }
 
-/** Material "emphasized" easing. */
+/** Material "emphasized" easing: movement, slides and scrolls. */
 val EASE: PathInterpolator get() = PathInterpolator(0.2f, 0f, 0f, 1f)
+
+/** Material "emphasized decelerate": things arriving or opening. */
+val EASE_ENTER: PathInterpolator get() = PathInterpolator(0.05f, 0.7f, 0.1f, 1f)
+
+/** Material "emphasized accelerate": things leaving or closing. */
+val EASE_EXIT: PathInterpolator get() = PathInterpolator(0.3f, 0f, 0.8f, 0.15f)
+
+/** Tells screen readers this view acts as a button (chips are plain text views). */
+fun View.readAsButton() {
+    ViewCompat.setAccessibilityDelegate(this, object : AccessibilityDelegateCompat() {
+        override fun onInitializeAccessibilityNodeInfo(host: View, info: AccessibilityNodeInfoCompat) {
+            super.onInitializeAccessibilityNodeInfo(host, info)
+            info.className = android.widget.Button::class.java.name
+        }
+    })
+}
 
 /**
  * The segmented Items / Menu / Photos bar ([R.layout.view_tabs]). The indicator slides behind the
@@ -501,7 +521,7 @@ fun View.expandHeight(onFrame: ((Float) -> Unit)? = null): Int {
     }
     layoutParams = layoutParams.apply { height = 0 }
     alpha = 0f
-    animateHeight(0, target, 280) {
+    animateHeight(0, target, 300, EASE_ENTER) {
         layoutParams = layoutParams.apply { height = ViewGroup.LayoutParams.WRAP_CONTENT }
         alpha = 1f
     }.addUpdateListener { a ->
@@ -522,17 +542,17 @@ fun View.collapseHeight() {
         alpha = 1f
         return
     }
-    animateHeight(height, 0, 220) {
+    animateHeight(height, 0, 200, EASE_EXIT) {
         visibility = View.GONE
         layoutParams = layoutParams.apply { height = ViewGroup.LayoutParams.WRAP_CONTENT }
         alpha = 1f
     }.addUpdateListener { a -> alpha = 1f - a.animatedFraction }
 }
 
-private fun View.animateHeight(from: Int, to: Int, ms: Long, onDone: () -> Unit): ValueAnimator {
+private fun View.animateHeight(from: Int, to: Int, ms: Long, easing: TimeInterpolator, onDone: () -> Unit): ValueAnimator {
     val animator = ValueAnimator.ofInt(from, to).apply {
         duration = ms
-        interpolator = EASE
+        interpolator = easing
         addUpdateListener { a ->
             layoutParams = layoutParams.apply { height = a.animatedValue as Int }
         }

@@ -18,6 +18,7 @@ import android.text.Spanned
 import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -43,6 +44,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -92,6 +94,8 @@ class RestaurantActivity : ThemedActivity() {
     private val chipFor = HashMap<String, TextView>()
     private var currentSection: String? = null
     private var scrollAnimator: ValueAnimator? = null
+    /** The query the list was last built for; null before a restaurant's first list. */
+    private var renderedQuery: String? = null
     private var pinned = false
 
     /** A category card on the Items tab: its header row, the item list under it and the chevron. */
@@ -535,6 +539,7 @@ class RestaurantActivity : ThemedActivity() {
         val icon = findViewById<ImageView>(R.id.search_icon)
         search.setOnFocusChangeListener { _, focused ->
             icon.imageTintList = ColorStateList.valueOf(getColor(if (focused) R.color.accent_text else R.color.text_secondary))
+            if (focused) revealSearchBox()
         }
         clear.setOnClickListener {
             search.text.clear()
@@ -549,6 +554,7 @@ class RestaurantActivity : ThemedActivity() {
         settingSearchText = false
         query = ""
         expanded = null // a new restaurant starts with every category collapsed
+        renderedQuery = null
         currentSection = null
         scrollAnimator?.cancel()
 
@@ -601,6 +607,12 @@ class RestaurantActivity : ThemedActivity() {
             sections[g.title] = section
         }
         renderChips(visible)
+        // A new result set settles in rather than snapping (never on a restaurant's first list).
+        if (renderedQuery != null && renderedQuery != query && motionEnabled()) {
+            itemsList.alpha = 0.6f
+            itemsList.animate().alpha(1f).setDuration(150).setInterpolator(EASE_ENTER).start()
+        }
+        renderedQuery = query
     }
 
     /**
@@ -630,7 +642,7 @@ class RestaurantActivity : ThemedActivity() {
         // so a long category name wraps between words instead of inside one.
         if (resources.configuration.fontScale < 1.5f) header.addView(ImageView(this).apply {
             setImageResource(CategoryIcons.iconFor(g.title))
-            imageTintList = ColorStateList.valueOf(getColor(R.color.text_secondary))
+            imageTintList = getColorStateList(R.color.cat_icon_tint)
             setBackgroundResource(R.drawable.bg_icon_tile)
             scaleType = ImageView.ScaleType.CENTER
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
@@ -683,9 +695,22 @@ class RestaurantActivity : ThemedActivity() {
 
         header.contentDescription = "${g.title}, ${g.items.size} ${if (g.items.size == 1) "item" else "items"}"
         ViewCompat.setAccessibilityHeading(header, true)
-        ViewCompat.setStateDescription(header, if (open) "Expanded" else "Collapsed")
-        header.setOnClickListener { toggle(g.title, reveal = true) }
+        describeOpen(header, open)
+        header.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK)
+            toggle(g.title, reveal = true)
+        }
         return Section(card, header, body, chevron, badge)
+    }
+
+    /**
+     * What a screen reader says about a category row: its state, and what a double tap will do.
+     * The row's activated state also reaches its icon tile, which takes the accent while open.
+     */
+    private fun describeOpen(header: View, open: Boolean) {
+        header.isActivated = open
+        ViewCompat.setStateDescription(header, if (open) "Expanded" else "Collapsed")
+        ViewCompat.replaceAccessibilityAction(header, AccessibilityActionCompat.ACTION_CLICK, if (open) "Collapse" else "Expand", null)
     }
 
     /** The open category's count and chevron take the accent; the others stay quiet. */
@@ -727,12 +752,14 @@ class RestaurantActivity : ThemedActivity() {
 
     /** Animates the body open or closed and returns the body's full height. */
     private fun setOpen(s: Section, open: Boolean): Int {
-        ViewCompat.setStateDescription(s.header, if (open) "Expanded" else "Collapsed")
+        describeOpen(s.header, open)
         markOpen(s.badge, s.chevron, open)
-        s.chevron.animate().rotation(if (open) 180f else 0f)
-            .setDuration(if (motionEnabled()) 260 else 0).setInterpolator(EASE).start()
-        s.card.animate().translationZ(if (open) dp(1).toFloat() else 0f)
-            .setDuration(if (motionEnabled()) 260 else 0).start()
+        // Opening eases out over 300 ms with the body; closing is quicker (200 ms), like Material's
+        // emphasized enter and exit.
+        val ms = if (!motionEnabled()) 0L else if (open) 300L else 200L
+        val easing = if (open) EASE_ENTER else EASE_EXIT
+        s.chevron.animate().rotation(if (open) 180f else 0f).setDuration(ms).setInterpolator(easing).start()
+        s.card.animate().translationZ(if (open) dp(1).toFloat() else 0f).setDuration(ms).setInterpolator(easing).start()
         return if (open) s.body.expandHeight() else { s.body.collapseHeight(); 0 }
     }
 
@@ -742,8 +769,10 @@ class RestaurantActivity : ThemedActivity() {
             minimumHeight = dp(44)
             gravity = android.view.Gravity.CENTER_VERTICAL
             setPadding(dp(16), dp(10), dp(16), dp(10))
-            // One screen-reader stop per item, name and note together.
-            isFocusable = true
+            // One screen-reader stop per item, name and note together; not a keyboard stop, so a
+            // D-pad walks the categories instead of every row.
+            isFocusable = false
+            ViewCompat.setScreenReaderFocusable(this, true)
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
             contentDescription = listOfNotNull(item.name, item.note).joinToString(". ")
         }
@@ -816,6 +845,7 @@ class RestaurantActivity : ThemedActivity() {
                     contentDescription = "Jump to ${g.title}"
                     isClickable = true
                     isFocusable = true
+                    readAsButton()
                     setOnClickListener { jumpTo(g.title) }
                 }
                 chips.addView(chip)
@@ -836,6 +866,26 @@ class RestaurantActivity : ThemedActivity() {
         markChip(title)
     }
 
+    /** Brings the search field out from under the pinned tab bar when it takes focus there. */
+    private fun revealSearchBox() {
+        val box = findViewById<View>(R.id.search_box)
+        mainScroll.post {
+            val top = box.topIn(mainContent)
+            val covered = top < mainScroll.scrollY + sticky.height
+            val wanted = (top - sticky.height - dp(8)).coerceAtLeast(0)
+            if (!covered) return@post
+            scrollAnimator?.cancel()
+            if (!motionEnabled()) { mainScroll.scrollTo(0, wanted); return@post }
+            val from = mainScroll.scrollY
+            scrollAnimator = ValueAnimator.ofInt(from, wanted).apply {
+                duration = 200
+                interpolator = EASE
+                addUpdateListener { a -> mainScroll.scrollTo(0, a.animatedValue as Int) }
+                start()
+            }
+        }
+    }
+
     /**
      * Scrolls to the section: [target] maps the card's top (in content coordinates) and the scroll
      * position the scroll started from to the wanted position. It is re-read every frame, because a
@@ -850,7 +900,7 @@ class RestaurantActivity : ThemedActivity() {
             return
         }
         scrollAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
-            duration = 320
+            duration = 300 // lands with the category's expand
             interpolator = EASE
             addUpdateListener { a -> mainScroll.scrollTo(0, (from + (wanted() - from) * a.animatedFraction).roundToInt()) }
             start()

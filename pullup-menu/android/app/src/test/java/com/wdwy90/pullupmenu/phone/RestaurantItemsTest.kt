@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.ViewCompat
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.wdwy90.pullupmenu.R
 import com.wdwy90.pullupmenu.core.ChainMenus
 import com.wdwy90.pullupmenu.core.ChainPrices
@@ -64,6 +65,28 @@ class RestaurantItemsTest {
         header(cards[2]).performClick()
         idle()
         assertEquals(View.GONE, body(cards[2]).visibility)
+    }
+
+    @Test
+    fun categoryRowsTellScreenReadersWhatATapDoes() {
+        show(sample("Burger King"))
+        val a = launch()
+        val cards = cards(a)
+        assertEquals("Expand", clickLabel(header(cards[0])))
+        assertEquals(false, header(cards[0]).isActivated)
+        // Item rows are screen-reader stops, not keyboard stops.
+        header(cards[0]).performClick()
+        idle()
+        assertEquals("Collapse", clickLabel(header(cards[0])))
+        assertEquals(true, header(cards[0]).isActivated)
+        val rows = (body(cards[0]) as ViewGroup).getChildAt(0) as ViewGroup
+        val row = rows.getChildAt(0)
+        assertEquals(false, row.isFocusable)
+        assertEquals(true, ViewCompat.isScreenReaderFocusable(row))
+        // Chips read as buttons.
+        val chip = a.findViewById<LinearLayout>(R.id.chips).getChildAt(0)
+        val info = AccessibilityNodeInfoCompat.wrap(chip.createAccessibilityNodeInfo())
+        assertEquals(android.widget.Button::class.java.name, info.className)
     }
 
     @Test
@@ -137,6 +160,11 @@ class RestaurantItemsTest {
     }
 
     private fun header(card: ViewGroup): View = card.getChildAt(0)
+    /** The label a screen reader reads for a tap ("double-tap to <label>"). */
+    private fun clickLabel(v: View): String? {
+        val info = AccessibilityNodeInfoCompat.wrap(v.createAccessibilityNodeInfo())
+        return info.actionList.firstOrNull { it.id == AccessibilityNodeInfoCompat.ACTION_CLICK }?.label?.toString()
+    }
     private fun body(card: ViewGroup): View = card.getChildAt(1)
 
     private fun launch(): RestaurantActivity {

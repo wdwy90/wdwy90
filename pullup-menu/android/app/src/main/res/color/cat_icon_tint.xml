@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A category's icon: accent while its category is open, quiet otherwise. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_activated="true" android:color="@color/accent_text" />
+    <item android:color="@color/text_secondary" />
+</selector>
