@@ -86,21 +86,20 @@
                 android:layout_marginTop="12dp" android:orientation="vertical">
                 <include android:id="@+id/fact_location" layout="@layout/item_fact" />
                 <include android:id="@+id/fact_notifications" layout="@layout/item_fact" />
-                <LinearLayout
+                <com.wdwy90.pullupmenu.phone.FlowRow
                     android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp" android:orientation="horizontal">
+                    android:layout_marginTop="12dp">
                     <Button
                         android:id="@+id/grant_permissions"
                         style="@style/Button.Primary"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
                         android:text="Allow" />
                     <Button
                         android:id="@+id/app_settings"
                         style="@style/Button.Tonal"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:text="System settings" />
-                </LinearLayout>
+                </com.wdwy90.pullupmenu.phone.FlowRow>
             </LinearLayout>
 
             <!-- Android Auto -->
@@ -160,21 +159,20 @@
                         android:textColor="@color/warning"
                         android:accessibilityLiveRegion="polite"
                         android:visibility="gone" />
-                    <LinearLayout
+                    <com.wdwy90.pullupmenu.phone.FlowRow
                         android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp" android:orientation="horizontal">
+                        android:layout_marginTop="12dp">
                         <Button
                             android:id="@+id/cancel_key"
                             style="@style/Button.Tonal"
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:layout_marginEnd="8dp"
                             android:text="Cancel" />
                         <Button
                             android:id="@+id/save_key"
                             style="@style/Button.Primary"
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="Save" />
-                    </LinearLayout>
+                    </com.wdwy90.pullupmenu.phone.FlowRow>
                 </LinearLayout>
                 <Button
                     android:id="@+id/remove_key"

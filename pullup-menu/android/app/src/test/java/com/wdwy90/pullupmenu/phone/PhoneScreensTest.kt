@@ -26,7 +26,10 @@ import com.wdwy90.pullupmenu.core.MenuRepository
 import com.wdwy90.pullupmenu.core.Notifier
 import com.wdwy90.pullupmenu.core.Prefs
 import com.wdwy90.pullupmenu.core.Restaurant
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -49,8 +52,9 @@ import kotlin.math.pow
 /**
  * The phone screens with their real layouts, themes and activities (Robolectric): sizes that only
  * show up once laid out, theme changes, the API key never on screen in full, Google attribution,
- * touch targets, the Drive Mode switch and the Menu tab's failed-load state. Sample data only: a
- * made-up Burger King location.
+ * touch targets, the Drive Mode switch, the Menu tab's failed-load state and going back to ready
+ * after driving away. Sample data only: a made-up Burger King location. Small phones and large
+ * text: [SmallScreensTest].
  */
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
@@ -185,6 +189,41 @@ class PhoneScreensTest {
                 @Suppress("UNCHECKED_CAST")
                 (get(null) as MutableStateFlow<Boolean>).value = false
             }
+        }
+    }
+
+    @Test
+    fun drivingAwayGoesBackToReadyQuietly() {
+        Prefs.setApiKey(app, "AIza" + "A".repeat(31) + "WXYZ")
+        val place = showSample()
+        Notifier.arrival(app, place, carBanner = false)
+        val restaurant = launch(RestaurantActivity::class.java)
+        val home = launch(MainActivity::class.java)
+        val left = ArrayList<String>()
+        val watch = CoroutineScope(Dispatchers.Unconfined).launch { MenuRepository.left.collect { left += it } }
+        try {
+            val visit = MenuRepository.state.value as MenuRepository.State.Found
+            MenuRepository.visitOver(app, visit)
+            idle()
+            assertEquals(MenuRepository.State.Idle, MenuRepository.state.value)
+            // The car pops its card for this restaurant, and the arrival notification goes.
+            assertEquals(listOf(place.id), left)
+            assertTrue(shadowOf(app.getSystemService(NotificationManager::class.java)).allNotifications.isEmpty())
+            // Someone reading the menu on the phone keeps it.
+            assertFalse(restaurant.isFinishing)
+            // Home is ready for the next drive-thru and doesn't claim nothing was ever found.
+            assertEquals("Ready to detect", home.findViewById<TextView>(R.id.status_title).text.toString())
+            val tile = home.findViewById<View>(R.id.action_menu)
+            assertEquals("No restaurant right now", tile.findViewById<TextView>(R.id.action_subtitle).text.toString())
+
+            // A visit that's already over (or replaced) doesn't end anything else.
+            MenuRepository.showDemo(app)
+            MenuRepository.visitOver(app, visit)
+            MenuRepository.visitOver(app, MenuRepository.state.value as MenuRepository.State.Found)
+            assertTrue(MenuRepository.state.value is MenuRepository.State.Found)
+            assertEquals(listOf(place.id), left)
+        } finally {
+            watch.cancel()
         }
     }
 

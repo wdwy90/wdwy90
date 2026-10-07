@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:clipToPadding="false">
@@ -140,30 +141,19 @@
             android:accessibilityHeading="true"
             android:text="Quick actions" />
 
-        <!-- Tiles in a row share the taller one's height. LinearLayout only does that when every
-             child is match_parent, so the gap is a margin rather than a Space. -->
-        <LinearLayout
+        <!-- Two tiles a row, each row as tall as its taller tile; one a row when a word wouldn't fit
+             (small phones, large text). -->
+        <com.wdwy90.pullupmenu.phone.ColumnGrid
+            android:id="@+id/actions"
             android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:orientation="horizontal"
-            android:baselineAligned="false">
-            <include android:id="@+id/action_detect" layout="@layout/item_action"
-                android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" />
-            <include android:id="@+id/action_menu" layout="@layout/item_action"
-                android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
-                android:layout_marginStart="12dp" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:orientation="horizontal"
-            android:baselineAligned="false">
-            <include android:id="@+id/action_drive" layout="@layout/item_action"
-                android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" />
-            <include android:id="@+id/action_settings" layout="@layout/item_action"
-                android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
-                android:layout_marginStart="12dp" />
-        </LinearLayout>
+            android:columnCount="2"
+            app:gridGap="12dp">
+            <include android:id="@+id/action_detect" layout="@layout/item_action" />
+            <include android:id="@+id/action_menu" layout="@layout/item_action" />
+            <include android:id="@+id/action_drive" layout="@layout/item_action" />
+            <include android:id="@+id/action_settings" layout="@layout/item_action" />
+        </com.wdwy90.pullupmenu.phone.ColumnGrid>
 
         <TextView
             style="@style/Text.Secondary"

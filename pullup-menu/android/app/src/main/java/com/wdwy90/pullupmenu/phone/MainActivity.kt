@@ -216,7 +216,7 @@ class MainActivity : ThemedActivity() {
         val menuFor = found?.restaurant?.let { r ->
             if (r.isDemo) r.name else r.prices?.chain ?: "Restaurant found"
         }
-        setAction(actionMenu, menuFor ?: "Nothing detected yet", enabled = found != null)
+        setAction(actionMenu, menuFor ?: nothingFound(), enabled = found != null)
         setAction(actionDrive, if (driveMode) "On · tap to stop" else "Watch on this phone", enabled = true)
         actionDrive.isSelected = driveMode
     }
@@ -288,10 +288,14 @@ class MainActivity : ThemedActivity() {
         if (MenuRepository.state.value is State.Found) {
             startActivity(Intent(this, RestaurantActivity::class.java))
         } else {
-            Toast.makeText(this, "Nothing detected yet. Tap Detect My Restaurant in the lane.", Toast.LENGTH_SHORT)
+            Toast.makeText(this, "${nothingFound()}. Tap Detect My Restaurant in the lane.", Toast.LENGTH_SHORT)
                 .show()
         }
     }
+
+    /** No restaurant now: none ever, or the last visit is over (the car drove away). */
+    private fun nothingFound() =
+        if (Prefs.lastDetected(this) == null) "Nothing detected yet" else "No restaurant right now"
 
     private fun openSettings() = startActivity(Intent(this, SettingsActivity::class.java))
 

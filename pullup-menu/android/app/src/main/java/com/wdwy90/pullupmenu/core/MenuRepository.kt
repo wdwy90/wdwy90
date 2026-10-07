@@ -47,6 +47,10 @@ object MenuRepository {
     /** Emits a restaurant id when its auto-detected card is withdrawn because it looked like a red light. */
     val dismissed: SharedFlow<String> = _dismissed
 
+    private val _left = MutableSharedFlow<String>(extraBufferCapacity = 4)
+    /** Emits a restaurant id when the car has driven away from it: that visit is over. */
+    val left: SharedFlow<String> = _left
+
     /** Bumped by every change that supersedes a pending request (see [DriveWatcher.checkNow]). Main thread only. */
     internal var generation = 0
         private set
@@ -161,6 +165,17 @@ object MenuRepository {
             }
             else -> Unit
         }
+    }
+
+    /**
+     * The car has driven away from [visit]'s restaurant: back to ready, quietly. The car's card and
+     * the arrival notification go; the phone's restaurant screen stays open for anyone reading it.
+     */
+    fun visitOver(ctx: Context, visit: State.Found) {
+        if (_state.value != visit || visit.restaurant.isDemo) return
+        _state.value = State.Idle
+        Notifier.cancelArrival(ctx.applicationContext)
+        _left.tryEmit(visit.restaurant.id)
     }
 
     /** Used by [DriveWatcher.checkNow] while it waits for a location fix. */

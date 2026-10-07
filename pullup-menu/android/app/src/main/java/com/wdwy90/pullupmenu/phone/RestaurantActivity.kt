@@ -29,7 +29,6 @@ import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
-import android.widget.GridLayout
 import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -266,7 +265,7 @@ class RestaurantActivity : ThemedActivity() {
         showHero(r)
         setUpItems(r)
         setUpMenu(r)
-        findViewById<GridLayout>(R.id.photo_grid).removeAllViews()
+        findViewById<ColumnGrid>(R.id.photo_grid).removeAllViews()
         photosLoadedFor = null
         mainScroll.scrollTo(0, 0)
         selectTab(if (r.prices != null) Tab.ITEMS else Tab.MENU, animate = false)
@@ -862,7 +861,7 @@ class RestaurantActivity : ThemedActivity() {
     private fun showPhotos(r: Restaurant) {
         photosLoadedFor = r.id
         cancelPhotoLoads()
-        val grid = findViewById<GridLayout>(R.id.photo_grid)
+        val grid = findViewById<ColumnGrid>(R.id.photo_grid)
         val message = findViewById<TextView>(R.id.photos_message)
         grid.removeAllViews()
         val photos = r.photos.take(MAX_PHOTOS)
@@ -875,16 +874,9 @@ class RestaurantActivity : ThemedActivity() {
             return
         }
         message.text = "Photos from Google Maps. Tap a photo to see it full screen."
-        val gap = dp(6)
         photos.forEachIndexed { i, ph ->
             val cell = LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
-                layoutParams = GridLayout.LayoutParams(
-                    GridLayout.spec(GridLayout.UNDEFINED), GridLayout.spec(GridLayout.UNDEFINED, 1f)
-                ).apply {
-                    width = 0
-                    setMargins(gap, gap, gap, gap)
-                }
             }
             val tile = SquareFrameLayout(this).apply {
                 setBackgroundResource(R.drawable.bg_photo_placeholder)
@@ -904,11 +896,11 @@ class RestaurantActivity : ThemedActivity() {
             tile.addView(image, FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
             ))
+            // The whole credit, however long: Google requires the photographer's name.
             val credit = styled(R.style.Text_Secondary, "").apply {
                 textSize = 12f
                 minHeight = dp(48) // often a link to the photographer's profile
                 gravity = android.view.Gravity.CENTER_VERTICAL
-                maxLines = 2
             }
             setCredit(credit, ph)
             cell.addView(tile)
