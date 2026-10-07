@@ -18,7 +18,32 @@ jobs:
           distribution: temurin
           java-version: "17"
       - name: Build and test
-        run: ./gradlew --no-daemon assembleDebug testDebugUnitTest lintDebug
+        run: |
+          set -o pipefail
+          ./gradlew --no-daemon --continue assembleDebug testDebugUnitTest lintDebug 2>&1 | tee build.log
+      # Run logs aren't always downloadable, so failures are also posted as annotations.
+      - name: Report failures
+        if: failure()
+        run: |
+          annotate() { # title, then lines on stdin
+            msg=$(head -c 30000 | sed 's/%/%25/g; s/\r//g' | awk '{printf "%s%%0A", $0}')
+            [ -n "$msg" ] && echo "::error title=$1::$msg"
+            true
+          }
+          grep -E "^e: |^w: .*(error|Unresolved)|What went wrong|FAILED|Execution failed" build.log | head -80 | annotate "Compile and task errors" || true
+          if [ -f app/build/reports/lint-results-debug.xml ]; then
+            python3 -c '
+          import sys, xml.etree.ElementTree as ET
+          for i in ET.parse(sys.argv[1]).getroot().iter("issue"):
+              if i.get("severity") in ("Error", "Fatal"):
+                  loc = i.find("location")
+                  where = (loc.get("file", "").split("/app/")[-1] + ":" + loc.get("line", "?")) if loc is not None else ""
+                  print(i.get("id"), where, i.get("message"))
+          ' app/build/reports/lint-results-debug.xml | head -40 | annotate "Lint errors" || true
+          fi
+          for f in app/build/test-results/testDebugUnitTest/*.xml; do
+            [ -f "$f" ] && grep -A4 "<failure" "$f" | head -20
+          done | annotate "Unit test failures" || true
       - uses: actions/upload-artifact@v5
         with:
           name: pullup-menu-apk
