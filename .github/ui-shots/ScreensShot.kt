@@ -53,6 +53,11 @@ class ScreensShot {
     private val out = File(System.getProperty("shots.dir") ?: "build/shots").apply { mkdirs() }
     private var suffix = ""
 
+    // Normal text at the Galaxy S Ultra's width, in both themes.
+    @Test fun dark() = run(Prefs.THEME_DARK, "dark")
+
+    @Test fun light() = run(Prefs.THEME_LIGHT, "light")
+
     // Small phones and large text, each screen also checked with LayoutAudit (audit-<size>.txt).
     @Test fun big130() {
         RuntimeEnvironment.setFontScale(1.3f)
