@@ -197,6 +197,8 @@ class PhoneScreensTest {
         Prefs.setApiKey(app, "AIza" + "A".repeat(31) + "WXYZ")
         val place = showSample()
         Notifier.arrival(app, place, carBanner = false)
+        val notifications = shadowOf(app.getSystemService(NotificationManager::class.java))
+        assertEquals(1, notifications.allNotifications.size)
         val restaurant = launch(RestaurantActivity::class.java)
         val home = launch(MainActivity::class.java)
         val left = ArrayList<String>()
@@ -208,7 +210,7 @@ class PhoneScreensTest {
             assertEquals(MenuRepository.State.Idle, MenuRepository.state.value)
             // The car pops its card for this restaurant, and the arrival notification goes.
             assertEquals(listOf(place.id), left)
-            assertTrue(shadowOf(app.getSystemService(NotificationManager::class.java)).allNotifications.isEmpty())
+            assertTrue(notifications.allNotifications.isEmpty())
             // Someone reading the menu on the phone keeps it.
             assertFalse(restaurant.isFinishing)
             // Home is ready for the next drive-thru and doesn't claim nothing was ever found.

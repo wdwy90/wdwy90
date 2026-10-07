@@ -47,6 +47,14 @@ class DepartureDetectorTest {
         assertTrue(d.at(0.01, accuracy = null)) // no accuracy reported: taken as is
     }
 
+    @Test fun aGapInWatchingStartsCountingAgain() {
+        val d = DepartureDetector()
+        assertFalse(d.at(0.005)) // a stray fix just before the car disconnects
+        d.reset() // watching stopped
+        assertFalse(d.at(0.005)) // first fix after it starts again
+        assertTrue(d.at(0.005))
+    }
+
     @Test fun aNewVisitStartsCountingAgain() {
         val d = DepartureDetector()
         assertFalse(d.at(0.005))

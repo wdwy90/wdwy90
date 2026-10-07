@@ -38,4 +38,10 @@ class DepartureDetector(
         away++
         return away == fixesNeeded
     }
+
+    /** Starts over, e.g. when location watching stops: "in a row" means without a gap between them. */
+    fun reset() {
+        visit = null
+        away = 0
+    }
 }

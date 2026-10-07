@@ -51,6 +51,14 @@ object MenuRepository {
     /** Emits a restaurant id when the car has driven away from it: that visit is over. */
     val left: SharedFlow<String> = _left
 
+    /**
+     * The restaurant found last (never the demo), until the car drives away from it or its card is
+     * withdrawn as a red light. It outlives [state]: another check on the way out (stopped at a light,
+     * say) mustn't keep this visit's car card and notification up for good. Main thread only.
+     */
+    internal var visit: State.Found? = null
+        private set
+
     /** Bumped by every change that supersedes a pending request (see [DriveWatcher.checkNow]). Main thread only. */
     internal var generation = 0
         private set
@@ -102,6 +110,7 @@ object MenuRepository {
             }
             _state.value = result
             if (result is State.Found) {
+                visit = result
                 Prefs.setLastDetected(appCtx, result.restaurant.prices?.chain, result.atMs)
                 try {
                     Notifier.arrival(appCtx, result.restaurant, carBanner = auto && Prefs.carBanner(appCtx))
@@ -117,7 +126,10 @@ object MenuRepository {
         val current = _state.value as? State.Found ?: return
         if (!restaurant.isDemo) Prefs.setLastDetected(ctx.applicationContext, restaurant.prices?.chain, current.atMs)
         val all = listOf(current.restaurant) + current.others
-        _state.value = current.copy(restaurant = restaurant, others = all.filter { it.id != restaurant.id })
+        val chosen = current.copy(restaurant = restaurant, others = all.filter { it.id != restaurant.id })
+        _state.value = chosen
+        // The place picked is the one this visit is at.
+        if (!restaurant.isDemo) visit = chosen
     }
 
     /** Shows a sample card (for Play reviewers and first-time users). No notification. */
@@ -154,6 +166,7 @@ object MenuRepository {
         when (val s = _state.value) {
             is State.Found -> if (s.auto) {
                 generation++
+                if (visit == s) visit = null
                 _state.value = State.Idle
                 Notifier.cancelArrival(ctx.applicationContext)
                 _dismissed.tryEmit(s.restaurant.id)
@@ -168,12 +181,15 @@ object MenuRepository {
     }
 
     /**
-     * The car has driven away from [visit]'s restaurant: back to ready, quietly. The car's card and
-     * the arrival notification go; the phone's restaurant screen stays open for anyone reading it.
+     * The car has driven away from [visit]'s restaurant: back to ready, quietly. Its car card and the
+     * arrival notification go; the phone's restaurant screen stays open for anyone reading it. A
+     * newer result (another stop on the way out found nothing, say) stays on screen. Does nothing
+     * once a newer visit has replaced [visit].
      */
     fun visitOver(ctx: Context, visit: State.Found) {
-        if (_state.value != visit || visit.restaurant.isDemo) return
-        _state.value = State.Idle
+        if (visit != this.visit) return
+        this.visit = null
+        if (_state.value == visit) _state.value = State.Idle
         Notifier.cancelArrival(ctx.applicationContext)
         _left.tryEmit(visit.restaurant.id)
     }
