@@ -118,11 +118,12 @@
                         </LinearLayout>
                     </LinearLayout>
 
+                    <!-- Selectable (to copy the address), so it gets a full touch target height. -->
                     <TextView
                         android:id="@+id/address"
                         style="@style/Text.Secondary"
                         android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
+                        android:minHeight="@dimen/touch_target"
                         android:drawableStart="@drawable/ic_place_small"
                         android:drawablePadding="8dp"
                         android:drawableTint="@color/text_secondary"
@@ -132,7 +133,7 @@
                     <LinearLayout
                         android:id="@+id/header_actions"
                         android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/space_2"
+                        android:layout_marginTop="4dp"
                         android:orientation="horizontal">
                         <Button
                             android:id="@+id/navigate"

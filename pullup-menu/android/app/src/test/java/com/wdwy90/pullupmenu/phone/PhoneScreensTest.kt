@@ -112,17 +112,16 @@ class PhoneScreensTest {
     @Test
     fun everyTappableViewIsAtLeast48dp() {
         showSample()
+        val small = ArrayList<String>()
         for (screen in listOf(MainActivity::class.java, SettingsActivity::class.java, RestaurantActivity::class.java)) {
             val a = launch(screen)
             val min = dp(a, 48) - 1
             for (v in descendants(a.window.decorView)) {
                 if (!v.isClickable || !v.isShown) continue
-                assertTrue(
-                    "${screen.simpleName}: ${describe(v)} is ${v.width}x${v.height}px",
-                    v.width >= min && v.height >= min,
-                )
+                if (v.width < min || v.height < min) small += "${screen.simpleName}: ${describe(v)} is ${v.width}x${v.height}px"
             }
         }
+        assertTrue(small.joinToString("\n"), small.isEmpty())
     }
 
     @Test
