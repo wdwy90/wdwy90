@@ -18,7 +18,7 @@ Types your home PC's clipboard into the virtual desktop window as keystrokes. It
 
 1. Copy text on your home PC as usual (`Ctrl+C`).
 2. Click into the spot in the virtual desktop where the text should go.
-3. Press **Ctrl+Alt+V**.
+3. Press **Ctrl+Alt+Shift+V**.
 4. Keep your hands off the keyboard and mouse until it finishes. Press **Esc** to stop.
 
 Typing stops on its own if you switch to another window. For more than 1,000 characters it asks first and shows how long typing will take (about 50 characters per second).
@@ -29,7 +29,7 @@ Edit the top of `TypeItIn.ahk` in Notepad, save, then right-click the tray icon 
 
 | Setting | Default | When to change it |
 |---|---|---|
-| `TYPE_HOTKEY` | `^!v` (Ctrl+Alt+V) | If it clashes with something. `^` = Ctrl, `!` = Alt, `+` = Shift, `#` = Win |
+| `TYPE_HOTKEY` | `$^!+v` (Ctrl+Alt+Shift+V) | If it clashes with another app. `^` = Ctrl, `!` = Alt, `+` = Shift, `#` = Win. Keep the leading `$` |
 | `KEY_DELAY_MS` | `10` | Raise to 20–40 if characters are dropped or out of order |
 | `KEY_PRESS_MS` | `10` | Raise to 20–30 together with the delay if keys still drop |
 | `CONFIRM_OVER` | `1000` | Character count that triggers the "are you sure" prompt |

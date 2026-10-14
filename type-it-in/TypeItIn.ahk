@@ -7,7 +7,7 @@
 ; One direction only (this PC -> virtual desktop). No network access.
 
 ; ===== Settings =====
-TYPE_HOTKEY  := "^!v"       ; Ctrl+Alt+V
+TYPE_HOTKEY  := "$^!+v"     ; Ctrl+Alt+Shift+V ($ = grab it before other apps see it)
 ABORT_KEY    := "Esc"       ; stops typing mid-way
 KEY_DELAY_MS := 10          ; pause between keys; raise to 20-40 if characters drop
 KEY_PRESS_MS := 10          ; how long each key is held down
@@ -22,8 +22,8 @@ global aborted := false
 Hotkey TYPE_HOTKEY, TypeClipboard
 Hotkey ABORT_KEY, Abort, "Off"
 
-A_IconTip := "Type It In - Ctrl+Alt+V types the clipboard"
-TrayTip "Ctrl+Alt+V types the clipboard into the active window.`nEsc stops it.", "Type It In"
+A_IconTip := "Type It In - " HotkeyName(TYPE_HOTKEY) " types the clipboard"
+TrayTip HotkeyName(TYPE_HOTKEY) " types the clipboard into the active window.`nEsc stops it.", "Type It In"
 
 TypeClipboard(*) {
     global typing, aborted
@@ -37,7 +37,7 @@ TypeClipboard(*) {
     }
 
     ; Let go of the hotkey first, or Ctrl/Alt would combine with typed keys.
-    for key in ["Ctrl", "Alt", "Shift", "LWin", "RWin", "v"]
+    for key in ["Ctrl", "Alt", "Shift", "LWin", "RWin", HotkeyKey(TYPE_HOTKEY)]
         KeyWait key
 
     target := WinExist("A")
@@ -99,6 +99,21 @@ TypeClipboard(*) {
 
 Abort(*) {
     global aborted := true
+}
+
+; "$^!+v" -> "v"
+HotkeyKey(hk) {
+    return RegExReplace(hk, "^[$*~<>^!+#]+")
+}
+
+; "$^!+v" -> "Ctrl+Alt+Shift+V"
+HotkeyName(hk) {
+    mods := RegExReplace(hk, "[^^!+#]")
+    name := ""
+    for pair in [["^", "Ctrl+"], ["!", "Alt+"], ["+", "Shift+"], ["#", "Win+"]]
+        if InStr(mods, pair[1])
+            name .= pair[2]
+    return name . StrUpper(HotkeyKey(hk))
 }
 
 ToAscii(s) {
